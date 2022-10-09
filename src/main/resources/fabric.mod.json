@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "avomod2",
+  "version": "${version}",
+  "name": "AvoMod2",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/avomod2/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "cf.avicia.avomod2.client.AvoMod2Client"
+    ],
+    "main": [
+      "cf.avicia.avomod2.AvoMod2"
+    ]
+  },
+  "mixins": [
+    "avomod2.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric": "*",
+    "minecraft": "1.18.2"
+  }
+}
