@@ -11,6 +11,7 @@ public class TriggerChatEvents {
         List<ActionResult> actionResults = new ArrayList<>();
         actionResults.add(ShowRealName.onMessage(message));
         actionResults.add(MakeShoutsClickable.onMessage(message));
+        actionResults.add(AutoSkipDialogue.onMessage(message));
         if (actionResults.contains(ActionResult.FAIL)) {
             return ActionResult.FAIL;
         } else {
