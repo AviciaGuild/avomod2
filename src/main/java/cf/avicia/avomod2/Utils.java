@@ -8,7 +8,6 @@ public class Utils {
     }
 
     public static String getReadableTime(int minutes) {
-        System.out.println(minutes);
         return (minutes >= 1440.0 ? (int) Math.floor((minutes / 1440.0)) + "d " : "") + (int) (Math.floor((minutes % 1440) / 60.0)) + "h " + minutes % 60 + "m";
     }
 
@@ -18,5 +17,9 @@ public class Utils {
             formattedWorld = "WC" + world;
         }
         return formattedWorld.toUpperCase(Locale.ROOT);
+    }
+
+    public static String getUnformattedString(String string) {
+        return string.replaceAll("§.", "");
     }
 }

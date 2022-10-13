@@ -4,8 +4,10 @@
   "package": "cf.avicia.avomod2.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ChatMixin"
   ],
   "client": [
+    "TimeStampsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
