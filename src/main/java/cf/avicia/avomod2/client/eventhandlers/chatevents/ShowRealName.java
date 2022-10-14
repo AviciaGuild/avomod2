@@ -1,5 +1,6 @@
 package cf.avicia.avomod2.client.eventhandlers.chatevents;
 
+import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -8,6 +9,7 @@ import java.util.List;
 
 public class ShowRealName {
     public static ActionResult onMessage(Text message) {
+        if (!ConfigsHandler.getConfigBoolean("revealNicks")) return ActionResult.SUCCESS;
         addRealNameToMessage(message);
         return ActionResult.SUCCESS;
     }

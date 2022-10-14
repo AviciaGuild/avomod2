@@ -1,11 +1,8 @@
 package cf.avicia.avomod2.client.configs;
 
+import cf.avicia.avomod2.core.CustomFile;
 import com.google.gson.JsonObject;
-import tk.avicia.avomod.Avomod;
-import tk.avicia.avomod.core.structures.CustomFile;
-import tk.avicia.avomod.utils.Renderer;
-
-import java.awt.*;
+import net.minecraft.client.MinecraftClient;
 
 public class ConfigsSection {
     public final String configsCategory;
@@ -22,7 +19,7 @@ public class ConfigsSection {
         this.configsCategory = configsCategory;
 
         this.button.setConfigsSection(this);
-        this.customFile = new CustomFile(Avomod.getConfigPath("configs"));
+        this.customFile = new CustomFile(ConfigsHandler.getConfigPath("configs"));
     }
 
     public ConfigsSection(String configsCategory, String title, ConfigsTextField textField, String configsKey) {
@@ -32,7 +29,7 @@ public class ConfigsSection {
         this.configsCategory = configsCategory;
 
         this.textField.setConfigsSection(this);
-        this.customFile = new CustomFile(Avomod.getConfigPath("configs"));
+        this.customFile = new CustomFile(ConfigsHandler.getConfigPath("configs"));
     }
 
     public void updateConfigs(String newValue) {
@@ -40,15 +37,17 @@ public class ConfigsSection {
         configsJson.addProperty(this.configsKey, newValue);
 
         if (this.configsKey.equals("autoStream") && newValue.equals("Disabled")) {
-            Avomod.getMC().player.sendChatMessage("/stream");
+            if (MinecraftClient.getInstance().player != null) {
+                MinecraftClient.getInstance().player.sendChatMessage("/stream");
+            }
         }
 
-        Avomod.configs = configsJson;
+        ConfigsHandler.configs = configsJson;
         this.customFile.writeJson(configsJson);
     }
 
-    public void drawSection(ConfigsGui configsGui, int x, int y, boolean drawLine) {
-        configsGui.drawString(configsGui.mc.fontRenderer, title, x, y, 0xFFFFFF);
+    public void drawSection(ConfigsGui configsGui, int x, int y) {
+        MinecraftClient.getInstance().inGameHud.getTextRenderer().drawWithShadow(configsGui.matrices, title, (float) x, (float) y, 0xFFFFFF);
 
         if (button != null) {
             button.x = x;
@@ -59,10 +58,6 @@ public class ConfigsSection {
             textField.x = x + 5;
             textField.y = y + configsGui.settingHeight;
             configsGui.addTextField(textField);
-        }
-
-        if (drawLine) {
-            Renderer.drawHorizontalLine(x, configsGui.width / 16 * 15, y + configsGui.settingLineHeight + configsGui.settingHeight - 5, Color.GRAY);
         }
     }
 }

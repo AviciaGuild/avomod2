@@ -1,21 +1,17 @@
 package cf.avicia.avomod2.client.configs;
 
-import cf.avicia.avomod2.AvoMod2;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.Mouse;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.List;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ConfigsGui extends Screen {
@@ -24,16 +20,16 @@ public class ConfigsGui extends Screen {
     public final int settingHeight = 23;
     public List<ConfigsCategory> categories = new ArrayList<>();
     // buttonList exists too, doesn't need to be created
-    public ArrayList<Element> buttonList = new ArrayList<>();
+//    public ArrayList<Element> buttonList = new ArrayList<>();
     public ArrayList<ConfigsTextField> textFieldsList = new ArrayList<>();
     public String selectedCategory, savedCategory;
     public Map<String, ArrayList<ConfigsSection>> totalSections = new HashMap<>();
     public int scrollSections; // the index of the first section to be displayed
 
     public TextFieldWidget searchTextField;
-    public boolean textFieldIsFocused = false;
+//    public boolean textFieldIsFocused = false;
 
-    private MatrixStack matrices;
+    public MatrixStack matrices;
 
     public ConfigsGui() {
         super(Text.of("AvoMod Configs"));
@@ -49,11 +45,12 @@ public class ConfigsGui extends Screen {
         // Draws a shadowed string with a dark color, to make it easier to read depending on the background
         matrices.push();
         matrices.scale(2.0F, 2.0F, 2.0F);
-        drawCenteredText(matrices, textRenderer, "Avomod Configs", this.width / 4 + 1, 11, 0x444444);
-        drawCenteredText(matrices, textRenderer, "Avomod Configs", this.width / 4, 10, 0x1B33CF);
+        drawCenteredText(matrices, textRenderer, "AvoMod Configs", this.width / 4 + 1, 11, 0x444444);
+        drawCenteredText(matrices, textRenderer, "AvoMod Configs", this.width / 4, 10, 0x1B33CF);
         matrices.pop();
 
-        this.buttonList = new ArrayList<>();
+        Screens.getButtons(this).clear();
+
         this.textFieldsList = new ArrayList<>();
 
         if (searchTextField.getText().length() > 0) {
@@ -63,13 +60,16 @@ public class ConfigsGui extends Screen {
         }
 
         // Draw all text field inputs
-//        for (ConfigsTextField textField : this.textFieldsList) {
-//            textField.drawTextBox();
-//        }
+        for (ConfigsTextField textField : this.textFieldsList) {
+            addTextFieldToButtonList(textField);
+        }
 
-//        searchTextField.drawTextBox();
-        if (searchTextField.getText().length() == 0 && !searchTextField.isFocused())
-            drawTextWithShadow(matrices,textRenderer, Text.of("Type here to search..."), this.width / 16 + 4, startingHeight - settingHeight - 6, Color.DARK_GRAY.getRGB());
+        addTextFieldToButtonList(searchTextField);
+        if (searchTextField.getText().length() == 0 && !searchTextField.isFocused()) {
+            searchTextField.setSuggestion("Type here to search...");
+        } else {
+            searchTextField.setSuggestion("");
+        }
 
         try {
             super.render(matrices, mouseX, mouseY, delta);
@@ -79,13 +79,12 @@ public class ConfigsGui extends Screen {
     }
 
     public void drawSections(MatrixStack matrices, ArrayList<ConfigsSection> sectionsList) {
-        drawVerticalLine(matrices, this.width / 16 + 110,  startingHeight - 10, this.height - 10, Color.WHITE.getRGB());
+        drawVerticalLine(matrices, this.width / 16 + 110, startingHeight - 10, this.height - 10, Color.WHITE.getRGB());
         ArrayList<ConfigsSection> sectionsToShow = new ArrayList<>(sectionsList.subList(scrollSections, Math.min(scrollSections + (this.height - startingHeight) / (settingLineHeight + settingHeight), sectionsList.size())));
 
         for (ConfigsSection configsSection : sectionsToShow) {
             int index = sectionsToShow.indexOf(configsSection);
-            boolean showLine = sectionsList.indexOf(configsSection) != sectionsList.size() - 1;
-            configsSection.drawSection(this, this.width / 16 + 118, startingHeight + (settingHeight + settingLineHeight + 3) * index, showLine);
+            configsSection.drawSection(this, this.width / 16 + 118, startingHeight + (settingHeight + settingLineHeight + 3) * index);
         }
 
         if (sectionsToShow.size() == 0) {
@@ -94,19 +93,25 @@ public class ConfigsGui extends Screen {
 
         if (sectionsToShow.size() < sectionsList.size()) { // if not all configs fit on screen
             double segmentHeight = (double) ((height / 16 * 15) - startingHeight) / sectionsList.size();
-            drawVerticalLine(matrices,this.width / 16 * 15 + 5,  startingHeight, height / 16 * 15, Color.DARK_GRAY.getRGB());
-            drawVerticalLine(matrices, this.width / 16 * 15 + 5,  startingHeight + (int) (segmentHeight * scrollSections), startingHeight + (int) (segmentHeight * (scrollSections + sectionsToShow.size())), new Color(32, 110, 225).getRGB());
+            drawVerticalLine(matrices, this.width / 16 * 15 + 5, startingHeight, height / 16 * 15, Color.DARK_GRAY.getRGB());
+            drawVerticalLine(matrices, this.width / 16 * 15 + 5, startingHeight + (int) (segmentHeight * scrollSections), startingHeight + (int) (segmentHeight * (scrollSections + sectionsToShow.size())), new Color(32, 110, 225).getRGB());
         }
 
-        buttonList.addAll(categories);
+        addCategories(categories);
     }
 
     // sets the selected category
     public void setCategory(String title) {
         scrollSections = 0;
-        this.buttonList = new ArrayList<>();
+        Screens.getButtons(this).clear();
         this.textFieldsList = new ArrayList<>();
-        buttonList.addAll(categories);
+        addCategories(categories);
+        if (title == null) {
+            for (ConfigsCategory category : categories) {
+                category.enabled = false;
+            }
+            return;
+        }
 
         if (title.equals("All")) {
             savedCategory = selectedCategory;
@@ -118,11 +123,6 @@ public class ConfigsGui extends Screen {
         }
     }
 
-//    @Override
-//    public void updateScreen() {
-//        super.updateScreen();
-//    }
-
     @Override
     public void init() {
         super.init();
@@ -131,14 +131,12 @@ public class ConfigsGui extends Screen {
         this.categories = new ArrayList<>();
         selectedCategory = "";
 
-        for (Config config : AvoMod2.configsArray) {
+        for (Config config : ConfigsHandler.configsArray) {
             this.addSection(config);
         }
 
         setCategory(categories.get(0).title);
-        searchTextField = new SearchTextField(matrices, textRenderer, width / 16, startingHeight - settingHeight - 10, 200, 17, this);
-//        searchTextField.setFocused(true);
-//        searchTextField.setCanLoseFocus(false);
+        searchTextField = new SearchTextField(textRenderer, width / 16, startingHeight - settingHeight - 10, 200, 17, this);
     }
 
     @Override
@@ -154,20 +152,18 @@ public class ConfigsGui extends Screen {
         setCategory(oldCategory);
     }
 
-//    @Override
-//    public void handleMouseInput() throws IOException {
-//        super.handleMouseInput();
-//
-//        int scrollAmount = Mouse.getDWheel() / 120;
-//
-//        if (scrollAmount != 0) {
-//            try {
-//                this.scroll(scrollAmount, Mouse.getX());
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+
+        if (amount != 0) {
+            try {
+                this.scroll((int) amount, (int) mouseX);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return super.mouseScrolled(mouseX, mouseY, amount);
+    }
 
     public ArrayList<ConfigsSection> getSectionsBySearch() {
         return getSectionsBySearch(selectedCategory);
@@ -191,27 +187,14 @@ public class ConfigsGui extends Screen {
         return returnSections;
     }
 
-//    @Override
-//    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-//        super.mouseClicked(mouseX, mouseY, mouseButton);
-//
-//        for (ConfigsTextField textField : this.textFieldsList) {
-//            textField.mouseClicked(mouseX, mouseY, mouseButton);
-//        }
-//        searchTextField.mouseClicked(mouseX, mouseY, mouseButton);
-//    }
-
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-
-        for (ConfigsTextField textField : this.textFieldsList) {
-            textField.keyPressed(keyCode, scanCode, modifiers);
-        }
-        searchTextField.keyPressed(keyCode, scanCode, modifiers);
 
         if (searchTextField.isFocused()) {
             scrollSections = 0;
         }
+        searchTextField.keyPressed(keyCode, scanCode, modifiers);
+
 
         if (keyCode == 15) {
             if (hasShiftDown()) {
@@ -224,12 +207,28 @@ public class ConfigsGui extends Screen {
     }
 
     public void addButton(ConfigsButton button) {
-        buttonList.add(button);
+        if (!Screens.getButtons(this).contains(button)) {
+            Screens.getButtons(this).add(button);
+        }
+    }
+
+    public void addCategories(List<ConfigsCategory> categories) {
+        for (ConfigsCategory category : categories)
+            if (!Screens.getButtons(this).contains(category)) {
+                Screens.getButtons(this).add(category);
+            }
     }
 
     public void addTextField(ConfigsTextField textField) {
         textFieldsList.add(textField);
     }
+
+    public void addTextFieldToButtonList(TextFieldWidget textField) {
+        if (!Screens.getButtons(this).contains(textField)) {
+            Screens.getButtons(this).add(textField);
+        }
+    }
+
 
     private void nextCategory() {
         int currentIndex = categories.stream().map(e -> e.title).toList().indexOf(selectedCategory);
@@ -272,7 +271,7 @@ public class ConfigsGui extends Screen {
             if (settingsOnScreen > totalSections.get(selectedCategory).size()) return;
         }
 
-        scrollSections += -amount;
+        scrollSections -= amount;
         if (scrollSections < 0) scrollSections = 0;
         if (searchTextField.getText().length() > 0) {
             if (scrollSections > getSectionsBySearch().size() - settingsOnScreen)
@@ -282,9 +281,10 @@ public class ConfigsGui extends Screen {
                 scrollSections = totalSections.get(selectedCategory).size() - settingsOnScreen;
         }
 
-        this.buttonList = new ArrayList<>();
+        Screens.getButtons(this).clear();
         this.textFieldsList = new ArrayList<>();
-        buttonList.addAll(categories);
+        addCategories(categories);
+
 
         ArrayList<ConfigsSection> sectionList;
         if (searchTextField.getText().length() > 0) {
@@ -297,8 +297,9 @@ public class ConfigsGui extends Screen {
             int configPlacement = sectionList.indexOf(configsSection);
             if (configsSection.button != null) {
                 configsSection.button.y = configPlacement * settingLineHeight + startingHeight - 4 + (settingHeight * (configPlacement + 1));
-                this.buttonList.add(configsSection.button);
+                addButton(configsSection.button);
             }
+
 
             if (configsSection.textField != null) {
                 configsSection.textField.y = configPlacement * settingLineHeight + startingHeight + 2 + (settingHeight * (configPlacement + 1));
@@ -308,7 +309,7 @@ public class ConfigsGui extends Screen {
     }
 
     public void addSection(Config config) {
-        String configValue = AvoMod2.getConfig(config.configsKey);
+        String configValue = ConfigsHandler.getConfig(config.configsKey);
         if (!configValue.equals("")) {
             config.defaultValue = configValue;
         }
@@ -321,13 +322,12 @@ public class ConfigsGui extends Screen {
         }
         if (config instanceof ConfigToggle) {
             String[] choices = new String[]{"Enabled", "Disabled"};
-            //int x = this.width - (this.width / 4) - (Stream.of(choices).mapToInt((String choice) -> Avomod.getMC().fontRenderer.getStringWidth(choice)).max().getAsInt() + 10);
             int width = Stream.of(choices).mapToInt(textRenderer::getWidth).max().getAsInt() + 10;
 
             ConfigsButton configButton = new ConfigsButton(this.width / 16 + 121, configPlacement * settingLineHeight + startingHeight - 4 + (settingHeight * (configPlacement + 1)), width, choices, config.defaultValue);
             sectionToAdd = new ConfigsSection(config.configsCategory, config.sectionText, configButton, config.configsKey);
         } else {
-            ConfigsTextField textField = new ConfigsTextField(((ConfigInput) config).allowedInputs, ((ConfigInput) config).finalValidation, textRenderer, this.width / 16 + 122, configPlacement * settingLineHeight + startingHeight - 2 + (settingHeight * (configPlacement + 1)), 80, 16, this);
+            ConfigsTextField textField = new ConfigsTextField(((ConfigInput) config).allowedInputs, ((ConfigInput) config).finalValidation, textRenderer, this.width / 16 + 122, configPlacement * settingLineHeight + startingHeight - 2 + (settingHeight * (configPlacement + 1)), this.width / 4, 16);
             textField.setText(config.defaultValue);
             if (((ConfigInput) config).maxLength != 0) {
                 textField.setMaxLength(((ConfigInput) config).maxLength);

@@ -11,23 +11,23 @@ public class ConfigsCategory extends ButtonWidget {
     public String title;
     public boolean enabled;
     public boolean hasSearchItem;
-    private int x;
-    private int y;
-    private ConfigsGui cfgui;
+    private final int x;
+    private final int y;
+    private final ConfigsGui configsGui;
 
-    public ConfigsCategory(int x, int y, String title, ConfigsGui cfgui) {
+    public ConfigsCategory(int x, int y, String title, ConfigsGui configsGui) {
         super(x, y, 100, 20, Text.of(title), ButtonWidget::onPress);
         this.title = title;
         this.x = x;
         this.y = y;
         this.enabled = false;
 
-        this.cfgui = cfgui;
+        this.configsGui = configsGui;
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        cfgui.setCategory(title);
+        configsGui.setCategory(title);
     }
 
     @Override
