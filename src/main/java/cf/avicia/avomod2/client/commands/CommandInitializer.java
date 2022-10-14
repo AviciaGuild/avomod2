@@ -21,6 +21,8 @@ public class CommandInitializer {
                         .then(FindCommand.command("find"))
                         .then(LastSeenCommand.command("lastseen"))
                         .then(LastSeenCommand.command("ls"))
+                        .then(ConfigsCommand.command("configs"))
+                        .then(ConfigsCommand.command("cf"))
                     .executes(context -> {
                         context.getSource().sendFeedback(new LiteralText("Command for AvoMod2"));
                         return 0;

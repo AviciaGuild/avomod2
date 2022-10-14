@@ -1,5 +1,6 @@
 package cf.avicia.avomod2.client.eventhandlers.chatevents;
 
+import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
@@ -7,6 +8,7 @@ import net.minecraft.util.ActionResult;
 
 public class AutoSkipDialogue {
     public static ActionResult onMessage(Text message) {
+        if (!ConfigsHandler.getConfigBoolean("skipDialogue")) return ActionResult.SUCCESS;
         KeyBinding sneakKeyBind = MinecraftClient.getInstance().options.sneakKey;
         if ((message.getString().contains("                       Press SHIFT to continue") || message.getString().contains("                       Press SNEAK to continue"))) {
             Thread thread = new Thread(() -> {
