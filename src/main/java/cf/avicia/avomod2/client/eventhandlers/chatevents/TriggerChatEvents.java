@@ -15,6 +15,7 @@ public class TriggerChatEvents {
         actionResults.add(ShowRealName.onMessage(message));
         actionResults.add(MakeShoutsClickable.onMessage(message));
         actionResults.add(AutoSkipDialogue.onMessage(message));
+        actionResults.add(FilterMessages.onMessage(message));
         if (actionResults.contains(ActionResult.FAIL)) {
             return ActionResult.FAIL;
         } else {
