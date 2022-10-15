@@ -33,17 +33,7 @@ public class ConfigsSection {
     }
 
     public void updateConfigs(String newValue) {
-        JsonObject configsJson = this.customFile.readJson();
-        configsJson.addProperty(this.configsKey, newValue);
-
-        if (this.configsKey.equals("autoStream") && newValue.equals("Disabled")) {
-            if (MinecraftClient.getInstance().player != null) {
-                MinecraftClient.getInstance().player.sendChatMessage("/stream");
-            }
-        }
-
-        ConfigsHandler.configs = configsJson;
-        this.customFile.writeJson(configsJson);
+        ConfigsHandler.updateConfigs(this.configsKey, newValue);
     }
 
     public void drawSection(ConfigsGui configsGui, int x, int y) {

@@ -13,6 +13,8 @@ public class ConfigsHandler {
     public static JsonObject configs = null;
     public static JsonObject locations = null;
 
+    private static CustomFile configsFile = null;
+
 
     public static Map<String, String> defaultLocations = new HashMap<>() {{
         put("weeklyWars", "1,0.98,false");
@@ -46,7 +48,7 @@ public class ConfigsHandler {
             new ConfigInput("War", "(NOT IMPLEMENTED)Minutes until considered afk", "10", "[0-9]+", "^[0-9]+$", 3, "afkTime"),
             new ConfigInput("War", "(NOT IMPLEMENTED)Territory attack confirmation threshold", "15000", "[0-9]+", "^[0-9]+$", 6, "attackConfirmation"),
             new ConfigToggle("War", "(NOT IMPLEMENTED)Send defenses from attacked territories to server (improves accuracy of timer list for guild members)", "Enabled", "storeDefs"),
-            new ConfigToggle("Misc", "(NOT IMPLEMENTED)Auto /stream on World Swap", "Disabled", "autoStream"),
+            new ConfigToggle("Misc", "Auto /stream on World Swap", "Disabled", "autoStream"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Prevent Moving Armor/Accessories", "Disabled", "disableMovingArmor"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Make Mob Health Bars More Readable", "Enabled", "readableHealth"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Display Some Tab Stats on Screen", "Disabled", "tabStatusDisplay"),
@@ -54,7 +56,7 @@ public class ConfigsHandler {
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Bomb Bell Tracker - Click to Switch World", "Enabled", "bombBellSwitchWorld")
     };
     public static void initializeConfigs() {
-        CustomFile configsFile = new CustomFile(getConfigPath("configs"));
+        configsFile = new CustomFile(getConfigPath("configs"));
         JsonObject configsJson = configsFile.readJson();
         boolean configsChanged = false;
 
@@ -103,6 +105,20 @@ public class ConfigsHandler {
         } else {
             return configElement.getAsString();
         }
+    }
+
+    public static void updateConfigs(String configsKey, String newValue) {
+        JsonObject configsJson = configsFile.readJson();
+        configsJson.addProperty(configsKey, newValue);
+
+        if (configsKey.equals("autoStream") && newValue.equals("Disabled")) {
+            if (MinecraftClient.getInstance().player != null) {
+                MinecraftClient.getInstance().player.sendChatMessage("/stream");
+            }
+        }
+
+        ConfigsHandler.configs = configsJson;
+        configsFile.writeJson(configsJson);
     }
 
     public static boolean getConfigBoolean(String configKey) {

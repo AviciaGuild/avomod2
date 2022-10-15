@@ -27,6 +27,8 @@ public class CommandInitializer {
                         .then(AgeCommand.command("age"))
                         .then(SoulpointsCommand.command("soulpoints"))
                         .then(SoulpointsCommand.command("sp"))
+                        .then(AutoStreamCommand.command("autostream"))
+                        .then(AutoStreamCommand.command("as"))
                     .executes(context -> {
                         context.getSource().sendFeedback(new LiteralText("Command for AvoMod2"));
                         return 0;
@@ -34,7 +36,10 @@ public class CommandInitializer {
         );
 
         ClientCommandManager.DISPATCHER.register(
-                ClientCommandManager.literal("am").redirect(avomodCommand)
+                ClientCommandManager.literal("am").redirect(avomodCommand) .executes(context -> {
+                    context.getSource().sendFeedback(new LiteralText("Command for AvoMod2"));
+                    return 0;
+                })
         );
     }
 }

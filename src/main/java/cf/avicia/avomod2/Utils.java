@@ -46,4 +46,12 @@ public class Utils {
         messageRes.fillStyle(messageRes.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("§7Click to run §f" + command))));
         return messageRes;
     }
+
+    public static boolean inHuntedMode() {
+        if (MinecraftClient.getInstance().player != null) {
+            String itemName = MinecraftClient.getInstance().player.getInventory().getStack(8).toString();
+            return itemName.contains("snow");
+        }
+        return false;
+    }
 }

@@ -47,7 +47,6 @@ public class UpCommand {
     }
 
     private static void sendWorldAges(CommandContext<FabricClientCommandSource> context, int amountToSend, int minAge) {
-        System.out.println(Utils.getCurrentWorld());
         if (amountToSend <= 0) {
             context.getSource().sendFeedback(new LiteralText("§cNo worlds match your criteria"));
             return;
