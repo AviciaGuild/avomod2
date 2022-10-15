@@ -12,12 +12,10 @@ public class GuildNameFromTag {
     JsonObject guildNameData = null;
     public GuildNameFromTag(String tag) {
         try {
-            System.out.println(tag);
             String tagApiResponse = WebRequest.getData("https://www.avicia.cf/api/tag/" + tag);
             if (!tagApiResponse.equals("null")) {
                 this.guildNameData = new Gson().fromJson(tagApiResponse, JsonObject.class);
             }
-            System.out.println(guildNameData.size());
         } catch (Exception e) {
             e.printStackTrace();
         }
