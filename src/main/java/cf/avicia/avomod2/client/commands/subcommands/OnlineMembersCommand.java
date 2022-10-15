@@ -1,5 +1,6 @@
 package cf.avicia.avomod2.client.commands.subcommands;
 
+import cf.avicia.avomod2.webrequests.aviciaapi.GuildNameFromTag;
 import cf.avicia.avomod2.webrequests.wynnapi.GuildStats;
 import cf.avicia.avomod2.webrequests.wynnapi.PlayerList;
 import com.google.gson.JsonArray;
@@ -24,6 +25,19 @@ public class OnlineMembersCommand {
                             Thread thread = new Thread(() -> {
                                 try {
                                     String guildName = getString(context, "guildName");
+                                    if (canBeGuildTag(guildName)) {
+                                        GuildNameFromTag guildNameFromTag = new GuildNameFromTag(guildName);
+                                        if (guildNameFromTag.hasMatch()) {
+                                            String matchingGuild = guildNameFromTag.getName();
+                                            if (matchingGuild != null) {
+                                                if (guildNameFromTag.hasMultipleMatches()) {
+                                                    context.getSource().sendFeedback(new LiteralText("§eMultiple guilds match your query: §6" + guildNameFromTag.getFormattedListOfMatches()));
+                                                    context.getSource().sendFeedback(new LiteralText("§eChoosing: §6" + matchingGuild));
+                                                }
+                                                guildName = matchingGuild;
+                                            }
+                                        }
+                                    }
                                     GuildStats guildStats = new GuildStats(guildName);
                                     PlayerList playerList = new PlayerList();
                                     JsonArray guildMembers = guildStats.getMembers();
@@ -41,7 +55,7 @@ public class OnlineMembersCommand {
                                                 .replaceAll("\\*", "\u2605") // Make the guild stars look good
                                         ));
                                     } else {
-                                        context.getSource().sendFeedback(new LiteralText("§cGuild §4"+ guildName + "§c not found"));
+                                        context.getSource().sendFeedback(new LiteralText("§cGuild §4" + guildName + "§c not found"));
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -51,6 +65,10 @@ public class OnlineMembersCommand {
                             thread.start();
                             return 0;
                         }));
+    }
+
+    private static boolean canBeGuildTag(String name) {
+        return (name.length() == 3 || name.length() == 4);
     }
 
 
