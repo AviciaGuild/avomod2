@@ -1,14 +1,14 @@
 package cf.avicia.avomod2.client.eventhandlers.chatevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TriggerChatEvents {
-    public static ActionResult trigger(LiteralText message) {
+    public static ActionResult trigger(Text message) {
         if (ConfigsHandler.getConfigBoolean("disableAll")) return ActionResult.SUCCESS;
 
         List<ActionResult> actionResults = new ArrayList<>();

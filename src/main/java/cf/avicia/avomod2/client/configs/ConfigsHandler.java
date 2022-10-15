@@ -30,6 +30,7 @@ public class ConfigsHandler {
             new ConfigToggle("Guild", "(NOT IMPLEMENTED)Filter Out All Resource Messages", "Disabled", "filterResourceMessages"),
             new ConfigToggle("Chat", "Reveal Nicknames", "Enabled", "revealNicks"),
             new ConfigToggle("Chat", "Auto Skip Quest Dialogue", "Disabled", "skipDialogue"),
+            new ConfigToggle("Chat", "Show Chat Timestamps", "Enabled", "chatTimestamps"),
             new ConfigToggle("Chat", "(NOT IMPLEMENTED)Click to Say Congrats Message", "Enabled", "clickToSayCongrats"),
             new ConfigInput("Chat", "(NOT IMPLEMENTED)Click to say congrats message", "Congrats!", ".+", "^.+$", 30, "congratsMessage"),
             new ConfigToggle("War", "(NOT IMPLEMENTED)Custom Attack Timers Display", "Enabled", "attacksMenu"),

@@ -2,7 +2,7 @@ package cf.avicia.avomod2.client.customevents;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
 /**
@@ -23,5 +23,5 @@ public interface ChatMessageCallback {
                 return ActionResult.PASS;
             });
 
-    ActionResult onMessage(LiteralText message);
+    ActionResult onMessage(Text message);
 }

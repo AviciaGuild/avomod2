@@ -23,6 +23,10 @@ public class CommandInitializer {
                         .then(LastSeenCommand.command("ls"))
                         .then(ConfigsCommand.command("configs"))
                         .then(ConfigsCommand.command("cf"))
+                        .then(UpCommand.command("up"))
+                        .then(AgeCommand.command("age"))
+                        .then(SoulpointsCommand.command("soulpoints"))
+                        .then(SoulpointsCommand.command("sp"))
                     .executes(context -> {
                         context.getSource().sendFeedback(new LiteralText("Command for AvoMod2"));
                         return 0;

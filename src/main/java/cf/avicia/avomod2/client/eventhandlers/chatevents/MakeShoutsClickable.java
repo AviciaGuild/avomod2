@@ -10,8 +10,10 @@ import java.util.regex.Pattern;
 
 public class MakeShoutsClickable {
 
-    public static ActionResult onMessage(LiteralText message) {
-        makeShoutClickable(message);
+    public static ActionResult onMessage(Text message) {
+        try {
+            makeShoutClickable((LiteralText) message);
+        } catch (Exception ignored) {}
         return ActionResult.SUCCESS;
     }
 

@@ -16,9 +16,13 @@ public class ChatMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addMessage(Lnet/minecraft/text/Text;IIZ)V"),
             cancellable = true)
     private void onMessage(Text message, int messageId, CallbackInfo ci) {
-        ActionResult result = ChatMessageCallback.EVENT.invoker().onMessage((LiteralText) message);
-        if(result == ActionResult.FAIL) {
-            ci.cancel();
+        try {
+            ActionResult result = ChatMessageCallback.EVENT.invoker().onMessage(message);
+            if (result == ActionResult.FAIL) {
+                ci.cancel();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
