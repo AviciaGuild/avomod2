@@ -7,6 +7,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
@@ -45,6 +47,7 @@ public class UpCommand {
     }
 
     private static void sendWorldAges(CommandContext<FabricClientCommandSource> context, int amountToSend, int minAge) {
+        System.out.println(Utils.getCurrentWorld());
         if (amountToSend <= 0) {
             context.getSource().sendFeedback(new LiteralText("§cNo worlds match your criteria"));
             return;
@@ -57,7 +60,7 @@ public class UpCommand {
                 if (iterations >= amountToSend) break;
                 int worldAge = upTimes.getAge(worldData.getKey());
                 if (worldAge >= minAge) {
-                    context.getSource().sendFeedback(new LiteralText("§6" + worldData.getKey() + ": §a" + Utils.getReadableTime(worldAge)));
+                    context.getSource().sendFeedback(Utils.makeMessageThatRunsCommand("§6" + worldData.getKey() + ": §a" + Utils.getReadableTime(worldAge), "/switch " + worldData.getKey()));
                     iterations++;
                 }
             }

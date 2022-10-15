@@ -57,10 +57,7 @@ public class SoulpointsCommand {
                 if (iterations >= amountToSend) break;
                 int worldAge = upTimes.getAge(worldData.getKey());
                 if (worldAge % 20 >= 16) {
-                    LiteralText message = new LiteralText("§6" + worldData.getKey() + ": §a" + Utils.getReadableTime(worldAge));
-                    message.fillStyle(message.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + worldData.getKey())));
-                    message.fillStyle(message.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("§7Click to run §f/switch " + worldData.getKey()))));
-                    context.getSource().sendFeedback(message);
+                    context.getSource().sendFeedback(Utils.makeMessageThatRunsCommand("§6" + worldData.getKey() + ": §a" + Utils.getReadableTime(worldAge), "/switch " + worldData.getKey()));
                     iterations++;
                 }
             }

@@ -1,6 +1,14 @@
 package cf.avicia.avomod2;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+
 import java.util.Locale;
+import java.util.Objects;
+import java.util.UUID;
 
 public class Utils {
     public static String firstLetterCapital(String input) {
@@ -21,5 +29,21 @@ public class Utils {
 
     public static String getUnformattedString(String string) {
         return string.replaceAll("§.", "");
+    }
+
+    public static String getCurrentWorld() {
+        try {
+            String name = Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).getPlayerListEntry(UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af"))).getDisplayName()).getString();
+            return name.substring(name.indexOf("[") + 1, name.indexOf("]"));
+        } catch (NullPointerException | IndexOutOfBoundsException ignored) {
+            return null;
+        }
+    }
+
+    public static LiteralText makeMessageThatRunsCommand(String message, String command) {
+        LiteralText messageRes = new LiteralText(message);
+        messageRes.fillStyle(messageRes.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)));
+        messageRes.fillStyle(messageRes.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("§7Click to run §f" + command))));
+        return messageRes;
     }
 }

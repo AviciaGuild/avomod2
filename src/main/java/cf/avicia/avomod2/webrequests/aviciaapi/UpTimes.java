@@ -31,6 +31,13 @@ public class UpTimes {
         return worldUpTimes;
     }
 
+    public String getNewestWorld() {
+        if (getWorldUpTimeData().size() > 0) {
+            return getWorldUpTimeData().get(0).getKey();
+        }
+        return null;
+    }
+
     public boolean isUp(String world) {
         String formattedWorld = Utils.getFormattedWorld(world);
         return upTimeData.has(formattedWorld);
