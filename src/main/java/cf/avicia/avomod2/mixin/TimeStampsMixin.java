@@ -16,7 +16,7 @@ public class TimeStampsMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addMessage(Lnet/minecraft/text/Text;IIZ)V"),
             index = 0)
     private Text init(Text message) {
-        if (ConfigsHandler.getConfigBoolean("chatTimestamps")) {
+        if (ConfigsHandler.getConfigBoolean("chatTimestamps") && !ConfigsHandler.getConfigBoolean("disableAll")) {
             String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
             Text res = Text.of("§8[§7" + timeStamp + "§8]§f ");
             res.getSiblings().add(message);

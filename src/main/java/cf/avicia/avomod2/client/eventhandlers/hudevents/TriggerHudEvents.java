@@ -19,6 +19,7 @@ public class TriggerHudEvents {
         List<ActionResult> actionResults = new ArrayList<>();
 
         actionResults.add(AutoStream.onRenderBossBar(matrices, x, y, bossBar));
+        actionResults.add(ReadableMobHealth.onRenderBossBar(matrices, x, y, bossBar));
 
         if (actionResults.contains(ActionResult.FAIL)) {
             return ActionResult.FAIL;

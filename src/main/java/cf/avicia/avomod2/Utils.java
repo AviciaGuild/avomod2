@@ -28,6 +28,9 @@ public class Utils {
     }
 
     public static String getUnformattedString(String string) {
+        if (string == null) {
+            return null;
+        }
         return string.replaceAll("§.", "");
     }
 
@@ -53,5 +56,17 @@ public class Utils {
             return itemName.contains("snow");
         }
         return false;
+    }
+
+    public static String getReadableNumber(double number, int decimals) {
+        if (number >= 1000000000) {
+            return String.format("%sB", Math.round(number / (1000000000 / Math.pow(10, decimals))) / Math.pow(10, decimals));
+        } else if (number >= 1000000) {
+            return String.format("%sM", Math.round(number / (1000000 / Math.pow(10, decimals))) / Math.pow(10, decimals));
+        } else if (number >= 1000) {
+            return String.format("%sK", Math.round(number / (1000 / Math.pow(10, decimals))) / Math.pow(10, decimals));
+        }
+
+        return String.valueOf((int) number);
     }
 }
