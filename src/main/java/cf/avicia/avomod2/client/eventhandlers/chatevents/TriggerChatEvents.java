@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TriggerChatEvents {
-    public static ActionResult trigger(Text message) {
+    public static ActionResult onMessage(Text message) {
         if (ConfigsHandler.getConfigBoolean("disableAll")) return ActionResult.SUCCESS;
 
         List<ActionResult> actionResults = new ArrayList<>();

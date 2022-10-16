@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TriggerHudEvents {
-    public static void trigger(MatrixStack matrixStack, float tickDelta) {
+    public static void onRender(MatrixStack matrixStack, float tickDelta) {
         if (ConfigsHandler.getConfigBoolean("disableAll")) return;
         WorldInfoOnTab.render(matrixStack);
     }
 
-    public static ActionResult triggerBossBarRender(MatrixStack matrices, int x, int y, BossBar bossBar) {
+    public static ActionResult onBossBarRender(MatrixStack matrices, int x, int y, BossBar bossBar) {
         if (ConfigsHandler.getConfigBoolean("disableAll")) return ActionResult.SUCCESS;
         List<ActionResult> actionResults = new ArrayList<>();
 
