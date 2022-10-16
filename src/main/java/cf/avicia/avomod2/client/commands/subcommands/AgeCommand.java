@@ -2,7 +2,6 @@ package cf.avicia.avomod2.client.commands.subcommands;
 
 import cf.avicia.avomod2.Utils;
 import cf.avicia.avomod2.webrequests.aviciaapi.UpTimes;
-import cf.avicia.avomod2.webrequests.wynnapi.PlayerStats;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;

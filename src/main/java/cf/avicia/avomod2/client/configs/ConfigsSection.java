@@ -1,7 +1,6 @@
 package cf.avicia.avomod2.client.configs;
 
 import cf.avicia.avomod2.core.CustomFile;
-import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
 
 public class ConfigsSection {

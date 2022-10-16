@@ -7,8 +7,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 

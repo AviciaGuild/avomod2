@@ -2,7 +2,6 @@ package cf.avicia.avomod2.mixin;
 
 import cf.avicia.avomod2.client.customevents.ChatMessageCallback;
 import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import org.spongepowered.asm.mixin.Mixin;
