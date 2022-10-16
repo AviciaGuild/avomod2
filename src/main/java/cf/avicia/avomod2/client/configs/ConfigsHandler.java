@@ -50,7 +50,7 @@ public class ConfigsHandler {
             new ConfigToggle("War", "(NOT IMPLEMENTED)Send defenses from attacked territories to server (improves accuracy of timer list for guild members)", "Enabled", "storeDefs"),
             new ConfigToggle("Misc", "Auto /stream on World Swap", "Disabled", "autoStream"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Prevent Moving Armor/Accessories", "Disabled", "disableMovingArmor"),
-            new ConfigToggle("Misc", "(NOT IMPLEMENTED)Make Mob Health Bars More Readable", "Enabled", "readableHealth"),
+            new ConfigToggle("Misc", "Make Mob Health Bars More Readable", "Enabled", "readableHealth"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Display Some Tab Stats on Screen", "Disabled", "tabStatusDisplay"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Bomb Bell Tracker (REQUIRES CHAMPION)", "Enabled", "bombBellTracker"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Bomb Bell Tracker - Click to Switch World", "Enabled", "bombBellSwitchWorld")
