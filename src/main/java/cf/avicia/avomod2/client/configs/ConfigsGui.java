@@ -322,6 +322,9 @@ public class ConfigsGui extends Screen {
         }
         if (config instanceof ConfigToggle) {
             String[] choices = new String[]{"Enabled", "Disabled"};
+            if (config.defaultValue.equals("Edit")) {
+                choices = new String[]{"Edit"};
+            }
             int width = Stream.of(choices).mapToInt(textRenderer::getWidth).max().getAsInt() + 10;
 
             ConfigsButton configButton = new ConfigsButton(this.width / 16 + 121, configPlacement * settingLineHeight + startingHeight - 4 + (settingHeight * (configPlacement + 1)), width, choices, config.defaultValue);

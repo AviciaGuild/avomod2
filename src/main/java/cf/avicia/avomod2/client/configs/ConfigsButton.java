@@ -1,5 +1,7 @@
 package cf.avicia.avomod2.client.configs;
 
+import cf.avicia.avomod2.client.AvoMod2Client;
+import cf.avicia.avomod2.client.configs.locations.LocationsGui;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -20,6 +22,10 @@ public class ConfigsButton extends ButtonWidget {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
+        if (this.getMessage().getString().equals("Edit")) {
+            AvoMod2Client.screenToRender = new LocationsGui();
+            return;
+        }
         this.currentIndex++;
         if (this.currentIndex == choices.length) {
             this.currentIndex = 0;
@@ -39,6 +45,7 @@ public class ConfigsButton extends ButtonWidget {
         fill(matrices, x, y + 19, x + width, y + 20, 0xFFFFFFFF);
         int color = 0xFF8888;
         if (choices[currentIndex].equals("Enabled")) color = 0x88FF88;
+        if (choices[currentIndex].equals("Edit")) color = 0xFFFF00;
         drawCenteredText(matrices, MinecraftClient.getInstance().textRenderer, choices[currentIndex], x + width / 2, y + 6, color);
     }
 

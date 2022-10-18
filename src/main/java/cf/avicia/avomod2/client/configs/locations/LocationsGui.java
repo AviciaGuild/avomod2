@@ -1,10 +1,13 @@
 package cf.avicia.avomod2.client.configs.locations;
 
+import cf.avicia.avomod2.client.AvoMod2Client;
+import cf.avicia.avomod2.client.configs.ConfigsGui;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.WorldInfoOnTab;
 import cf.avicia.avomod2.client.locationselements.ElementGroup;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -36,6 +39,7 @@ public class LocationsGui extends Screen {
                 WorldInfoOnTab.getElementsToDraw()
         );
         Screens.getButtons(this).add(new ResetLocationsButton( this.width / 2 - 50, this.height - 30, 100, 20, "Reset to Defaults", this));
+        Screens.getButtons(this).add(new ButtonWidget( 10, 10, 50, 20, Text.of("Configs"), button -> AvoMod2Client.screenToRender = new ConfigsGui()));
         isOpen = true;
     }
 
