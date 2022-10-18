@@ -29,6 +29,8 @@ public class CommandInitializer {
                         .then(SoulpointsCommand.command("sp"))
                         .then(AutoStreamCommand.command("autostream"))
                         .then(AutoStreamCommand.command("as"))
+                        .then(LocationsCommand.command("locations"))
+                        .then(LocationsCommand.command("l"))
                     .executes(context -> {
                         context.getSource().sendFeedback(new LiteralText("Command for AvoMod2"));
                         return 0;

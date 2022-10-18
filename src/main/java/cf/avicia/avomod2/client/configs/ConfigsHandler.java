@@ -5,25 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ConfigsHandler {
 
     public static JsonObject configs = null;
-    public static JsonObject locations = null;
-
     private static CustomFile configsFile = null;
 
-
-    public static Map<String, String> defaultLocations = new HashMap<>() {{
-        put("weeklyWars", "1,0.98,false");
-        put("worldInfo", "1,0.7,false");
-        put("attacksMenu", "1,0.1,false");
-        put("tabStatusDisplay", "0.4,.1,true");
-        put("warDPS", "0,0.2,true");
-        put("bombBellTracker", "1,0.25,false");
-    }};
 
     public static Config[] configsArray = new Config[]{
             new ConfigToggle("General", "Disable Everything", "Disabled", "disableAll"),
@@ -73,24 +59,6 @@ public class ConfigsHandler {
             configsFile.writeJson(configsJson);
         }
         configs = configsJson;
-
-        CustomFile locationsFile = new CustomFile(getConfigPath("locations"));
-        JsonObject locationsJson = locationsFile.readJson();
-        boolean locationsChanged = false;
-
-        for (Map.Entry<String, String> locationData : defaultLocations.entrySet()) {
-            JsonElement locationsElement = locationsJson.get(locationData.getKey());
-
-            if (locationsElement == null || locationsElement.isJsonNull()) {
-                locationsJson.addProperty(locationData.getKey(), locationData.getValue());
-                locationsChanged = true;
-            }
-        }
-
-        if (locationsChanged) {
-            locationsFile.writeJson(locationsJson);
-        }
-         locations = locationsFile.readJson();
     }
 
     public static String getConfigPath(String name) {

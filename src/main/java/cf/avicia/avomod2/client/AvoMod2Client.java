@@ -2,6 +2,7 @@ package cf.avicia.avomod2.client;
 
 import cf.avicia.avomod2.client.commands.CommandInitializer;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
+import cf.avicia.avomod2.client.configs.locations.LocationsHandler;
 import cf.avicia.avomod2.client.customevents.ChatMessageCallback;
 import cf.avicia.avomod2.client.customevents.RenderBossBarCallback;
 import cf.avicia.avomod2.client.eventhandlers.chatevents.TriggerChatEvents;
@@ -26,6 +27,7 @@ public class AvoMod2Client implements ClientModInitializer {
         WorldInfoOnTab.updateUpTimes();
         CommandInitializer.initializeCommands();
         ConfigsHandler.initializeConfigs();
+        LocationsHandler.initializeLocations();
         ChatMessageCallback.EVENT.register(TriggerChatEvents::onMessage);
         HudRenderCallback.EVENT.register(TriggerHudEvents::onRender);
         RenderBossBarCallback.EVENT.register(TriggerHudEvents::onBossBarRender);

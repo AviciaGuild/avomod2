@@ -28,7 +28,7 @@ public class ShowRealName {
             String realName = hoverText.getString().split(" ")[hoverText.getString().split(" ").length - 1];
             // Save all sibling of the message
             List<Text> siblings = message.getSiblings();
-            // Make a Text with the real name
+            // Make a TextElement with the real name
             Text fullMessage = Text.of("§c(" + realName + ")§f");
             // Add all old siblings to the real name
             fullMessage.getSiblings().addAll(siblings);
@@ -36,7 +36,7 @@ public class ShowRealName {
             message.getSiblings().clear();
             // Adds the real name + the original message after the nickname
             message.getSiblings().add(fullMessage);
-//            message.getSiblings().addAll(Text.of("§c(" + realName + ")§f").getWithStyle(message.getStyle())); // This is not used due to it appearing after the message in guild chat
+//            message.getSiblings().addAll(TextElement.of("§c(" + realName + ")§f").getWithStyle(message.getStyle())); // This is not used due to it appearing after the message in guild chat
         }
     }
 
