@@ -31,6 +31,7 @@ public class CommandInitializer {
                         .then(AutoStreamCommand.command("as"))
                         .then(LocationsCommand.command("locations"))
                         .then(LocationsCommand.command("l"))
+                        .then(CongratulateCommand.command("congratulate"))
                     .executes(context -> {
                         context.getSource().sendFeedback(new LiteralText("Command for AvoMod2"));
                         return 0;

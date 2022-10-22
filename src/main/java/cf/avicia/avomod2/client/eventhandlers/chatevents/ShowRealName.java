@@ -23,30 +23,27 @@ public class ShowRealName {
         if (messageHasNickHover(message)) {
             HoverEvent hover = message.getStyle().getHoverEvent();
             if (hover == null) return;
-            Text hoverText = (Text) hover.getValue(hover.getAction());
-            if (hoverText == null) return;
-            String realName = hoverText.getString().split(" ")[hoverText.getString().split(" ").length - 1];
-            // Save all sibling of the message
-            List<Text> siblings = message.getSiblings();
-            // Make a TextElement with the real name
-            Text fullMessage = Text.of("§c(" + realName + ")§f");
-            // Add all old siblings to the real name
-            fullMessage.getSiblings().addAll(siblings);
-            // Clears everything except for the nickname (and [***] stuff if in guild chat)
-            message.getSiblings().clear();
-            // Adds the real name + the original message after the nickname
-            message.getSiblings().add(fullMessage);
+            if (hover.getValue(hover.getAction()) instanceof Text hoverText) {
+                String realName = hoverText.getString().split(" ")[hoverText.getString().split(" ").length - 1];
+                // Save all sibling of the message
+                List<Text> siblings = message.getSiblings();
+                // Make a TextElement with the real name
+                Text fullMessage = Text.of("§c(" + realName + ")§f");
+                // Add all old siblings to the real name
+                fullMessage.getSiblings().addAll(siblings);
+                // Clears everything except for the nickname (and [***] stuff if in guild chat)
+                message.getSiblings().clear();
+                // Adds the real name + the original message after the nickname
+                message.getSiblings().add(fullMessage);
+            }
 //            message.getSiblings().addAll(TextElement.of("§c(" + realName + ")§f").getWithStyle(message.getStyle())); // This is not used due to it appearing after the message in guild chat
         }
     }
 
     private static boolean messageHasNickHover(Text message) {
         HoverEvent hover = message.getStyle().getHoverEvent();
-        if (hover != null) {
-            Text hoverText = (Text) hover.getValue(hover.getAction());
-            if (hoverText != null) {
-                return hoverText.getString().contains("real username");
-            }
+        if (hover != null && hover.getValue(hover.getAction()) instanceof Text hoverText) {
+            return hoverText.getString().contains("real username");
         }
         return false;
     }
