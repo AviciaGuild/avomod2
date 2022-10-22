@@ -18,6 +18,7 @@ public class TriggerChatEvents {
         actionResults.add(AutoSkipDialogue.onMessage(message));
         actionResults.add(FilterMessages.onMessage(message));
         actionResults.add(CongratulateCommand.onMessage(message));
+        actionResults.add(StackDuplicateMessages.onMessage(message));
         if (actionResults.contains(ActionResult.FAIL)) {
             return ActionResult.FAIL;
         } else {

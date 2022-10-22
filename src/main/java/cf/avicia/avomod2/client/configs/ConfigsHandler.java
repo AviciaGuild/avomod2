@@ -19,6 +19,7 @@ public class ConfigsHandler {
             new ConfigToggle("Chat", "Reveal Nicknames", "Enabled", "revealNicks"),
             new ConfigToggle("Chat", "Auto Skip Quest Dialogue", "Disabled", "skipDialogue"),
             new ConfigToggle("Chat", "Show Chat Timestamps", "Enabled", "chatTimestamps"),
+            new ConfigToggle("Chat", "Stack Duplicate Messages", "Enabled", "stackDuplicateMessages"),
             new ConfigToggle("Chat", "Filter Out Welcome Message", "Disabled", "filterWelcomeMessage"),
             new ConfigToggle("Chat", "Click to Say Congrats Message", "Enabled", "clickToSayCongrats"),
             new ConfigInput("Chat", "Click to say congrats message", "Congrats!", ".+", "^.+$", 30, "congratsMessage"),
