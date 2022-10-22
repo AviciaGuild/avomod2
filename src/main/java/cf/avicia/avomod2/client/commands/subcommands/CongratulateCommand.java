@@ -43,11 +43,10 @@ public class CongratulateCommand {
             String username = firstSplit[1];
             congratulateWorthyPlayers.add(username);
             String congratsCommand = String.format("/avomod congratulate %s", username);
-            LiteralText congratulateMessage = new LiteralText("§bClick to say Congratulations!");
+            LiteralText congratulateMessage = new LiteralText("§b§nClick to say Congratulations!");
             congratulateMessage.fillStyle(congratulateMessage.getStyle()
                     .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, congratsCommand))
                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of(congratsCommand)))
-                    .withUnderline(true)
             );
             MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(congratulateMessage);
         }
