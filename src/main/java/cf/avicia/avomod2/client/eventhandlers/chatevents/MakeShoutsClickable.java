@@ -1,6 +1,6 @@
 package cf.avicia.avomod2.client.eventhandlers.chatevents;
 
-import cf.avicia.avomod2.Utils;
+import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;

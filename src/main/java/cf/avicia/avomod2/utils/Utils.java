@@ -1,4 +1,4 @@
-package cf.avicia.avomod2;
+package cf.avicia.avomod2.utils;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;

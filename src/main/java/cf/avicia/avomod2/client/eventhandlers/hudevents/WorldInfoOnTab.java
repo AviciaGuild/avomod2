@@ -1,6 +1,6 @@
 package cf.avicia.avomod2.client.eventhandlers.hudevents;
 
-import cf.avicia.avomod2.Utils;
+import cf.avicia.avomod2.utils.Utils;
 import cf.avicia.avomod2.client.configs.locations.LocationsHandler;
 import cf.avicia.avomod2.client.locationselements.Element;
 import cf.avicia.avomod2.client.locationselements.ElementGroup;

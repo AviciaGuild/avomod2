@@ -1,13 +1,12 @@
 package cf.avicia.avomod2.webrequests.wynnapi;
 
-import cf.avicia.avomod2.Utils;
+import cf.avicia.avomod2.utils.Utils;
 import cf.avicia.avomod2.webrequests.WebRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 

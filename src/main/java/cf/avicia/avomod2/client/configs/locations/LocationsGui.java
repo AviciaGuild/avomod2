@@ -2,6 +2,7 @@ package cf.avicia.avomod2.client.configs.locations;
 
 import cf.avicia.avomod2.client.AvoMod2Client;
 import cf.avicia.avomod2.client.configs.ConfigsGui;
+import cf.avicia.avomod2.client.eventhandlers.hudevents.AttackTimerMenu;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.WorldInfoOnTab;
 import cf.avicia.avomod2.client.locationselements.ElementGroup;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -11,7 +12,9 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class LocationsGui extends Screen {
     private static boolean isOpen = false;
@@ -32,7 +35,7 @@ public class LocationsGui extends Screen {
         super.init();
         items = List.of(
 //                WarTracker.getElementsToDraw(),
-//                AttacksMenu.getElementsToDraw(Arrays.asList("- 13:47 Otherwordly Monolith", "- 5:23 Detlas", "- 9:52 Guild Hall"), true),
+                Objects.requireNonNull(AttackTimerMenu.getElementsToDraw(Arrays.asList("13:47 Otherwordly Monolith", "5:23 Detlas", "9:52 Guild Hall"), true)),
 //                TabStatusDisplay.getElementsToDraw(Arrays.asList("Stealth Attack (00:01) x1", "90% Damage Bonus (00:04) x1")),
 //                WarDPS.getElementsToDraw(224, 12523563, 24400, 36000),
 //                BombBellTracker.getElementsToDraw(BombBellTracker.getSampleData()),

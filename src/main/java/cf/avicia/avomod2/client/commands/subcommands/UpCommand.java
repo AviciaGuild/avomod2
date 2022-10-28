@@ -1,6 +1,6 @@
 package cf.avicia.avomod2.client.commands.subcommands;
 
-import cf.avicia.avomod2.Utils;
+import cf.avicia.avomod2.utils.Utils;
 import cf.avicia.avomod2.webrequests.aviciaapi.UpTimes;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

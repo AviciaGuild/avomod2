@@ -12,6 +12,7 @@ public class TriggerHudEvents {
     public static void onRender(MatrixStack matrixStack, float tickDelta) {
         if (ConfigsHandler.getConfigBoolean("disableAll")) return;
         WorldInfoOnTab.render(matrixStack);
+        AttackTimerMenu.render(matrixStack);
     }
 
     public static ActionResult onBossBarRender(MatrixStack matrices, int x, int y, BossBar bossBar) {
