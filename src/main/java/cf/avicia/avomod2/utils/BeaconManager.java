@@ -29,7 +29,7 @@ public class BeaconManager {
         double titleDeltaZ = loc.z() - camera.getPos().z, beaconDeltaZ = loc.z() - camera.getPos().z;
         double distSq = beaconDeltaX * titleDeltaX + beaconDeltaY * titleDeltaY + beaconDeltaZ * titleDeltaZ;
         double dist = Math.sqrt(distSq);
-        float maxDistance = ctx.gameRenderer().getViewDistance() * 16;
+        int maxDistance = MinecraftClient.getInstance().options.viewDistance * 15;
         if (dist > maxDistance) {
             double scale = maxDistance / dist;
 
