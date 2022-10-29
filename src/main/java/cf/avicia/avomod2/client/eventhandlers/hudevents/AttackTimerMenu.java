@@ -1,10 +1,7 @@
 package cf.avicia.avomod2.client.eventhandlers.hudevents;
 
-import cf.avicia.avomod2.utils.Coordinates;
-import cf.avicia.avomod2.utils.TerritoryData;
-import cf.avicia.avomod2.utils.Utils;
+import cf.avicia.avomod2.utils.*;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
-import cf.avicia.avomod2.utils.ScreenCoordinates;
 import cf.avicia.avomod2.client.configs.locations.LocationsHandler;
 import cf.avicia.avomod2.client.locationselements.Element;
 import cf.avicia.avomod2.client.locationselements.ElementGroup;
@@ -16,6 +13,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import oshi.util.tuples.Pair;
 
@@ -44,6 +42,15 @@ public class AttackTimerMenu {
         List<Element> elementsList = new ArrayList<>();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
+        if (upcomingAttacks.size() == 0) {
+            BeaconManager.soonestTerritory = null;
+            BeaconManager.soonestTerritoryLocation = null;
+            BeaconManager.compassTerritory = null;
+            BeaconManager.compassLocation = null;
+
+            return null;
+        }
+
         List<Pair<String, String>> upcomingAttacksSplit = new ArrayList<>();
         List<String> upcomingAttackTerritories = new ArrayList<>();
 
@@ -70,10 +77,10 @@ public class AttackTimerMenu {
                 savedDefenses.remove(terrToRemove);
                 attackCoordinates.remove(terrToRemove);
 
-//                if (terrToRemove.equals(BeaconManager.compassTerritory)) {
-//                    BeaconManager.compassTerritory = null;
-//                    BeaconManager.compassLocation = null;
-//                }
+                if (terrToRemove.equals(BeaconManager.compassTerritory)) {
+                    BeaconManager.compassTerritory = null;
+                    BeaconManager.compassLocation = null;
+                }
             }
         }
 
@@ -88,6 +95,13 @@ public class AttackTimerMenu {
                 return 0;
             }
         });
+
+        if (!sample) {
+            if (!upcomingAttacksSplit.get(0).getB().equals(BeaconManager.soonestTerritory) || BeaconManager.soonestTerritoryLocation == null) {
+                BeaconManager.soonestTerritory = upcomingAttacksSplit.get(0).getB();
+                BeaconManager.soonestTerritoryLocation = TerritoryData.getMiddleOfTerritory(upcomingAttacksSplit.get(0).getB());
+            }
+        }
 
         int xPos = MinecraftClient.getInstance().player.getBlockPos().getX();
         int zPos = MinecraftClient.getInstance().player.getBlockPos().getZ();
@@ -148,16 +162,14 @@ public class AttackTimerMenu {
         for (Map.Entry<String, ScreenCoordinates> attackCoordinate : attackCoordinates.entrySet()) {
             if (attackCoordinate.getValue().mouseIn((int) mouseX, (int) mouseY)) {
                 Coordinates territoryLocation = TerritoryData.getMiddleOfTerritory(attackCoordinate.getKey());
-//                    BeaconManager.compassLocation = territoryLocation;
+                BeaconManager.compassLocation = territoryLocation;
 
-//                if (BeaconManager.compassLocation != null) {
-                if (territoryLocation != null) {
+                if (BeaconManager.compassLocation != null) {
                     MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Utils.makeMessageThatRunsCommand("A blue beacon beam has been created in " + attackCoordinate.getKey() + " at (§3§n" + territoryLocation.x() + ", " + territoryLocation.z() + "§f)", String.format("/compass %s %s", territoryLocation.x(), territoryLocation.z())));
+                    BeaconManager.compassTerritory = attackCoordinate.getKey();
+                } else {
+                    MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("Not a correct territory name (probably too long for the scoreboard)"));
                 }
-//                    BeaconManager.compassTerritory = attackCoordinate.getKey();
-//                } else {
-//                    MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of("Not a correct territory name (probably too long for the scoreboard)"));
-//                }
             }
         }
 
