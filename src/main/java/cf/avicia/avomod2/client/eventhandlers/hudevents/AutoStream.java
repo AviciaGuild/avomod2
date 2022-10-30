@@ -20,7 +20,7 @@ public class AutoStream {
                     lastObservedStreamerMode = System.currentTimeMillis();
                 } else {
                     // Only enter streamer mode if not in hunted and not having been in streamer mode in the last second
-                    if (MinecraftClient.getInstance().player != null && !Utils.inHuntedMode() && System.currentTimeMillis() - lastObservedStreamerMode > 1000) {
+                    if (MinecraftClient.getInstance().player != null && !Utils.inHuntedMode() && System.currentTimeMillis() - lastObservedStreamerMode > 1500) {
                         if (thread == null || !thread.isAlive()) {
                             thread = new Thread(() -> {
                                 // Makes sure to wait at least one second between /stream command, to prevent it from spamming
