@@ -13,5 +13,6 @@ public class TriggerScreenEvents {
 
     public static void beforeRender(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight, Screen screen1, MatrixStack matrices, int mouseX, int mouseY) {
         TradeMarketIcons.beforeRender(client, screen, scaledWidth, scaledHeight, screen1, matrices, mouseX, mouseY);
+        AttackedTerritoryDifficulty.beforeRender(client, screen, scaledWidth, scaledHeight, screen1, matrices, mouseX, mouseY);
     }
 }

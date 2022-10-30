@@ -54,11 +54,11 @@ public class BeaconManager {
         Matrix4f matrix4f = matrices.peek().getPositionMatrix().copy();
         int backgroundColor = 500_000_000;
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        float territoryNameWidth = (float) (-textRenderer.getWidth(title) / 2);
-        textRenderer.draw(title, territoryNameWidth, 0f, 0xffffff, false, matrix4f, ctx.consumers(), true, backgroundColor, 255);
+        float titleX = (float) (-textRenderer.getWidth(title) / 2);
+        textRenderer.draw(title, titleX, 0f, 0xffffff, false, matrix4f, ctx.consumers(), true, backgroundColor, 255);
         String distance = "§e" + Math.round(dist) + "m";
-        float distanceWidth = (float) (-textRenderer.getWidth(distance) / 2);
-        textRenderer.draw(distance, distanceWidth, -10f, 0xffffff, false, matrix4f, ctx.consumers(), true, backgroundColor, 255);
+        float distanceX = (float) (-textRenderer.getWidth(distance) / 2);
+        textRenderer.draw(distance, distanceX, -10f, 0xffffff, false, matrix4f, ctx.consumers(), true, backgroundColor, 255);
         matrices.pop();
     }
 

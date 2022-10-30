@@ -25,7 +25,7 @@ public class ConfigsHandler {
             new ConfigInput("Chat", "Click to say congrats message", "Congrats!", ".+", "^.+$", 30, "congratsMessage"),
             new ConfigToggle("War", "Custom Attack Timers Display", "Enabled", "attacksMenu"),
             new ConfigToggle("War", "Green Beacon at Soonest War", "Enabled", "greenBeacon"),
-            new ConfigToggle("War", "(NOT IMPLEMENTED)Announce Territory Defense in Chat", "Enabled", "terrDefenseInChat"),
+            new ConfigToggle("War", "Announce Territory Defense in Chat", "Enabled", "terrDefenseInChat"),
             new ConfigToggle("War", "(NOT IMPLEMENTED)Display War Info (dps, tower ehp, etc.)", "Enabled", "dpsInWars"),
             new ConfigToggle("War", "(NOT IMPLEMENTED)Hide Entities in Wars", "Disabled", "hideEntitiesInWar"),
             new ConfigToggle("War", "(NOT IMPLEMENTED)Aura Ping", "Enabled", "auraPing"),
