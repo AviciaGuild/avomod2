@@ -6,9 +6,12 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
     public static String firstLetterCapital(String input) {
@@ -68,5 +71,17 @@ public class Utils {
         }
 
         return String.valueOf((int) number);
+    }
+
+    public static ArrayList<String> getMatches(String text, String regex) {
+        ArrayList<String> matches = new ArrayList<>();
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+
+        while (matcher.find()) {
+            matches.add(matcher.group());
+        }
+
+        return matches;
     }
 }

@@ -2,6 +2,7 @@ package cf.avicia.avomod2.client.eventhandlers.chatclickedevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.AttackTimerMenu;
+import cf.avicia.avomod2.client.eventhandlers.hudevents.BombBellTracker;
 import net.minecraft.util.ActionResult;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class TriggerChatMouseClickedEvents {
 
         List<ActionResult> actionResults = new ArrayList<>();
         actionResults.add(AttackTimerMenu.mouseClicked(mouseX, mouseY));
+        actionResults.add(BombBellTracker.mouseClicked(mouseX, mouseY));
         if (actionResults.contains(ActionResult.FAIL)) {
             return ActionResult.FAIL;
         } else {

@@ -40,7 +40,7 @@ public class ShowRealName {
         }
     }
 
-    private static boolean messageHasNickHover(Text message) {
+    public static boolean messageHasNickHover(Text message) {
         HoverEvent hover = message.getStyle().getHoverEvent();
         if (hover != null && hover.getValue(hover.getAction()) instanceof Text hoverText) {
             return hoverText.getString().contains("real username");

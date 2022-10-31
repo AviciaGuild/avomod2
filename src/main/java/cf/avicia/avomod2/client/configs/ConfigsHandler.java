@@ -39,8 +39,8 @@ public class ConfigsHandler {
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Prevent Moving Armor/Accessories", "Disabled", "disableMovingArmor"),
             new ConfigToggle("Misc", "Make Mob Health Bars More Readable", "Enabled", "readableHealth"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Display Some Tab Stats on Screen", "Disabled", "tabStatusDisplay"),
-            new ConfigToggle("Misc", "(NOT IMPLEMENTED)Bomb Bell Tracker (REQUIRES CHAMPION)", "Enabled", "bombBellTracker"),
-            new ConfigToggle("Misc", "(NOT IMPLEMENTED)Bomb Bell Tracker - Click to Switch World", "Enabled", "bombBellSwitchWorld"),
+            new ConfigToggle("Misc", "Bomb Bell Tracker (REQUIRES CHAMPION)", "Enabled", "bombBellTracker"),
+            new ConfigToggle("Misc", "Bomb Bell Tracker - Click to Switch World", "Enabled", "bombBellSwitchWorld"),
             new ConfigToggle("Locations", "Edit AvoMod Locations", "Edit", "locations")
     };
     public static void initializeConfigs() {
