@@ -14,6 +14,7 @@ public class TriggerHudEvents {
         WorldInfoOnTab.render(matrixStack);
         AttackTimerMenu.render(matrixStack);
         BombBellTracker.render(matrixStack);
+        WarDPS.render(matrixStack);
     }
 
     public static ActionResult onBossBarRender(MatrixStack matrices, int x, int y, BossBar bossBar) {
@@ -22,6 +23,7 @@ public class TriggerHudEvents {
 
         actionResults.add(AutoStream.onRenderBossBar(matrices, x, y, bossBar));
         actionResults.add(ReadableMobHealth.onRenderBossBar(matrices, x, y, bossBar));
+        actionResults.add(WarDPS.onRenderBossBar(matrices, x, y, bossBar));
 
         if (actionResults.contains(ActionResult.FAIL)) {
             return ActionResult.FAIL;

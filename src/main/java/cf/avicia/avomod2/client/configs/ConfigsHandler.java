@@ -26,7 +26,7 @@ public class ConfigsHandler {
             new ConfigToggle("War", "Custom Attack Timers Display", "Enabled", "attacksMenu"),
             new ConfigToggle("War", "Green Beacon at Soonest War", "Enabled", "greenBeacon"),
             new ConfigToggle("War", "Announce Territory Defense in Chat", "Enabled", "terrDefenseInChat"),
-            new ConfigToggle("War", "(NOT IMPLEMENTED)Display War Info (dps, tower ehp, etc.)", "Enabled", "dpsInWars"),
+            new ConfigToggle("War", "Display War Info (dps, tower ehp, etc.)", "Enabled", "dpsInWars"),
             new ConfigToggle("War", "(NOT IMPLEMENTED)Hide Entities in Wars", "Disabled", "hideEntitiesInWar"),
             new ConfigToggle("War", "(NOT IMPLEMENTED)Aura Ping", "Enabled", "auraPing"),
             new ConfigInput("War", "(NOT IMPLEMENTED)Aura Ping Color", "FF6F00", "[\\da-fA-F]+", "^[\\da-fA-F]{6}$", 6, "auraPingColor"),
