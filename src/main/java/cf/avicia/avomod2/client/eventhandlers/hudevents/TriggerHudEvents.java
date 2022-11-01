@@ -14,6 +14,7 @@ public class TriggerHudEvents {
         WorldInfoOnTab.render(matrixStack);
         AttackTimerMenu.render(matrixStack);
         BombBellTracker.render(matrixStack);
+        AuraHandler.render(matrixStack);
         WarDPS.render(matrixStack);
     }
 

@@ -150,8 +150,7 @@ public class WarDPS {
         initialStats = "";
         latestStats = "";
 
-//        AuraHandler.firstAura = 0;
-//        AuraHandler.auraTimer = 0;
+        AuraHandler.resetAura();
     }
 
     public static ElementGroup getElementsToDraw(long time, double towerEhp, double lowerTowerDps, double upperTowerDps) {
