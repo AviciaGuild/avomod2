@@ -2,12 +2,16 @@ package cf.avicia.avomod2.mixin;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.ReadableMobHealth;
+import cf.avicia.avomod2.client.eventhandlers.hudevents.SeasonRatingLeaderboardHelper;
+import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+
+import java.util.regex.Pattern;
 
 
 @Mixin(EntityRenderer.class)
@@ -37,8 +41,16 @@ public class EntityLabelRenderMixin {
     }
 
     private Text getNewLabel(Text label) {
-        if (ConfigsHandler.getConfigBoolean("readableHealth") && !ConfigsHandler.getConfigBoolean("disableAll")) {
-            return ReadableMobHealth.onRenderEntityLabel(label);
+        if (!ConfigsHandler.getConfigBoolean("disableAll")) {
+            String unformattedLabel = Utils.getUnformattedString(label.getString());
+            if (ConfigsHandler.getConfigBoolean("readableHealth") &&
+                    unformattedLabel != null && unformattedLabel.startsWith("[|||||")) {
+                return ReadableMobHealth.onRenderEntityLabel(label);
+            }
+            Pattern leaderboardPattern = Pattern.compile("\\d+ - .+ \\(\\d+ SR\\)");
+            if (leaderboardPattern.matcher(unformattedLabel).find()) {
+                return SeasonRatingLeaderboardHelper.onRenderEntityLabel(label);
+            }
         }
         return label;
     }
