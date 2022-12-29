@@ -26,8 +26,8 @@ public class CongratulateCommand {
                             String username = getString(context, "name");
                             if (congratulateWorthyPlayers.contains(username)) {
                                 String congratulateMessage = ConfigsHandler.getConfig("congratsMessage");
-                                if (MinecraftClient.getInstance().player != null && congratulateMessage != null) {
-                                    MinecraftClient.getInstance().player.sendMessage(Text.of(String.format("/msg %s %s", username, congratulateMessage)));
+                                if (MinecraftClient.getInstance().getNetworkHandler() != null && congratulateMessage != null) {
+                                    MinecraftClient.getInstance().getNetworkHandler().sendCommand(String.format("msg %s %s", username, congratulateMessage));
                                     congratulateWorthyPlayers.remove(username);
                                 }
                             } else {

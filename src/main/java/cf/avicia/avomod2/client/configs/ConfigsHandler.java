@@ -83,8 +83,8 @@ public class ConfigsHandler {
         configsJson.addProperty(configsKey, newValue);
 
         if (configsKey.equals("autoStream") && newValue.equals("Disabled")) {
-            if (MinecraftClient.getInstance().player != null) {
-                MinecraftClient.getInstance().player.sendMessage(Text.of("/stream"));
+            if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+                MinecraftClient.getInstance().getNetworkHandler().sendCommand("stream");
             }
         }
 

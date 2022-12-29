@@ -73,8 +73,8 @@ public class AttackedTerritoryDifficulty {
             if (System.currentTimeMillis() - currentTime > 5000 || !territory.equals(currentTerritory))
                 return ActionResult.SUCCESS;
 
-            if (MinecraftClient.getInstance().player != null) {
-                MinecraftClient.getInstance().player.sendMessage(Text.of(String.format("/g %s defense is %s", currentTerritory, currentDefense)));
+            if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+                MinecraftClient.getInstance().getNetworkHandler().sendCommand(String.format("g %s defense is %s", currentTerritory, currentDefense));
             }
         }
         return ActionResult.SUCCESS;

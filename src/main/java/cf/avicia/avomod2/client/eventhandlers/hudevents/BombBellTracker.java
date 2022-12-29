@@ -105,8 +105,8 @@ public class BombBellTracker {
                 || !ConfigsHandler.getConfigBoolean("bombBellSwitchWorld")) return ActionResult.SUCCESS;
         for (Map.Entry<String, ScreenCoordinates> bombBellCoordinate : bombBellCoordinates.entrySet()) {
             if (bombBellCoordinate.getValue().mouseIn((int) mouseX, (int) mouseY)) {
-                if (MinecraftClient.getInstance().player != null) {
-                    MinecraftClient.getInstance().player.sendMessage(Text.of("/switch " + bombBellCoordinate.getKey()));
+                if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+                    MinecraftClient.getInstance().getNetworkHandler().sendCommand("switch " + bombBellCoordinate.getKey());
                 }
             }
         }
