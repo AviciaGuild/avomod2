@@ -2,7 +2,7 @@ package cf.avicia.avomod2.client.eventhandlers.chatevents;
 
 import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
@@ -12,12 +12,12 @@ public class MakeShoutsClickable {
 
     public static ActionResult onMessage(Text message) {
         try {
-            makeShoutClickable((LiteralText) message);
+            makeShoutClickable((MutableText) message);
         } catch (Exception ignored) {}
         return ActionResult.SUCCESS;
     }
 
-    private static void makeShoutClickable(LiteralText message) {
+    private static void makeShoutClickable(MutableText message) {
         if (isMessageShout(message)) {
             try {
                 String messageString = Utils.getUnformattedString(message.getString());
@@ -31,7 +31,7 @@ public class MakeShoutsClickable {
 
     private static boolean isMessageShout(Text message) {
         Pattern pattern = Pattern.compile("^(.* \\[WC\\d*] shouts:) .*", Pattern.CASE_INSENSITIVE);
-        String messageString =  Utils.getUnformattedString(message.getString());
+        String messageString =  Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
         return pattern.matcher(messageString).find();
     }
 }

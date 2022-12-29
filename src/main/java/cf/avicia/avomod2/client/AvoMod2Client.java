@@ -31,9 +31,10 @@ public class AvoMod2Client implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         WorldInfoOnTab.updateUpTimes();
-        CommandInitializer.initializeCommands();
         ConfigsHandler.initializeConfigs();
         LocationsHandler.initializeLocations();
+        CommandInitializer.initializeCommands();
+
         ChatMessageCallback.EVENT.register(TriggerChatEvents::onMessage);
         HudRenderCallback.EVENT.register(TriggerHudEvents::onRender);
         RenderBossBarCallback.EVENT.register(TriggerHudEvents::onBossBarRender);

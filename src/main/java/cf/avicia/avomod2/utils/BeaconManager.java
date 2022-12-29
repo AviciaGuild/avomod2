@@ -7,7 +7,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
 
 import java.awt.*;
 
@@ -29,7 +29,7 @@ public class BeaconManager {
         double titleDeltaZ = loc.z() - camera.getPos().z, beaconDeltaZ = loc.z() - camera.getPos().z;
         double distSq = beaconDeltaX * titleDeltaX + beaconDeltaY * titleDeltaY + beaconDeltaZ * titleDeltaZ;
         double dist = Math.sqrt(distSq);
-        int maxDistance = MinecraftClient.getInstance().options.viewDistance * 15;
+        int maxDistance = MinecraftClient.getInstance().options.getClampedViewDistance() * 15;
         if (dist > maxDistance) {
             double scale = maxDistance / dist;
 
@@ -51,7 +51,7 @@ public class BeaconManager {
         matrices.multiply(camera.getRotation());
         matrices.scale(-0.025F, -0.025F, 0.025F);
 
-        Matrix4f matrix4f = matrices.peek().getPositionMatrix().copy();
+        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         int backgroundColor = 500_000_000;
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         float titleX = (float) (-textRenderer.getWidth(title) / 2);

@@ -5,9 +5,8 @@ import cf.avicia.avomod2.webrequests.aviciaapi.UpTimes;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.text.LiteralText;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
 
 import java.util.Map;
@@ -46,11 +45,11 @@ public class UpCommand {
 
     private static void sendWorldAges(CommandContext<FabricClientCommandSource> context, int amountToSend, int minAge) {
         if (amountToSend <= 0) {
-            context.getSource().sendFeedback(new LiteralText("§cNo worlds match your criteria"));
+            context.getSource().sendFeedback(Text.literal("§cNo worlds match your criteria"));
             return;
         }
         Thread thread = new Thread(() -> {
-            context.getSource().sendFeedback(new LiteralText(String.format("§bShowing %s worlds with minimum age %sm:", amountToSend, minAge)));
+            context.getSource().sendFeedback(Text.literal(String.format("§bShowing %s worlds with minimum age %sm:", amountToSend, minAge)));
             UpTimes upTimes = new UpTimes();
             int iterations = 0;
             for (Map.Entry<String, JsonElement> worldData : upTimes.getWorldUpTimeData()) {

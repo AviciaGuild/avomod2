@@ -1,6 +1,7 @@
 package cf.avicia.avomod2.client.eventhandlers.chatevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
+import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
@@ -24,7 +25,7 @@ public class FilterMessages {
     private static ActionResult filterWelcomeMessage(Text message) {
         if (ConfigsHandler.getConfigBoolean("filterWelcomeMessage")) {
             if (message.getString().contains("  §6§lWelcome to Wynncraft!") ||
-                    message.getString().equals("Your class has automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
+                    Utils.textWithoutTimeStamp(message).getString().equals("Your class has automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
                 return ActionResult.FAIL;
             }
         }
@@ -33,7 +34,7 @@ public class FilterMessages {
 
     private static ActionResult filterGuildBankMessage(Text message) {
         if (ConfigsHandler.getConfigBoolean("filterBankMessages")) {
-            if (message.getString().startsWith("§3[INFO§3]") && message.getString().contains("Guild Bank")) {
+            if (Utils.textWithoutTimeStamp(message).getString().startsWith("§3[INFO§3]") && message.getString().contains("Guild Bank")) {
                 return ActionResult.FAIL;
             }
         }
@@ -41,7 +42,7 @@ public class FilterMessages {
     }
     private static ActionResult filterResourceMessage(Text message) {
         if (ConfigsHandler.getConfigBoolean("filterResourceMessages")) {
-            if (message.getString().startsWith("§3[INFO§3]") && message.getString().contains("resources")) {
+            if (Utils.textWithoutTimeStamp(message).getString().startsWith("§3[INFO§3]") && message.getString().contains("resources")) {
                 return ActionResult.FAIL;
             }
         }

@@ -29,8 +29,8 @@ public class ConfigsTextField extends TextFieldWidget {
             borderColor = new Color(255, 0, 0, 200);
         }
 
-        int modifiedX = this.x - 4;
-        int modifiedY = this.y - 4;
+        int modifiedX = this.getX() - 4;
+        int modifiedY = this.getY() - 4;
         fill(matrices, modifiedX - 1, modifiedY - 1, modifiedX + this.width + 1, modifiedY + this.height + 1, borderColor.getRGB());
         fill(matrices, modifiedX, modifiedY, modifiedX + this.width, modifiedY + this.height, -16777216);
 

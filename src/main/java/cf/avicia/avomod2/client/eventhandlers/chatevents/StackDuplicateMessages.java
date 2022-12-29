@@ -14,7 +14,7 @@ import java.util.List;
 public class StackDuplicateMessages {
 
     private static Text lastMessage = null;
-    private static ChatHudLine<OrderedText> lastVisibleMessage = null;
+    private static ChatHudLine.Visible lastVisibleMessage = null;
     private static int duplicateCount = 1;
 
     public static ActionResult onMessage(Text message) {
@@ -45,8 +45,8 @@ public class StackDuplicateMessages {
             if (visibleMessagesField != null && messagesField != null) {
                 visibleMessagesField.setAccessible(true);
                 messagesField.setAccessible(true);
-                List<ChatHudLine<OrderedText>> visibleMessages = (List<ChatHudLine<OrderedText>>) visibleMessagesField.get(chatHud);
-                List<ChatHudLine<Text>> messages = (List<ChatHudLine<Text>>) messagesField.get(chatHud);
+                List<ChatHudLine.Visible> visibleMessages = (List<ChatHudLine.Visible>) visibleMessagesField.get(chatHud);
+                List<ChatHudLine> messages = (List<ChatHudLine>) messagesField.get(chatHud);
                 if (lastMessage != null && lastMessage.equals(message)) {
                     duplicateCount++;
                     // Visible messages are split per line, not per message, so remove all lines that were created at

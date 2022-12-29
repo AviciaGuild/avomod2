@@ -14,7 +14,7 @@ public class ResetLocationsButton extends ButtonWidget {
     private final LocationsGui gui;
 
     public ResetLocationsButton(int x, int y, int widthIn, int heightIn, String buttonText, LocationsGui gui) {
-        super(x, y, widthIn, heightIn, Text.of(buttonText), ButtonWidget::onPress);
+        super(x, y, widthIn, heightIn, Text.of(buttonText), ButtonWidget::onPress, DEFAULT_NARRATION_SUPPLIER);
         this.gui = gui;
     }
 

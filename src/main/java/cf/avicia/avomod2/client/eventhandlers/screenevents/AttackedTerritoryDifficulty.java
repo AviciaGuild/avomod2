@@ -74,7 +74,7 @@ public class AttackedTerritoryDifficulty {
                 return ActionResult.SUCCESS;
 
             if (MinecraftClient.getInstance().player != null) {
-                MinecraftClient.getInstance().player.sendChatMessage(String.format("/g %s defense is %s", currentTerritory, currentDefense));
+                MinecraftClient.getInstance().player.sendMessage(Text.of(String.format("/g %s defense is %s", currentTerritory, currentDefense)));
             }
         }
         return ActionResult.SUCCESS;

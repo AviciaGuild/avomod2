@@ -296,13 +296,13 @@ public class ConfigsGui extends Screen {
         sectionList.forEach((ConfigsSection configsSection) -> {
             int configPlacement = sectionList.indexOf(configsSection);
             if (configsSection.button != null) {
-                configsSection.button.y = configPlacement * settingLineHeight + startingHeight - 4 + (settingHeight * (configPlacement + 1));
+                configsSection.button.setY(configPlacement * settingLineHeight + startingHeight - 4 + (settingHeight * (configPlacement + 1)));
                 addButton(configsSection.button);
             }
 
 
             if (configsSection.textField != null) {
-                configsSection.textField.y = configPlacement * settingLineHeight + startingHeight + 2 + (settingHeight * (configPlacement + 1));
+                configsSection.textField.setY(configPlacement * settingLineHeight + startingHeight + 2 + (settingHeight * (configPlacement + 1)));
                 this.textFieldsList.add(configsSection.textField);
             }
         });

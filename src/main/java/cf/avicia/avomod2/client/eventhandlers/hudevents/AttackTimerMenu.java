@@ -41,6 +41,7 @@ public class AttackTimerMenu {
         if (MinecraftClient.getInstance().player == null || MinecraftClient.getInstance().world == null) return null;
         List<Element> elementsList = new ArrayList<>();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+//        upcomingAttacks.addAll(Arrays.asList("13:47 Otherwordly Monolith", "5:23 Detlas", "9:52 Guild Hall"));
 
         if (upcomingAttacks.size() == 0) {
             BeaconManager.soonestTerritory = null;

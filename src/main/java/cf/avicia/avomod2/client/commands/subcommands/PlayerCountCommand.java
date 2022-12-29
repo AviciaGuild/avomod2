@@ -3,9 +3,9 @@ package cf.avicia.avomod2.client.commands.subcommands;
 import cf.avicia.avomod2.utils.Utils;
 import cf.avicia.avomod2.webrequests.wynnapi.PlayerList;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.text.LiteralText;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.text.Text;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
@@ -20,9 +20,9 @@ public class PlayerCountCommand {
                                 PlayerList playerList = new PlayerList();
                                 int playerCount = playerList.getAmountOfWorldPlayers(world);
                                 if (playerCount != -1) {
-                                    context.getSource().sendFeedback(new LiteralText("§b" + Utils.getFormattedWorld(world) + "§7 has §b" + playerCount + "§7 players online."));
+                                    context.getSource().sendFeedback(Text.literal("§b" + Utils.getFormattedWorld(world) + "§7 has §b" + playerCount + "§7 players online."));
                                 } else {
-                                    context.getSource().sendFeedback(new LiteralText("§4" + Utils.getFormattedWorld(world) + "§c is not online"));
+                                    context.getSource().sendFeedback(Text.literal("§4" + Utils.getFormattedWorld(world) + "§c is not online"));
                                 }
                             });
                             thread.start();

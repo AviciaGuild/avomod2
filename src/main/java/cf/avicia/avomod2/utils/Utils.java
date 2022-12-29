@@ -3,7 +3,7 @@ package cf.avicia.avomod2.utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -46,8 +46,8 @@ public class Utils {
         }
     }
 
-    public static LiteralText makeMessageThatRunsCommand(String message, String command) {
-        LiteralText messageRes = new LiteralText(message);
+    public static MutableText makeMessageThatRunsCommand(String message, String command) {
+        MutableText messageRes = Text.literal(message);
         messageRes.fillStyle(messageRes.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)));
         messageRes.fillStyle(messageRes.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("§7Click to run §f" + command))));
         return messageRes;
@@ -83,5 +83,10 @@ public class Utils {
         }
 
         return matches;
+    }
+
+    public static Text textWithoutTimeStamp(Text text) {
+        // Removes the wynntils timestamp from the message if there is one
+        return Text.literal(text.getString().replaceAll("§8\\[§7.+§8\\]§r *", "")).setStyle(text.getStyle());
     }
 }

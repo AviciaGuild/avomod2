@@ -16,7 +16,7 @@ public class ConfigsCategory extends ButtonWidget {
     private final ConfigsGui configsGui;
 
     public ConfigsCategory(int x, int y, String title, ConfigsGui configsGui) {
-        super(x, y, 100, 20, Text.of(title), ButtonWidget::onPress);
+        super(x, y, 100, 20, Text.of(title), ButtonWidget::onPress, DEFAULT_NARRATION_SUPPLIER);
         this.title = title;
         this.x = x;
         this.y = y;

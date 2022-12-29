@@ -5,6 +5,7 @@ import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.boss.BossBar;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
 public class AutoStream {
@@ -26,7 +27,7 @@ public class AutoStream {
                                 // Makes sure to wait at least one second between /stream command, to prevent it from spamming
                                 // This means streamer mode has time to activate before the command runs again, so it doesn't run again until streamer mode is disabled
                                 try {
-                                    MinecraftClient.getInstance().player.sendChatMessage("/stream");
+                                    MinecraftClient.getInstance().player.sendMessage(Text.of("/stream"));
                                     Thread.sleep(1000);
                                 } catch (InterruptedException e) {
                                     throw new RuntimeException(e);

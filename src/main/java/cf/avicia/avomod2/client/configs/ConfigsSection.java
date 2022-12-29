@@ -39,13 +39,13 @@ public class ConfigsSection {
         MinecraftClient.getInstance().inGameHud.getTextRenderer().drawWithShadow(configsGui.matrices, title, (float) x, (float) y, 0xFFFFFF);
 
         if (button != null) {
-            button.x = x;
-            button.y = y + configsGui.settingHeight - 5;
+            button.setX(x);
+            button.setY(y + configsGui.settingHeight - 5);
             configsGui.addButton(button);
         }
         if (textField != null) {
-            textField.x = x + 5;
-            textField.y = y + configsGui.settingHeight;
+            textField.setX(x + 5);
+            textField.setY(y + configsGui.settingHeight);
             configsGui.addTextField(textField);
         }
     }

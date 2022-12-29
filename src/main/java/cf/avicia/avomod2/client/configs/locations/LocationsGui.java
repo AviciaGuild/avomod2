@@ -11,12 +11,15 @@ import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public class LocationsGui extends Screen {
     private static boolean isOpen = false;
@@ -44,7 +47,7 @@ public class LocationsGui extends Screen {
                 WorldInfoOnTab.getElementsToDraw()
         );
         Screens.getButtons(this).add(new ResetLocationsButton( this.width / 2 - 50, this.height - 30, 100, 20, "Reset to Defaults", this));
-        Screens.getButtons(this).add(new ButtonWidget( 10, 10, 50, 20, Text.of("Configs"), button -> AvoMod2Client.screenToRender = new ConfigsGui()));
+        Screens.getButtons(this).add(new ButtonWidget.Builder( Text.of("Configs"), button -> AvoMod2Client.screenToRender = new ConfigsGui()).dimensions(10, 10, 50, 20).build());
         isOpen = true;
     }
 

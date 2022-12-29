@@ -188,7 +188,7 @@ public class WarDPS {
 
     public static ActionResult onMessage(Text message) {
 
-        String unformattedMessage = Utils.getUnformattedString(message.getString());
+        String unformattedMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
         if (unformattedMessage == null) return ActionResult.SUCCESS;
 
         if (ConfigsHandler.getConfigBoolean("dpsInWars") && System.currentTimeMillis() - lastTimeInWar < 5000 && unformattedMessage.contains(previousTerritoryName.trim())) {

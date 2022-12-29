@@ -4,9 +4,9 @@ import cf.avicia.avomod2.utils.Utils;
 import cf.avicia.avomod2.webrequests.wynnapi.GuildStats;
 import cf.avicia.avomod2.webrequests.wynnapi.PlayerStats;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.text.LiteralText;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.text.Text;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
@@ -25,13 +25,13 @@ public class PlayerGuildCommand {
                                 String guildRank = playerStats.getGuildRank();
                                 if (formattedUsername != null && guild != null && guildRank != null) {
                                     GuildStats guildStats = new GuildStats(guild);
-                                    context.getSource().sendFeedback(new LiteralText(
+                                    context.getSource().sendFeedback(Text.literal(
                                             "§b" + formattedUsername + "§7 is a §b" + Utils.firstLetterCapital(guildRank) + "§7 in the guild §b" + guild +
                                                     "§7. They have been in the guild for §b" + guildStats.getTimeInGuild(formattedUsername)));
                                 } else if (formattedUsername == null) {
-                                    context.getSource().sendFeedback(new LiteralText("§4" + username + "§c is not a Wynncraft player!"));
+                                    context.getSource().sendFeedback(Text.literal("§4" + username + "§c is not a Wynncraft player!"));
                                 } else {
-                                    context.getSource().sendFeedback(new LiteralText("§b" + formattedUsername + "§7 is not in a guild!"));
+                                    context.getSource().sendFeedback(Text.literal("§b" + formattedUsername + "§7 is not in a guild!"));
                                 }
                             });
                             thread.start();

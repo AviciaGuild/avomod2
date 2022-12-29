@@ -79,7 +79,7 @@ public class BombBellTracker {
             }
         }
 
-        String unformattedMessage = Utils.getUnformattedString(message.getString());
+        String unformattedMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
         if (unformattedMessage == null || !unformattedMessage.startsWith("[Bomb Bell]")) return ActionResult.SUCCESS;
 
         ArrayList<String> matches = Utils.getMatches(unformattedMessage, "(?<= thrown a )[a-zA-Z ]+(?= Bomb on)|(?<= on WC)\\d{1,4}");
@@ -106,7 +106,7 @@ public class BombBellTracker {
         for (Map.Entry<String, ScreenCoordinates> bombBellCoordinate : bombBellCoordinates.entrySet()) {
             if (bombBellCoordinate.getValue().mouseIn((int) mouseX, (int) mouseY)) {
                 if (MinecraftClient.getInstance().player != null) {
-                    MinecraftClient.getInstance().player.sendChatMessage("/switch " + bombBellCoordinate.getKey());
+                    MinecraftClient.getInstance().player.sendMessage(Text.of("/switch " + bombBellCoordinate.getKey()));
                 }
             }
         }

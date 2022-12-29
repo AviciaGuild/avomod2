@@ -3,8 +3,8 @@ package cf.avicia.avomod2.client.commands.subcommands;
 import cf.avicia.avomod2.client.AvoMod2Client;
 import cf.avicia.avomod2.client.configs.ConfigsGui;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 
 public class ConfigsCommand {

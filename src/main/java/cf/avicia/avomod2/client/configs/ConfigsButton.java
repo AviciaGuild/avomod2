@@ -15,7 +15,7 @@ public class ConfigsButton extends ButtonWidget {
     private int currentIndex;
 
     public ConfigsButton(int x, int y, int width, String[] choices, String defaultValue) {
-        super(x, y, width, 20, Text.of(defaultValue), ButtonWidget::onPress);
+        super(x, y, width, 20, Text.of(defaultValue), ButtonWidget::onPress, DEFAULT_NARRATION_SUPPLIER);
         this.currentIndex = Arrays.asList(choices).indexOf(defaultValue);
         this.choices = choices;
     }
@@ -39,14 +39,14 @@ public class ConfigsButton extends ButtonWidget {
 
     @Override
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        fill(matrices, x, y, x + width, y + 1, 0xFFFFFFFF);
-        fill(matrices, x + width - 1, y, x + width, y + 20, 0xFFFFFFFF);
-        fill(matrices, x, y, x + 1, y + 20, 0xFFFFFFFF);
-        fill(matrices, x, y + 19, x + width, y + 20, 0xFFFFFFFF);
+        fill(matrices, getX(), getY(), getX() + width, getY() + 1, 0xFFFFFFFF);
+        fill(matrices, getX() + width - 1, getY(), getX() + width, getY() + 20, 0xFFFFFFFF);
+        fill(matrices, getX(), getY(), getX() + 1, getY() + 20, 0xFFFFFFFF);
+        fill(matrices, getX(), getY() + 19, getX() + width, getY() + 20, 0xFFFFFFFF);
         int color = 0xFF8888;
         if (choices[currentIndex].equals("Enabled")) color = 0x88FF88;
         if (choices[currentIndex].equals("Edit")) color = 0xFFFF00;
-        drawCenteredText(matrices, MinecraftClient.getInstance().textRenderer, choices[currentIndex], x + width / 2, y + 6, color);
+        drawCenteredText(matrices, MinecraftClient.getInstance().textRenderer, choices[currentIndex], getX() + width / 2, getY() + 6, color);
     }
 
     public void setConfigsSection(ConfigsSection configsSection) {

@@ -7,9 +7,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.text.LiteralText;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +31,8 @@ public class OnlineMembersCommand {
                                             String matchingGuild = guildNameFromTag.getName();
                                             if (matchingGuild != null) {
                                                 if (guildNameFromTag.hasMultipleMatches()) {
-                                                    context.getSource().sendFeedback(new LiteralText("§eMultiple guilds match your query: §6" + guildNameFromTag.getFormattedListOfMatches()));
-                                                    context.getSource().sendFeedback(new LiteralText("§eChoosing: §6" + matchingGuild));
+                                                    context.getSource().sendFeedback(Text.literal("§eMultiple guilds match your query: §6" + guildNameFromTag.getFormattedListOfMatches()));
+                                                    context.getSource().sendFeedback(Text.literal("§eChoosing: §6" + matchingGuild));
                                                 }
                                                 guildName = matchingGuild;
                                             }
@@ -50,16 +50,16 @@ public class OnlineMembersCommand {
                                             }
                                         }
                                         membersWithRankFormatting.sort(String::compareToIgnoreCase);
-                                        context.getSource().sendFeedback(new LiteralText("§b" + guildStats.getName() + "§3 [§b" + guildStats.getPrefix() + "§3]§7 has §b"
+                                        context.getSource().sendFeedback(Text.literal("§b" + guildStats.getName() + "§3 [§b" + guildStats.getPrefix() + "§3]§7 has §b"
                                                 + membersWithRankFormatting.size() + "§7 of §b" + guildMembers.size() + "§7 members online: §b" + String.join(", ", membersWithRankFormatting)
                                                 .replaceAll("\\*", "\u2605") // Make the guild stars look good
                                         ));
                                     } else {
-                                        context.getSource().sendFeedback(new LiteralText("§cGuild §4" + guildName + "§c not found"));
+                                        context.getSource().sendFeedback(Text.literal("§cGuild §4" + guildName + "§c not found"));
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    context.getSource().sendFeedback(new LiteralText("§cGuild not found"));
+                                    context.getSource().sendFeedback(Text.literal("§cGuild not found"));
                                 }
                             });
                             thread.start();

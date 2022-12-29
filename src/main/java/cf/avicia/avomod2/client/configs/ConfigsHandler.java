@@ -4,6 +4,7 @@ import cf.avicia.avomod2.core.CustomFile;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
 
 public class ConfigsHandler {
 
@@ -83,7 +84,7 @@ public class ConfigsHandler {
 
         if (configsKey.equals("autoStream") && newValue.equals("Disabled")) {
             if (MinecraftClient.getInstance().player != null) {
-                MinecraftClient.getInstance().player.sendChatMessage("/stream");
+                MinecraftClient.getInstance().player.sendMessage(Text.of("/stream"));
             }
         }
 
