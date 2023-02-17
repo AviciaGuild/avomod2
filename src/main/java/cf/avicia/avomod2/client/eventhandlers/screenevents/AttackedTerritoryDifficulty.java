@@ -33,6 +33,9 @@ public class AttackedTerritoryDifficulty {
             DefaultedList<Slot> containerSlots = client.player.currentScreenHandler.slots;
             ItemStack attackInfoItem = containerSlots.get(13).getStack();
             List<Text> territoryLore = attackInfoItem.getTooltip(client.player, TooltipContext.Default.ADVANCED);
+            if (territoryLore.size() < 2) {
+                return;
+            }
             String territoryDefenseMessage = territoryLore.get(1).getString();
 
             Optional<Text> timerTextOptional = territoryLore.stream().filter(line ->
