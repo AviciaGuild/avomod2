@@ -16,7 +16,7 @@ public class LocationsHandler {
     public static JsonObject locations = null;
 
     public static Map<String, String> defaultLocations = new HashMap<>() {{
-        put("weeklyWars", "1,0.98,false");
+        put("weeklyWars", "1,0.95,false");
         put("worldInfoOnTab", "1,0.7,false");
         put("attacksMenu", "1,0.1,false");
         put("tabStatusDisplay", "0.4,.1,true");

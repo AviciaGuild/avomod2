@@ -4,6 +4,7 @@ import cf.avicia.avomod2.client.commands.subcommands.CongratulateCommand;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.BombBellTracker;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.WarDPS;
+import cf.avicia.avomod2.client.eventhandlers.hudevents.WarTracker;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.AttackedTerritoryDifficulty;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -25,6 +26,7 @@ public class TriggerChatEvents {
         actionResults.add(AttackedTerritoryDifficulty.onMessage(message));
         actionResults.add(BombBellTracker.onMessage(message));
         actionResults.add(WarDPS.onMessage(message));
+        actionResults.add(WarTracker.onMessage(message));
         if (actionResults.contains(ActionResult.FAIL)) {
             return ActionResult.FAIL;
         } else {

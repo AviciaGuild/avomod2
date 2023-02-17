@@ -34,6 +34,7 @@ public class CommandInitializer {
                             .then(LocationsCommand.command("locations"))
                             .then(LocationsCommand.command("l"))
                             .then(CongratulateCommand.command("congratulate"))
+                            .then(WarsCommand.command("wars"))
                             .executes(context -> {
                                 context.getSource().sendFeedback(Text.literal("Command for AvoMod2"));
                                 return 0;

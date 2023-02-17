@@ -13,6 +13,7 @@ public class TriggerHudEvents {
         if (ConfigsHandler.getConfigBoolean("disableAll")) return;
         WorldInfoOnTab.render(matrixStack);
         AttackTimerMenu.render(matrixStack);
+        WarTracker.render(matrixStack);
         BombBellTracker.render(matrixStack);
         AuraHandler.render(matrixStack);
         WarDPS.render(matrixStack);
@@ -25,6 +26,7 @@ public class TriggerHudEvents {
         actionResults.add(AutoStream.onRenderBossBar(matrices, x, y, bossBar));
         actionResults.add(ReadableMobHealth.onRenderBossBar(matrices, x, y, bossBar));
         actionResults.add(WarDPS.onRenderBossBar(matrices, x, y, bossBar));
+        actionResults.add(WarTracker.onRenderBossBar(bossBar));
 
         if (actionResults.contains(ActionResult.FAIL)) {
             return ActionResult.FAIL;
