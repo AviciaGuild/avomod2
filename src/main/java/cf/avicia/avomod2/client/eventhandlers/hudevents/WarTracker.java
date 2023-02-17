@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class WarTracker {
     private static long lastWarBar;
@@ -124,8 +123,8 @@ public class WarTracker {
                                     player.getX() + searchRadius, player.getY() + searchRadius, player.getZ() + searchRadius
                             ), Objects::nonNull);
                         }
-                        List<String> newMembers = newPlayers.stream().map(e -> e.getName().getString()).collect(Collectors.toList());
-                        List<String> newUuids = newPlayers.stream().map(Entity::getUuidAsString).collect(Collectors.toList());
+                        List<String> newMembers = new ArrayList<>(newPlayers.stream().map(e -> e.getName().getString()).toList());
+                        List<String> newUuids = new ArrayList<>(newPlayers.stream().map(Entity::getUuidAsString).toList());
                         newMembers.removeAll(members);
                         members.addAll(newMembers);
 

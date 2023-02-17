@@ -146,7 +146,9 @@ public class AttackTimerMenu {
 
                 elementsList.add(new RectangleElement(startX, startY, rectangleWidth, rectangleHeight, new Color(100, 100, 100, 100)));
                 elementsList.add(new TextElement(message, startX + 2, startY + 2, new Color(255, 170, 0)));
-                attackCoordinates.put(attack.getB(), new ScreenCoordinates(startX, startY, startX + rectangleWidth, startY + rectangleHeight));
+                if (!sample) {
+                    attackCoordinates.put(attack.getB(), new ScreenCoordinates(startX, startY, startX + rectangleWidth, startY + rectangleHeight));
+                }
                 startY += rectangleHeight;
             } catch (Exception e) {
                 e.printStackTrace();
