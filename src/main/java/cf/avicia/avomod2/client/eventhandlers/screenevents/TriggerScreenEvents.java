@@ -9,10 +9,14 @@ public class TriggerScreenEvents {
 
     public static void afterInit(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight) {
         ScreenEvents.beforeRender(screen).register((screen1, matrices, mouseX, mouseY, tickDelta) -> TriggerScreenEvents.beforeRender(client, screen, scaledWidth, scaledHeight, screen1, matrices, mouseX, mouseY));
+        ScreenEvents.afterRender(screen).register((screen1, matrices, mouseX, mouseY, tickDelta) -> TriggerScreenEvents.afterRender(client, screen, scaledWidth, scaledHeight, screen1, matrices, mouseX, mouseY));
     }
 
     public static void beforeRender(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight, Screen screen1, MatrixStack matrices, int mouseX, int mouseY) {
         TradeMarketIcons.beforeRender(client, screen, scaledWidth, scaledHeight, screen1, matrices, mouseX, mouseY);
         AttackedTerritoryDifficulty.beforeRender(client, screen, scaledWidth, scaledHeight, screen1, matrices, mouseX, mouseY);
+    }
+    public static void afterRender(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight, Screen screen1, MatrixStack matrices, int mouseX, int mouseY) {
+        GuildBankKeybind.afterRender(client, screen, screen1);
     }
 }

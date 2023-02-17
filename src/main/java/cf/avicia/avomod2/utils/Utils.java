@@ -1,6 +1,11 @@
 package cf.avicia.avomod2.utils;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
@@ -88,5 +93,21 @@ public class Utils {
     public static Text textWithoutTimeStamp(Text text) {
         // Removes the wynntils timestamp from the message if there is one
         return Text.literal(text.getString().replaceAll("§8\\[§7.+§8\\]§r *", "")).setStyle(text.getStyle());
+    }
+
+    public static void sendClickPacket(ScreenHandler screenHandler, int slot, int button, SlotActionType slotActionType, ItemStack itemStack) {
+        if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+            MinecraftClient.getInstance().getNetworkHandler().sendPacket(
+                    new ClickSlotC2SPacket(
+                            screenHandler.syncId,
+                            screenHandler.getRevision(),
+                            slot,
+                            button,
+                            slotActionType,
+                            itemStack,
+                            Int2ObjectMaps.emptyMap()
+                    )
+            );
+        }
     }
 }
