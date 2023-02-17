@@ -47,7 +47,7 @@ public class EntityLabelRenderMixin {
                     unformattedLabel != null && unformattedLabel.startsWith("[|||||")) {
                 return ReadableMobHealth.onRenderEntityLabel(label);
             }
-            Pattern leaderboardPattern = Pattern.compile("\\d+ - .+ \\(\\d+ SR\\)");
+            Pattern leaderboardPattern = Pattern.compile("\\d+ - .+ \\(.+ SR\\)");
             if (leaderboardPattern.matcher(unformattedLabel).find()) {
                 return SeasonRatingLeaderboardHelper.onRenderEntityLabel(label);
             }

@@ -11,12 +11,12 @@ public class SeasonRatingLeaderboardHelper {
 
     public static Text onRenderEntityLabel(Text label) {
         String unformattedLabel = Utils.getUnformattedString(label.getString());
-        Pattern leaderboardPattern = Pattern.compile("\\d+ - .+ \\(\\d+ SR\\)");
+        Pattern leaderboardPattern = Pattern.compile("\\d+ - .+ \\(.+ SR\\)");
         if (leaderboardPattern.matcher(unformattedLabel).find()) {
             try {
                 int leaderboardPosition = Integer.parseInt(unformattedLabel.substring(0, unformattedLabel.indexOf(' ')));
                 String guildName = unformattedLabel.substring(unformattedLabel.indexOf(' ') + 2, unformattedLabel.indexOf('(') - 1);
-                int seasonRating = Integer.parseInt(unformattedLabel.substring(unformattedLabel.indexOf('(') + 1, unformattedLabel.indexOf(" SR)")));
+                int seasonRating = Integer.parseInt(unformattedLabel.substring(unformattedLabel.indexOf('(') + 1, unformattedLabel.indexOf(" SR)")).replaceAll("[^0-9]", ""));
                 leaderboard.put(leaderboardPosition, seasonRating);
                 String positionColorCodes = label.getString().substring(0, label.getString().indexOf(String.valueOf(leaderboardPosition)));
                 Text res = Text.of("%s%s §7- §b%s §d(%,.0f SR)".formatted(positionColorCodes, leaderboardPosition, guildName, (double) seasonRating).replace(" ", ","));
