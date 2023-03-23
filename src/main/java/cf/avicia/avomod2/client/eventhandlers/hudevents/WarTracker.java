@@ -13,7 +13,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
@@ -21,17 +20,14 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Box;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 
 public class WarTracker {
     private static long lastWarBar;
-    private static List<String> members = new ArrayList<>();
-    private static List<String> uuids = new ArrayList<>();
+    private static HashSet<String> members = new HashSet<>();
 
-    public static void warStart(String territoryName, List<String> members) {
+    public static void warStart(String territoryName, HashSet<String> members) {
         if (MinecraftClient.getInstance().player != null) {
             String playerUsername = MinecraftClient.getInstance().player.getName().getString();
             List<String> filteredMembers = members.stream().filter(s -> !s.equals(playerUsername)).toList();
@@ -110,8 +106,7 @@ public class WarTracker {
         if (message.startsWith("[WAR] The war battle will start in 25 seconds.")) {
             new Thread(() -> {
                 try {
-                    members = new ArrayList<>();
-                    uuids = new ArrayList<>();
+                    members = new HashSet<>();
                     ClientPlayerEntity player = MinecraftClient.getInstance().player;
                     int searchRadius = 100;
 
@@ -124,12 +119,7 @@ public class WarTracker {
                             ), Objects::nonNull);
                         }
                         List<String> newMembers = new ArrayList<>(newPlayers.stream().map(e -> e.getName().getString()).toList());
-                        List<String> newUuids = new ArrayList<>(newPlayers.stream().map(Entity::getUuidAsString).toList());
-                        newMembers.removeAll(members);
                         members.addAll(newMembers);
-
-                        newUuids.removeAll(uuids);
-                        uuids.addAll(newUuids);
 
                         Thread.sleep(1000);
                     }
