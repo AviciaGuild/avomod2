@@ -40,7 +40,7 @@ public class UpTimes {
 
     public boolean isUp(String world) {
         String formattedWorld = Utils.getFormattedWorld(world);
-        return upTimeData.has(formattedWorld);
+        return upTimeData != null && upTimeData.has(formattedWorld);
     }
 
     /**
