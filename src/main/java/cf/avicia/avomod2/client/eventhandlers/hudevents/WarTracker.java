@@ -116,7 +116,7 @@ public class WarTracker {
                             newPlayers = MinecraftClient.getInstance().world.getEntitiesByClass(PlayerEntity.class, new Box(
                                     player.getX() - searchRadius, player.getY() - searchRadius, player.getZ() - searchRadius,
                                     player.getX() + searchRadius, player.getY() + searchRadius, player.getZ() + searchRadius
-                            ), Objects::nonNull);
+                            ), playerEntity -> playerEntity != null && playerEntity.getName().getString().matches("[A-Za-z_0-9]+"));
                         }
                         List<String> newMembers = new ArrayList<>(newPlayers.stream().map(e -> e.getName().getString()).toList());
                         members.addAll(newMembers);
