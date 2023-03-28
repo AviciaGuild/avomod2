@@ -26,6 +26,7 @@ import java.util.List;
 public class WarTracker {
     private static long lastWarBar;
     private static HashSet<String> members = new HashSet<>();
+    private static long timeOf25SecondMessage = 0;
 
     public static void warStart(String territoryName, HashSet<String> members) {
         if (MinecraftClient.getInstance().player != null) {
@@ -104,31 +105,30 @@ public class WarTracker {
         if (message == null) return ActionResult.SUCCESS;
 
         if (message.startsWith("[WAR] The war battle will start in 25 seconds.")) {
-            new Thread(() -> {
-                try {
-                    members = new HashSet<>();
-                    ClientPlayerEntity player = MinecraftClient.getInstance().player;
-                    int searchRadius = 100;
-
-                    for (int i = 0; i < 25; i++) {
-                        List<PlayerEntity> newPlayers = new ArrayList<>();
-                        if (player != null && MinecraftClient.getInstance().world != null) {
-                            newPlayers = MinecraftClient.getInstance().world.getEntitiesByClass(PlayerEntity.class, new Box(
-                                    player.getX() - searchRadius, player.getY() - searchRadius, player.getZ() - searchRadius,
-                                    player.getX() + searchRadius, player.getY() + searchRadius, player.getZ() + searchRadius
-                            ), playerEntity -> playerEntity != null && playerEntity.getName().getString().matches("[A-Za-z_0-9]+"));
-                        }
-                        List<String> newMembers = new ArrayList<>(newPlayers.stream().map(e -> e.getName().getString()).toList());
-                        members.addAll(newMembers);
-
-                        Thread.sleep(1000);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
+            timeOf25SecondMessage = System.currentTimeMillis();
+            members = new HashSet<>();
         }
         return ActionResult.SUCCESS;
+    }
+
+    private static int entityTickCounter = 0;
+    public static void afterEntityRender() {
+        entityTickCounter++;
+        if (System.currentTimeMillis() - timeOf25SecondMessage > 25_000) return;
+        if (entityTickCounter % 20 != 0) return;
+        entityTickCounter = 0;
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        int searchRadius = 100;
+
+        List<PlayerEntity> newPlayers = new ArrayList<>();
+        if (player != null && MinecraftClient.getInstance().world != null) {
+            newPlayers = MinecraftClient.getInstance().world.getEntitiesByClass(PlayerEntity.class, new Box(
+                    player.getX() - searchRadius, player.getY() - searchRadius, player.getZ() - searchRadius,
+                    player.getX() + searchRadius, player.getY() + searchRadius, player.getZ() + searchRadius
+            ), playerEntity -> playerEntity != null && playerEntity.getName().getString().matches("[A-Za-z_0-9]+"));
+        }
+        List<String> newMembers = new ArrayList<>(newPlayers.stream().map(e -> e.getName().getString()).toList());
+        members.addAll(newMembers);
     }
 
     public static ActionResult onRenderBossBar(BossBar bossBar) {

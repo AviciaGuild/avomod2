@@ -9,6 +9,7 @@ import cf.avicia.avomod2.client.customevents.RenderBossBarCallback;
 import cf.avicia.avomod2.client.eventhandlers.chatclickedevents.TriggerChatMouseClickedEvents;
 import cf.avicia.avomod2.client.eventhandlers.chatevents.TriggerChatEvents;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.TriggerHudEvents;
+import cf.avicia.avomod2.client.eventhandlers.hudevents.WarTracker;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.WorldInfoOnTab;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.GuildBankKeybind;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.TriggerScreenEvents;
@@ -40,7 +41,11 @@ public class AvoMod2Client implements ClientModInitializer {
         HudRenderCallback.EVENT.register(TriggerHudEvents::onRender);
         RenderBossBarCallback.EVENT.register(TriggerHudEvents::onBossBarRender);
         ChatMouseClickedCallback.EVENT.register(TriggerChatMouseClickedEvents::mouseClicked);
-        WorldRenderEvents.AFTER_ENTITIES.register(BeaconManager::onWorldRender);
+
+        WorldRenderEvents.AFTER_ENTITIES.register(context -> {
+            BeaconManager.onWorldRender(context);
+            WarTracker.afterEntityRender();
+        });
 
         ScreenEvents.AFTER_INIT.register(TriggerScreenEvents::afterInit);
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
