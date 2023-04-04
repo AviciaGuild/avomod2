@@ -49,6 +49,10 @@ public class SoulpointsCommand {
             UpTimes upTimes = new UpTimes();
             int iterations = 0;
             ArrayList<Map.Entry<String, JsonElement>> worldList = upTimes.getWorldUpTimeData();
+            if (worldList == null) {
+                context.getSource().sendFeedback(Text.literal("§cThere was an error retrieving the world data"));
+                return;
+            }
             worldList.sort(SP_TIME_COMPARATOR);
             for (Map.Entry<String, JsonElement> worldData : worldList) {
                 if (iterations >= amountToSend) break;

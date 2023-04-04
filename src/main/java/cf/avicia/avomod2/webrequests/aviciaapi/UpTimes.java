@@ -26,14 +26,21 @@ public class UpTimes {
     }
 
     public ArrayList<Map.Entry<String, JsonElement>> getWorldUpTimeData() {
+        if (upTimeData == null) {
+            return null;
+        }
         ArrayList<Map.Entry<String, JsonElement>> worldUpTimes = new ArrayList<>(upTimeData.entrySet());
         worldUpTimes.sort(mapComparator);
         return worldUpTimes;
     }
 
     public String getNewestWorld() {
-        if (getWorldUpTimeData().size() > 0) {
-            return getWorldUpTimeData().get(0).getKey();
+        ArrayList<Map.Entry<String, JsonElement>> worldUpTimeData = getWorldUpTimeData();
+        if (worldUpTimeData == null) {
+            return null;
+        }
+        if (worldUpTimeData.size() > 0) {
+            return worldUpTimeData.get(0).getKey();
         }
         return null;
     }

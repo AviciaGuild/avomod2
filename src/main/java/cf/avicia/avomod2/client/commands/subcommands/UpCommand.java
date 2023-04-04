@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
@@ -52,7 +53,12 @@ public class UpCommand {
             context.getSource().sendFeedback(Text.literal(String.format("§bShowing %s worlds with minimum age %sm:", amountToSend, minAge)));
             UpTimes upTimes = new UpTimes();
             int iterations = 0;
-            for (Map.Entry<String, JsonElement> worldData : upTimes.getWorldUpTimeData()) {
+            ArrayList<Map.Entry<String, JsonElement>> worldUpTimeData = upTimes.getWorldUpTimeData();
+            if (worldUpTimeData == null) {
+                context.getSource().sendFeedback(Text.literal("§cThere was an error retrieving the world data"));
+                return;
+            }
+            for (Map.Entry<String, JsonElement> worldData : worldUpTimeData) {
                 if (iterations >= amountToSend) break;
                 int worldAge = upTimes.getAge(worldData.getKey());
                 if (worldAge >= minAge) {

@@ -55,8 +55,9 @@ public class WorldInfoOnTab {
             elementsList.add(new RectangleElement(yourWorldStartX, startY + rectangleHeight, rectangleWidth, rectangleHeight, scale, new Color(0, 0, 255, 100)));
             elementsList.add(new TextElement(yourWorldText, yourWorldStartX + 2, startY + 2 + rectangleHeight, scale, Color.WHITE));
         }
-        if (upTimes.getNewestWorld() != null) {
-            String newestWorldText = "Newest world §b" + upTimes.getNewestWorld() + "§f: " + Utils.getReadableTime(upTimes.getAge(upTimes.getNewestWorld()));
+        String newestWorld = upTimes.getNewestWorld();
+        if (newestWorld != null) {
+            String newestWorldText = "Newest world §b" + newestWorld + "§f: " + Utils.getReadableTime(upTimes.getAge(newestWorld));
             int rectangleWidth = textRenderer.getWidth(newestWorldText) + 4;
             float newestWorldStartX = LocationsHandler.getStartX("worldInfoOnTab", rectangleWidth, scale);
             elementsList.add(new RectangleElement(newestWorldStartX, startY, rectangleWidth, rectangleHeight, scale, new Color(0, 0, 255, 100)));
