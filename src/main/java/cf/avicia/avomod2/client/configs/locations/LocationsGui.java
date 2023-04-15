@@ -52,8 +52,8 @@ public class LocationsGui extends Screen {
         // Draws a shadowed string with a dark color, to make it easier to read depending on the background
         matrices.push();
         matrices.scale(2.0F, 2.0F, 2.0F);
-        drawCenteredText(matrices, textRenderer, "AvoMod Locations", this.width / 4 + 1, 11, 0x444444);
-        drawCenteredText(matrices, textRenderer, "AvoMod Locations", this.width / 4, 10, 0x1B33CF);
+        drawCenteredTextWithShadow(matrices, textRenderer, "AvoMod Locations", this.width / 4 + 1, 11, 0x444444);
+        drawCenteredTextWithShadow(matrices, textRenderer, "AvoMod Locations", this.width / 4, 10, 0x1B33CF);
         matrices.pop();
 
         if (items != null) {

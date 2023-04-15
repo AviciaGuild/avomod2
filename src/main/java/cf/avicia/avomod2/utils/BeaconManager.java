@@ -55,10 +55,10 @@ public class BeaconManager {
         int backgroundColor = 500_000_000;
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         float titleX = (float) (-textRenderer.getWidth(title) / 2);
-        textRenderer.draw(title, titleX, 0f, 0xffffff, false, matrix4f, ctx.consumers(), true, backgroundColor, 255);
+        textRenderer.draw(title, titleX, 0f, 0xffffff, false, matrix4f, ctx.consumers(), TextRenderer.TextLayerType.SEE_THROUGH, backgroundColor, 255);
         String distance = "§e" + Math.round(dist) + "m";
         float distanceX = (float) (-textRenderer.getWidth(distance) / 2);
-        textRenderer.draw(distance, distanceX, -10f, 0xffffff, false, matrix4f, ctx.consumers(), true, backgroundColor, 255);
+        textRenderer.draw(distance, distanceX, -10f, 0xffffff, false, matrix4f, ctx.consumers(), TextRenderer.TextLayerType.SEE_THROUGH, backgroundColor, 255);
         matrices.pop();
     }
 
