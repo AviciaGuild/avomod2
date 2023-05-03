@@ -51,6 +51,8 @@ public class AvoMod2Client implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             TerritoryData.onTick();
             GuildBankKeybind.onTick();
+            WarTracker.onTick();
+
             if (screenToRender != null) {
                 client.setScreen(screenToRender);
                 screenToRender = null;
