@@ -10,6 +10,7 @@
     "BossBarMixin",
     "ChatMouseClickedMixin",
     "EntityLabelRenderMixin",
+    "InventoryMouseClickedMixin",
     "TimeStampsMixin"
   ],
   "injectors": {
