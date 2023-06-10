@@ -97,6 +97,7 @@ public class TerritoryData {
 
     public static Coordinates getMiddleOfTerritory(String territory) {
         if (territoryData == null) return null;
+        if (!territoryData.has("territories")) return null;
         JsonObject territoryObject = territoryData.getAsJsonObject("territories").getAsJsonObject(territory);
         if (territoryObject == null) return null;
 
