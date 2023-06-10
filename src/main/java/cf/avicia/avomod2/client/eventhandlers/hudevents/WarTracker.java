@@ -22,11 +22,13 @@ import net.minecraft.util.math.Box;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WarTracker {
     private static long lastWarBar;
     private static HashSet<String> members = new HashSet<>();
     private static long timeOf25SecondMessage = 0;
+    private static List<WarObject> weeklyWars = loadWeeklyWars();
 
     public static void warStart(String territoryName, HashSet<String> members) {
         if (MinecraftClient.getInstance().player != null) {
@@ -38,14 +40,14 @@ public class WarTracker {
     }
 
     public static ElementGroup getElementsToDraw() {
-        long weeklyWars = getWars(System.currentTimeMillis() - 604800000L);
+        long totalWeeklyWars = weeklyWars.size();
 
         String plural = "";
-        if (weeklyWars != 1) {
+        if (totalWeeklyWars != 1) {
             plural = "s";
         }
 
-        String text = String.format("%s war%s", weeklyWars, plural);
+        String text = String.format("%s war%s", totalWeeklyWars, plural);
         int rectangleWidth = MinecraftClient.getInstance().textRenderer.getWidth(text) + 4;
         int rectangleHeight = 12;
         float scale = 1.5F;
@@ -61,6 +63,8 @@ public class WarTracker {
     }
 
     public static void addWar(WarObject warObject) {
+        weeklyWars.add(warObject);
+
         CustomFile warFile = new CustomFile(ConfigsHandler.getConfigPath("wars"));
         JsonObject savedWars = warFile.readJson();
 
@@ -71,6 +75,24 @@ public class WarTracker {
         String newWarsString = savedWars.get("wars").getAsString() + warObject + "|";
         savedWars.addProperty("wars", newWarsString);
         warFile.writeJson(savedWars);
+    }
+
+    private static List<WarObject> loadWeeklyWars() {
+        CustomFile warFile = new CustomFile(ConfigsHandler.getConfigPath("wars"));
+        JsonObject savedWars = warFile.readJson();
+
+        if (!savedWars.has("wars")) {
+            return new ArrayList<>();
+        }
+
+        String wars = savedWars.get("wars").getAsString();
+
+        long currentMills = System.currentTimeMillis() - 604800000L;
+
+        return Arrays.stream(wars.split("\\|"))
+                .map(WarObject::parseString)
+                .filter(war -> war.getWarStart() > currentMills)
+                .collect(Collectors.toList());
     }
 
     public static long getWars(long timeSince) {
@@ -165,5 +187,11 @@ public class WarTracker {
         if (ConfigsHandler.getConfigBoolean("displayWeeklyWarcount")) {
             WarTracker.getElementsToDraw().draw(matrices);
         }
+    }
+
+    public static void onTick() {
+        long currentMills = System.currentTimeMillis() - 604800000L;
+
+        weeklyWars.removeIf(war -> war.getWarStart() < currentMills);
     }
 }
