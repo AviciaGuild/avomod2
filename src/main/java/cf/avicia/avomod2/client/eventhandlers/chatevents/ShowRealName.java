@@ -14,15 +14,17 @@ public class ShowRealName {
         return ActionResult.SUCCESS;
     }
 
-    private static void addRealNameToMessage(Text message) {
+    private static boolean addRealNameToMessage(Text message) {
         if (message.getSiblings().size() > 0) {
             for (Text siblingMessage : message.getSiblings()) {
-                addRealNameToMessage(siblingMessage);
+                if (addRealNameToMessage(siblingMessage)) {
+                    return false;
+                }
             }
         }
         if (messageHasNickHover(message)) {
             HoverEvent hover = message.getStyle().getHoverEvent();
-            if (hover == null) return;
+            if (hover == null) return false;
             if (hover.getValue(hover.getAction()) instanceof Text hoverText) {
                 String realName = hoverText.getString().split(" ")[hoverText.getString().split(" ").length - 1];
                 // Save all sibling of the message
@@ -35,9 +37,11 @@ public class ShowRealName {
                 message.getSiblings().clear();
                 // Adds the real name + the original message after the nickname
                 message.getSiblings().add(fullMessage);
+                return true;
             }
 //            message.getSiblings().addAll(TextElement.of("§c(" + realName + ")§f").getWithStyle(message.getStyle())); // This is not used due to it appearing after the message in guild chat
         }
+        return false;
     }
 
     public static boolean messageHasNickHover(Text message) {
