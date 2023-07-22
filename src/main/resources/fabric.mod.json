@@ -9,6 +9,7 @@
   "license": "MIT",
   "icon": "assets/avomod2/icon.png",
   "environment": "client",
+  "accessWidener" : "avomod2.accesswidener",
   "entrypoints": {
     "client": [
       "cf.avicia.avomod2.client.AvoMod2Client"
