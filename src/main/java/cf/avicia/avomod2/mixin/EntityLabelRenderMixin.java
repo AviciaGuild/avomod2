@@ -44,7 +44,7 @@ public class EntityLabelRenderMixin {
         if (!ConfigsHandler.getConfigBoolean("disableAll")) {
             String unformattedLabel = Utils.getUnformattedString(label.getString());
             if (ConfigsHandler.getConfigBoolean("readableHealth") &&
-                    unformattedLabel != null && unformattedLabel.startsWith("[|||||")) {
+                    unformattedLabel != null && unformattedLabel.contains("[|||||")) {
                 return ReadableMobHealth.onRenderEntityLabel(label);
             }
             Pattern leaderboardPattern = Pattern.compile("\\d+ - .+ \\(.+ SR\\)");

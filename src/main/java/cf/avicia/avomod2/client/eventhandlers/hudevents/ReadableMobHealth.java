@@ -7,23 +7,20 @@ import net.minecraft.entity.boss.BossBar;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ReadableMobHealth {
     public static ActionResult onRenderBossBar(MatrixStack matrices, int x, int y, BossBar bossBar) {
         if (ConfigsHandler.getConfigBoolean("readableHealth")) {
             String bossBarText = Utils.getUnformattedString(bossBar.getName().getString());
             if (bossBarText != null) {
-                int heartIconIndex = bossBarText.chars().boxed().toList().indexOf(10084);
-                if (heartIconIndex != -1) {
-                    String[] bossBarSplit = bossBarText.substring(0, heartIconIndex).split(" - ");
-                    if (bossBarSplit.length > 1) {
-                        String health = bossBarSplit[1];
-                        try {
-                            String nicerHealth = Utils.getReadableNumber(Double.parseDouble(health), 1);
-                            String newBossBarText = bossBar.getName().getString().replace(health, nicerHealth);
-                            bossBar.setName(Text.of(newBossBarText));
-                        } catch (Exception ignored) {
-                        }
-                    }
+                Matcher unformattedHealthMatcher = Pattern.compile("(\\d{4,})").matcher(bossBarText);
+                if (unformattedHealthMatcher.find()) {
+                    String unformattedHealth = unformattedHealthMatcher.group(1);
+                    String formattedHealth = Utils.getReadableNumber(Double.parseDouble(unformattedHealth), 1);
+                    String formattedLabel = bossBar.getName().getString().replace(unformattedHealth, formattedHealth);
+                    bossBar.setName(Text.of(formattedLabel));
                 }
             }
         }
@@ -32,15 +29,14 @@ public class ReadableMobHealth {
 
     public static Text onRenderEntityLabel(Text label) {
         String unformattedLabel = Utils.getUnformattedString(label.getString());
-        if (unformattedLabel != null && unformattedLabel.startsWith("[|||||")) {
-            try {
-                String unformattedHealth = unformattedLabel.replaceAll("[|\\[\\]]|( .*)", ""); // Removed all |[] and trailing debuffs such as poison
+        if (unformattedLabel != null && unformattedLabel.contains("[|||||")) {
+            Matcher unformattedHealthMatcher = Pattern.compile("(\\d{4,})").matcher(unformattedLabel);
+            if (unformattedHealthMatcher.find()) {
+                String unformattedHealth = unformattedHealthMatcher.group(1);
                 String formattedHealth = Utils.getReadableNumber(Double.parseDouble(unformattedHealth), 1);
                 boolean hasGray = label.getString().contains("§8");
                 String formattedLabel = hasGray ? label.getString().replaceAll("§8", "").replace(unformattedHealth, "§8" + formattedHealth) : label.getString().replace(unformattedHealth, formattedHealth);
                 return Text.of(formattedLabel);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         return label;
