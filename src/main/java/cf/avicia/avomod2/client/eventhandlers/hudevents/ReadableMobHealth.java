@@ -14,7 +14,8 @@ public class ReadableMobHealth {
     public static ActionResult onRenderBossBar(MatrixStack matrices, int x, int y, BossBar bossBar) {
         if (ConfigsHandler.getConfigBoolean("readableHealth")) {
             String bossBarText = Utils.getUnformattedString(bossBar.getName().getString());
-            if (bossBarText != null) {
+            // Avoid formatting bossbar healths in wars, since it breaks stuff
+            if (bossBarText != null && !(bossBarText.contains("Tower") && bossBarText.split(" ").length >= 6)) {
                 Matcher unformattedHealthMatcher = Pattern.compile("(\\d{4,})").matcher(bossBarText);
                 if (unformattedHealthMatcher.find()) {
                     String unformattedHealth = unformattedHealthMatcher.group(1);
