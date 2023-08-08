@@ -2,7 +2,7 @@ package cf.avicia.avomod2.client.eventhandlers.hudevents;
 
 import cf.avicia.avomod2.utils.Utils;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReadableMobHealth {
-    public static ActionResult onRenderBossBar(MatrixStack matrices, int x, int y, BossBar bossBar) {
+    public static ActionResult onRenderBossBar(DrawContext drawContext, int x, int y, BossBar bossBar) {
         if (ConfigsHandler.getConfigBoolean("readableHealth")) {
             String bossBarText = Utils.getUnformattedString(bossBar.getName().getString());
             // Avoid formatting bossbar healths in wars, since it breaks stuff

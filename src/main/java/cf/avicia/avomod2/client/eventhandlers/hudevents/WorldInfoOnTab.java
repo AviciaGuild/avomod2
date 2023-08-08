@@ -9,7 +9,7 @@ import cf.avicia.avomod2.client.locationselements.TextElement;
 import cf.avicia.avomod2.webrequests.aviciaapi.UpTimes;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -36,9 +36,9 @@ public class WorldInfoOnTab {
         }
     }
 
-    public static void render(MatrixStack matrixStack) {
+    public static void render(DrawContext drawContext) {
         if (upTimes != null && MinecraftClient.getInstance().options.playerListKey.isPressed()) {
-            getElementsToDraw().draw(matrixStack);
+            getElementsToDraw().draw(drawContext);
         }
     }
 

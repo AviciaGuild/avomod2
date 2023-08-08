@@ -9,7 +9,7 @@ import cf.avicia.avomod2.client.locationselements.RectangleElement;
 import cf.avicia.avomod2.client.locationselements.TextElement;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 public class AttackTimerMenu {
 
     private static final HashMap<String, ScreenCoordinates> attackCoordinates = new HashMap<>();
-    public static HashMap<String, Pair<String, Long>> savedDefenses = new HashMap<>();
+    public static final HashMap<String, Pair<String, Long>> savedDefenses = new HashMap<>();
 
-    public static void render(MatrixStack matrixStack) {
+    public static void render(DrawContext drawContext) {
         if (!ConfigsHandler.getConfigBoolean("attacksMenu")) return;
         ElementGroup elementsToDraw = getElementsToDraw(getUpcomingAttacks(), false);
         if (elementsToDraw != null) {
-            elementsToDraw.draw(matrixStack);
+            elementsToDraw.draw(drawContext);
         }
     }
 

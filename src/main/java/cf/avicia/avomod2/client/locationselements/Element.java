@@ -1,8 +1,8 @@
 package cf.avicia.avomod2.client.locationselements;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 
 import java.awt.*;
 
@@ -29,7 +29,7 @@ public abstract class Element {
         setY(getY() + (changeY / scale));
     }
 
-    public abstract void draw(MatrixStack matrices);
+    public abstract void draw(DrawContext drawContext);
 
     public float getTopEdge() {
         return getY() * getScale();

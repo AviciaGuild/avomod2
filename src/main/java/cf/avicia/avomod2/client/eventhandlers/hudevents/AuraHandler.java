@@ -2,10 +2,9 @@ package cf.avicia.avomod2.client.eventhandlers.hudevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -46,7 +45,7 @@ public class AuraHandler {
         lastAura = currentTime;
     }
 
-    public static void render(MatrixStack matrices) {
+    public static void render(DrawContext drawContext) {
         if (!ConfigsHandler.getConfigBoolean("auraPing")) return;
 
         onRenderTick();
@@ -56,11 +55,11 @@ public class AuraHandler {
             long timeRemaining = (auraProcTime - (currentTime - firstAura));
             String remainingTimer = Double.toString(Math.floor(timeRemaining / 100.0) / 10.0);
 
-            matrices.push();
-            matrices.scale(6.0F, 6.0F, 6.0F);
+            drawContext.getMatrices().push();
+            drawContext.getMatrices().scale(6.0F, 6.0F, 6.0F);
             Window window = MinecraftClient.getInstance().getWindow();
-            Screen.drawTextWithShadow(matrices, MinecraftClient.getInstance().textRenderer, Text.of(remainingTimer), window.getScaledWidth() / 12 - MinecraftClient.getInstance().textRenderer.getWidth(remainingTimer) / 3, window.getScaledHeight() / 12 - 10, Color.CYAN.getRGB());
-            matrices.pop();
+            drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(remainingTimer), window.getScaledWidth() / 12 - MinecraftClient.getInstance().textRenderer.getWidth(remainingTimer) / 3, window.getScaledHeight() / 12 - 10, Color.CYAN.getRGB());
+            drawContext.getMatrices().pop();
 
             if (currentTime - firstAura < 400) {
                 Color color;
@@ -69,7 +68,7 @@ public class AuraHandler {
                 } catch (Exception e) {
                     color = new Color(255, 111, 0);
                 }
-                Screen.fill(matrices, 0, 0, window.getScaledWidth(), window.getScaledHeight(), new Color(color.getRed(), color.getGreen(), color.getBlue(), 50).getRGB());
+                drawContext.fill(0, 0, window.getScaledWidth(), window.getScaledHeight(), new Color(color.getRed(), color.getGreen(), color.getBlue(), 50).getRGB());
             }
         }
     }

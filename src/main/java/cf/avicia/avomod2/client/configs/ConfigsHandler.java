@@ -4,7 +4,6 @@ import cf.avicia.avomod2.core.CustomFile;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
 
 public class ConfigsHandler {
 

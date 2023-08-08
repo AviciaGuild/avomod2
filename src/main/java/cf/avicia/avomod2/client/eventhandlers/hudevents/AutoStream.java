@@ -3,9 +3,8 @@ package cf.avicia.avomod2.client.eventhandlers.hudevents;
 import cf.avicia.avomod2.utils.Utils;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.boss.BossBar;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
 public class AutoStream {
@@ -13,7 +12,7 @@ public class AutoStream {
     private static long lastObservedStreamerMode = 0;
     private static Thread thread = null;
 
-    public static ActionResult onRenderBossBar(MatrixStack matrices, int x, int y, BossBar bossBar) {
+    public static ActionResult onRenderBossBar(DrawContext drawContext, int x, int y, BossBar bossBar) {
         if (ConfigsHandler.getConfigBoolean("autoStream")) {
             String bossBarText = bossBar.getName().getString();
             if (bossBarText != null) {

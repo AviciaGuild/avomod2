@@ -1,7 +1,6 @@
 package cf.avicia.avomod2.client.locationselements;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 
 import java.awt.*;
 
@@ -18,11 +17,11 @@ public class RectangleElement extends Element {
         this(x, y, width, height, 1F, color);
     }
 
-    public void draw(MatrixStack matrices) {
-        matrices.push();
-        matrices.scale(scale, scale, scale);
-        Screen.fill(matrices, (int) x, (int) y, (int) (x + width), (int) (y + height), color.getRGB());
-        matrices.pop();
+    public void draw(DrawContext drawContext) {
+        drawContext.getMatrices().push();
+        drawContext.getMatrices().scale(scale, scale, scale);
+        drawContext.fill((int) x, (int) y, (int) (x + width), (int) (y + height), color.getRGB());
+        drawContext.getMatrices().pop();
     }
 
     public float getRightEdge() {

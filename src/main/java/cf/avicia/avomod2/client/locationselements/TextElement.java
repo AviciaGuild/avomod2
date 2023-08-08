@@ -1,8 +1,7 @@
 package cf.avicia.avomod2.client.locationselements;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -19,11 +18,11 @@ public class TextElement extends Element {
         this(text, x, y, 1F, color);
     }
 
-    public void draw(MatrixStack matrices) {
-        matrices.push();
-        matrices.scale(scale, scale, scale);
-        Screen.drawTextWithShadow(matrices, MinecraftClient.getInstance().textRenderer, Text.of(text), (int) x, (int) y, color.getRGB());
-        matrices.pop();
+    public void draw(DrawContext drawContext) {
+        drawContext.getMatrices().push();
+        drawContext.getMatrices().scale(scale, scale, scale);
+        drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(text), (int) x, (int) y, color.getRGB());
+        drawContext.getMatrices().pop();
     }
 
     public String getText() {

@@ -2,7 +2,7 @@ package cf.avicia.avomod2.client.customevents;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.util.ActionResult;
 
@@ -24,5 +24,5 @@ public interface RenderBossBarCallback {
                 return ActionResult.PASS;
             });
 
-    ActionResult onRender(MatrixStack matrices, int x, int y, BossBar bossBar);
+    ActionResult onRender(DrawContext drawContext, int x, int y, BossBar bossBar);
 }
