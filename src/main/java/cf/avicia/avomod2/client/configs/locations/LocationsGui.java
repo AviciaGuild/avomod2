@@ -48,7 +48,7 @@ public class LocationsGui extends Screen {
     @Override
     public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
         // Makes blur
-        this.renderBackground(drawContext);
+        this.renderBackground(drawContext, mouseX, mouseY, delta);
         // Draws a shadowed string with a dark color, to make it easier to read depending on the background
         drawContext.getMatrices().push();
         drawContext.getMatrices().scale(2.0F, 2.0F, 2.0F);
