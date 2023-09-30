@@ -4,7 +4,6 @@ import cf.avicia.avomod2.core.CustomFile;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
 
 public class ConfigsHandler {
 
@@ -65,7 +64,7 @@ public class ConfigsHandler {
     }
 
     public static String getConfigPath(String name) {
-        return String.format("avomod/%s/%s.json", MinecraftClient.getInstance().getSession().getUuid().replaceAll("-", ""), name);
+        return String.format("avomod/%s/%s.json", MinecraftClient.getInstance().getSession().getUuidOrNull().toString().replaceAll("-", ""), name);
     }
 
     public static String getConfig(String configKey) {

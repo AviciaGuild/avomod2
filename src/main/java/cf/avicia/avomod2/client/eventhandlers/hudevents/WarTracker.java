@@ -11,8 +11,8 @@ import cf.avicia.avomod2.utils.Utils;
 import cf.avicia.avomod2.utils.WarObject;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
@@ -28,7 +28,7 @@ public class WarTracker {
     private static long lastWarBar;
     private static HashSet<String> members = new HashSet<>();
     private static long timeOf25SecondMessage = 0;
-    private static List<WarObject> weeklyWars = loadWeeklyWars();
+    private static final List<WarObject> weeklyWars = loadWeeklyWars();
 
     public static void warStart(String territoryName, HashSet<String> members) {
         if (MinecraftClient.getInstance().player != null) {
@@ -181,11 +181,11 @@ public class WarTracker {
         return ActionResult.SUCCESS;
     }
 
-    public static void render(MatrixStack matrices) {
+    public static void render(DrawContext drawContext) {
         if (ConfigsHandler.getConfigBoolean("disableAll")) return;
 
         if (ConfigsHandler.getConfigBoolean("displayWeeklyWarcount")) {
-            WarTracker.getElementsToDraw().draw(matrices);
+            WarTracker.getElementsToDraw().draw(drawContext);
         }
     }
 

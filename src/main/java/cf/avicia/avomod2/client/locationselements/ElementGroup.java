@@ -4,7 +4,7 @@ import cf.avicia.avomod2.client.configs.locations.LocationsHandler;
 import cf.avicia.avomod2.client.configs.locations.LocationsGui;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,14 +25,14 @@ public class ElementGroup {
         updateAlignment();
     }
 
-    public void draw(MatrixStack matrices) {
+    public void draw(DrawContext drawContext) {
         if (!LocationsGui.isOpen()) {
-            elementsList.forEach(e -> e.draw(matrices));
+            elementsList.forEach(e -> e.draw(drawContext));
         }
     }
 
-    public void drawGuiElement(MatrixStack matrices) {
-        elementsList.forEach(e -> e.draw(matrices));
+    public void drawGuiElement(DrawContext drawContext) {
+        elementsList.forEach(e -> e.draw(drawContext));
     }
 
     public void pickup(int mouseX, int mouseY) {

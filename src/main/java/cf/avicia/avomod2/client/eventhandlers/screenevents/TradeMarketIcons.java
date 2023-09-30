@@ -1,11 +1,11 @@
 package cf.avicia.avomod2.client.eventhandlers.screenevents;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class TradeMarketIcons {
 
-    public static void beforeRender(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight, Screen screen1, MatrixStack matrices, int mouseX, int mouseY) {
+    public static void beforeRender(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight, Screen screen1, DrawContext drawContext, int mouseX, int mouseY) {
         if (screen1 instanceof GenericContainerScreen && screen1.getTitle().getString().equals("Trade Overview")) {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null) {

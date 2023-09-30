@@ -1,7 +1,7 @@
 package cf.avicia.avomod2.client.eventhandlers.hudevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.util.ActionResult;
 
@@ -9,23 +9,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TriggerHudEvents {
-    public static void onRender(MatrixStack matrixStack, float tickDelta) {
+    public static void onRender(DrawContext drawContext, float tickDelta) {
         if (ConfigsHandler.getConfigBoolean("disableAll")) return;
-        WorldInfoOnTab.render(matrixStack);
-        AttackTimerMenu.render(matrixStack);
-        WarTracker.render(matrixStack);
-        BombBellTracker.render(matrixStack);
-        AuraHandler.render(matrixStack);
-        WarDPS.render(matrixStack);
+        WorldInfoOnTab.render(drawContext);
+        AttackTimerMenu.render(drawContext);
+        WarTracker.render(drawContext);
+        BombBellTracker.render(drawContext);
+        AuraHandler.render(drawContext);
+        WarDPS.render(drawContext);
     }
 
-    public static ActionResult onBossBarRender(MatrixStack matrices, int x, int y, BossBar bossBar) {
+    public static ActionResult onBossBarRender(DrawContext drawContext, int x, int y, BossBar bossBar) {
         if (ConfigsHandler.getConfigBoolean("disableAll")) return ActionResult.SUCCESS;
         List<ActionResult> actionResults = new ArrayList<>();
 
-        actionResults.add(AutoStream.onRenderBossBar(matrices, x, y, bossBar));
-        actionResults.add(ReadableMobHealth.onRenderBossBar(matrices, x, y, bossBar));
-        actionResults.add(WarDPS.onRenderBossBar(matrices, x, y, bossBar));
+        actionResults.add(AutoStream.onRenderBossBar(drawContext, x, y, bossBar));
+        actionResults.add(ReadableMobHealth.onRenderBossBar(drawContext, x, y, bossBar));
+        actionResults.add(WarDPS.onRenderBossBar(drawContext, x, y, bossBar));
         actionResults.add(WarTracker.onRenderBossBar(bossBar));
 
         if (actionResults.contains(ActionResult.FAIL)) {

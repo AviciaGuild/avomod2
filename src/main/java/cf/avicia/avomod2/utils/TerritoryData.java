@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
 import oshi.util.tuples.Pair;
 
@@ -26,11 +27,12 @@ public class TerritoryData {
         try {
             if (MinecraftClient.getInstance().getNetworkHandler() == null) return;
 
-            for (Advancement advancement : MinecraftClient.getInstance().getNetworkHandler().getAdvancementHandler().getManager().getAdvancements()) {
-                if (advancement.getDisplay() != null) {
+            for (PlacedAdvancement placedAdvancement : MinecraftClient.getInstance().getNetworkHandler().getAdvancementHandler().getManager().getAdvancements()) {
+                Advancement advancement = placedAdvancement.getAdvancement();
+                if (advancement.display().isPresent()) {
                     try {
-                        String territoryName = advancement.getDisplay().getTitle().getString().trim();
-                        String territoryDataFormatted = Utils.getUnformattedString(advancement.getDisplay().getDescription().getString());
+                        String territoryName = advancement.display().get().getTitle().getString().trim();
+                        String territoryDataFormatted = Utils.getUnformattedString(advancement.display().get().getDescription().getString());
                         if (territoryDataFormatted == null) return;
 
                         String territoryData = territoryDataFormatted.trim().replaceAll("\\s+", " ").replaceAll("\\n", " ");

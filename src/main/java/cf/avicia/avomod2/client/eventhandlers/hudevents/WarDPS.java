@@ -8,7 +8,7 @@ import cf.avicia.avomod2.client.locationselements.RectangleElement;
 import cf.avicia.avomod2.client.locationselements.TextElement;
 import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -107,9 +107,9 @@ public class WarDPS {
         }
     }
 
-    public static void render(MatrixStack matrices) {
+    public static void render(DrawContext drawContext) {
         if (System.currentTimeMillis() - lastTimeInWar < 2000) {
-            getElementsToDraw(timeDisplay, ehpDisplay, lowerDpsDisplay, higherDpsDisplay).draw(matrices);
+            getElementsToDraw(timeDisplay, ehpDisplay, lowerDpsDisplay, higherDpsDisplay).draw(drawContext);
         }
     }
 
@@ -203,7 +203,7 @@ public class WarDPS {
         return ActionResult.SUCCESS;
     }
 
-    public static ActionResult onRenderBossBar(MatrixStack matrices, int x, int y, BossBar bossBar) {
+    public static ActionResult onRenderBossBar(DrawContext drawContext, int x, int y, BossBar bossBar) {
         try {
             String bossBarText = bossBar.getName().getString();
             String[] bossBarWords = bossBarText.split(" ");

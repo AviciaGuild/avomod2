@@ -10,7 +10,7 @@ import cf.avicia.avomod2.client.locationselements.TextElement;
 import cf.avicia.avomod2.utils.ScreenCoordinates;
 import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
@@ -63,9 +63,9 @@ public class BombBellTracker {
                 bombData.getBombType().equals(bomb.getBombType()));
     }
 
-    public static void render(MatrixStack matrixStack) {
+    public static void render(DrawContext drawContext) {
         if (!ConfigsHandler.getConfigBoolean("bombBellTracker")) return;
-        getElementsToDraw(storedBombs).draw(matrixStack);
+        getElementsToDraw(storedBombs).draw(drawContext);
     }
 
     public static ActionResult onMessage(Text message) {
