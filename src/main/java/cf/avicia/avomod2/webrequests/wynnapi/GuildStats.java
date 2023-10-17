@@ -17,7 +17,7 @@ public class GuildStats {
 
     public GuildStats(String guildName) {
         try {
-            this.guildData = new Gson().fromJson(WebRequest.getData("https://api.wynncraft.com/public_api.php?action=guildStats&command=" + guildName.replaceAll(" ", "%20")), JsonObject.class);
+            this.guildData = new Gson().fromJson(WebRequest.getData("https://api.wynncraft.com/v3/guild/" + guildName.replaceAll(" ", "%20")), JsonObject.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,7 +59,7 @@ public class GuildStats {
         for (JsonElement jsonElement : members) {
             JsonObject memberData = jsonElement.getAsJsonObject();
             if (memberData.get("name").getAsString().equals(member)) {
-                return rankStars.get(memberData.get("rank").getAsString()) + memberData.get("name").getAsString();
+                return rankStars.get(memberData.get("rank").getAsString().toUpperCase()) + memberData.get("name").getAsString();
             }
         }
         return member;
@@ -67,7 +67,22 @@ public class GuildStats {
 
     public JsonArray getMembers() {
         try {
-            return guildData.getAsJsonArray("members");
+            JsonArray guildMembers = new JsonArray();
+            for (Map.Entry<String, JsonElement> rankMap : guildData.getAsJsonObject("members").entrySet()) {
+                if (!rankMap.getValue().isJsonObject()) {
+                    continue;
+                }
+                for (Map.Entry<String, JsonElement> member : rankMap.getValue().getAsJsonObject().entrySet()) {
+                    JsonObject playerData = new JsonObject();
+                    playerData.addProperty("name", member.getKey());
+                    playerData.addProperty("rank", rankMap.getKey());
+                    for (Map.Entry<String, JsonElement> memberStat : member.getValue().getAsJsonObject().entrySet()) {
+                        playerData.add(memberStat.getKey(), memberStat.getValue());
+                    }
+                    guildMembers.add(playerData);
+                }
+            }
+            return guildMembers;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -79,7 +94,7 @@ public class GuildStats {
         for (JsonElement jsonElement : members) {
             JsonObject memberData = jsonElement.getAsJsonObject();
             if (memberData.get("name").getAsString().equals(memberUsername)) {
-                Instant instant = Instant.parse(memberData.get("joined").getAsString());
+                Instant instant = Utils.parseTimestamp(memberData.get("joined").getAsString());
                 return Utils.getReadableTime((int) (((System.currentTimeMillis() - instant.toEpochMilli()) / 60000)));
             }
         }

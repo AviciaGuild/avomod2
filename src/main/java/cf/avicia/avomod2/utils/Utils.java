@@ -11,6 +11,7 @@ import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
@@ -109,5 +110,12 @@ public class Utils {
                     )
             );
         }
+    }
+
+    public static Instant parseTimestamp(String timestamp) {
+        if (timestamp.endsWith("000")) {
+            return Instant.parse(timestamp.replace("000", "Z"));
+        }
+        return Instant.parse(timestamp);
     }
 }

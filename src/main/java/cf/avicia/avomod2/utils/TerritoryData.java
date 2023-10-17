@@ -61,12 +61,16 @@ public class TerritoryData {
 
     public static String territoryAtCoordinates(Pair<Integer, Integer> coordinates) {
         if (territoryData == null) return null;
-        for (Map.Entry<String, JsonElement> territory : territoryData.getAsJsonObject("territories").entrySet()) {
+        for (Map.Entry<String, JsonElement> territory : territoryData.entrySet()) {
             JsonObject locationObject = territory.getValue().getAsJsonObject().getAsJsonObject("location");
-            int startX = Math.min(locationObject.get("startX").getAsInt(), locationObject.get("endX").getAsInt());
-            int startY = Math.min(locationObject.get("startY").getAsInt(), locationObject.get("endY").getAsInt());
-            int endX = Math.max(locationObject.get("startX").getAsInt(), locationObject.get("endX").getAsInt());
-            int endY = Math.max(locationObject.get("startY").getAsInt(), locationObject.get("endY").getAsInt());
+            int apiStartX = locationObject.get("start").getAsJsonArray().get(0).getAsInt();
+            int apiStartY = locationObject.get("start").getAsJsonArray().get(1).getAsInt();
+            int apiEndX = locationObject.get("end").getAsJsonArray().get(0).getAsInt();
+            int apiEndY = locationObject.get("end").getAsJsonArray().get(1).getAsInt();
+            int startX = Math.min(apiStartX, apiEndX);
+            int startY = Math.min(apiStartY, apiEndY);
+            int endX = Math.max(apiStartX, apiEndX);
+            int endY = Math.max(apiStartY, apiEndY);
 
             if (coordinates.getA() > startX && coordinates.getA() < endX && coordinates.getB() > startY && coordinates.getB() < endY) {
                 return territory.getKey();
@@ -80,9 +84,9 @@ public class TerritoryData {
         hasDataBeenRequested = true;
         try {
             new Thread(() -> {
-                String response = WebRequest.getData("https://api.wynncraft.com/public_api.php?action=territoryList");
+                String response = WebRequest.getData("https://api.wynncraft.com/v3/guild/list/territory");
                 territoryData = new Gson().fromJson(response, JsonObject.class);
-                territoryList = territoryData.getAsJsonObject("territories").entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
+                territoryList = territoryData.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
             }).start();
         } catch (Exception e) {
             new Thread(() -> {
@@ -99,15 +103,19 @@ public class TerritoryData {
 
     public static Coordinates getMiddleOfTerritory(String territory) {
         if (territoryData == null) return null;
-        if (!territoryData.has("territories")) return null;
-        JsonObject territoryObject = territoryData.getAsJsonObject("territories").getAsJsonObject(territory);
+        if (!territoryData.has("Ragni")) return null;
+        JsonObject territoryObject = territoryData.getAsJsonObject(territory);
         if (territoryObject == null) return null;
 
         JsonObject locationObject = territoryObject.getAsJsonObject("location");
         if (locationObject.isJsonNull()) return null;
 
-        int middleX = (locationObject.get("startX").getAsInt() + locationObject.get("endX").getAsInt()) / 2;
-        int middleZ = (locationObject.get("startY").getAsInt() + locationObject.get("endY").getAsInt()) / 2;
+        int apiStartX = locationObject.get("start").getAsJsonArray().get(0).getAsInt();
+        int apiStartY = locationObject.get("start").getAsJsonArray().get(1).getAsInt();
+        int apiEndX = locationObject.get("end").getAsJsonArray().get(0).getAsInt();
+        int apiEndY = locationObject.get("end").getAsJsonArray().get(1).getAsInt();
+        int middleX = (apiStartX + apiEndX) / 2;
+        int middleZ = (apiStartY + apiEndY) / 2;
         return new Coordinates(middleX, 0, middleZ);
     }
 

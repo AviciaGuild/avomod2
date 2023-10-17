@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.Map;
-import java.util.Set;
 
 public class PlayerList {
 
@@ -16,21 +15,16 @@ public class PlayerList {
 
     public PlayerList() {
         try {
-            this.playerListData = new Gson().fromJson(WebRequest.getData("https://api.wynncraft.com/public_api.php?action=onlinePlayers"), JsonObject.class);
+            this.playerListData = new Gson().fromJson(WebRequest.getData("https://api.wynncraft.com/v3/player"), JsonObject.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public boolean isPlayerOnline(String username) {
-        Set<Map.Entry<String, JsonElement>> worlds = playerListData.entrySet();
-        for (Map.Entry<String, JsonElement> world : worlds) {
-            if (world.getKey().equals("request")) continue;
-            JsonArray players = world.getValue().getAsJsonArray();
-            for (JsonElement player : players) {
-                if (player.getAsString().equals(username)) {
-                    return true;
-                }
+        for (Map.Entry<String, JsonElement> player : playerListData.getAsJsonObject("players").entrySet()) {
+            if (player.getKey().equals(username)) {
+                return true;
             }
         }
         return false;
@@ -38,7 +32,13 @@ public class PlayerList {
 
     public JsonArray getWorldPlayers(String world) {
         try {
-            return this.playerListData.getAsJsonArray(Utils.getFormattedWorld(world));
+            JsonArray worldPlayers = new JsonArray();
+            for (Map.Entry<String, JsonElement> player : playerListData.getAsJsonObject("players").entrySet()) {
+                if (player.getValue().getAsString().equals(Utils.getFormattedWorld(world))) {
+                    worldPlayers.add(player.getKey());
+                }
+            }
+            return worldPlayers;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

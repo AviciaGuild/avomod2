@@ -15,7 +15,7 @@ public class PlayerStats {
 
     public PlayerStats(String username) {
         try {
-            this.playerData = new Gson().fromJson(WebRequest.getData("https://api.wynncraft.com/v2/player/" + username + "/stats"), JsonObject.class);
+            this.playerData = new Gson().fromJson(WebRequest.getData("https://api.wynncraft.com/v3/player/" + username), JsonObject.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -23,8 +23,7 @@ public class PlayerStats {
 
     private JsonObject getPlayerData() {
         try {
-            return playerData.getAsJsonArray("data")
-                    .get(0).getAsJsonObject();
+            return playerData;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -44,9 +43,8 @@ public class PlayerStats {
     public String getServer() {
         try {
             return Objects.requireNonNull(getPlayerData())
-                    .getAsJsonObject("meta")
-                    .getAsJsonObject("location")
-                    .get("server").getAsString();
+                    .get("server")
+                    .getAsString();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -55,8 +53,7 @@ public class PlayerStats {
 
     public String getTimeSinceLastJoin() {
         try {
-            Instant lastJoinedInstant = Instant.parse(Objects.requireNonNull(getPlayerData())
-                    .getAsJsonObject("meta")
+            Instant lastJoinedInstant = Utils.parseTimestamp(Objects.requireNonNull(getPlayerData())
                     .get("lastJoin").getAsString());
             return Utils.getReadableTime((int) ((System.currentTimeMillis() - lastJoinedInstant.toEpochMilli()) / 60000));
         } catch (Exception e) {
