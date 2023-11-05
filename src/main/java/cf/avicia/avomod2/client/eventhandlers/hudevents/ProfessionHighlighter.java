@@ -30,6 +30,10 @@ public class ProfessionHighlighter {
         ScreenMouseEvents.afterMouseClick(screen).register((screen1, mouseX, mouseY, button) -> {
             if (buttonWidget != null) {
                 buttonWidget.setFocused(false);
+                if (buttonWidget.isMouseOver(mouseX, mouseY) && button == 1) {
+                    selectedProfIndex = (selectedProfIndex + profOptions.size() - 1) % profOptions.size();
+                    buttonWidget.setMessage(Text.of(profOptions.get(selectedProfIndex)));
+                }
             }
         });
     }
