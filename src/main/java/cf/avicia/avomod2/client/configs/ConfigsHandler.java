@@ -36,6 +36,7 @@ public class ConfigsHandler {
             new ConfigInput("War", "(NOT IMPLEMENTED)Territory attack confirmation threshold", "15000", "[0-9]+", "^[0-9]+$", 6, "attackConfirmation"),
             new ConfigToggle("War", "(NOT IMPLEMENTED)Send defenses from attacked territories to server (improves accuracy of timer list for guild members)", "Enabled", "storeDefs"),
             new ConfigToggle("Misc", "Auto /stream on World Swap", "Disabled", "autoStream"),
+            new ConfigToggle("Misc", "Add profession highlighter to containers", "Enabled", "profHighlighter"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Prevent Moving Armor/Accessories", "Disabled", "disableMovingArmor"),
             new ConfigToggle("Misc", "Make Mob Health Bars More Readable", "Enabled", "readableHealth"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Display Some Tab Stats on Screen", "Disabled", "tabStatusDisplay"),
