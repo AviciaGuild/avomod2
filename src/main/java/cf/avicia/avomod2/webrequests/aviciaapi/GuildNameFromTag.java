@@ -1,5 +1,6 @@
 package cf.avicia.avomod2.webrequests.aviciaapi;
 
+import cf.avicia.avomod2.utils.Utils;
 import cf.avicia.avomod2.webrequests.WebRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -12,7 +13,7 @@ public class GuildNameFromTag {
     JsonObject guildNameData = null;
     public GuildNameFromTag(String tag) {
         try {
-            String tagApiResponse = WebRequest.getData("https://www.avicia.cf/api/tag/" + tag);
+            String tagApiResponse = WebRequest.getData(Utils.getApiUrl() + "/tag/" + tag);
             if (!tagApiResponse.equals("null")) {
                 this.guildNameData = new Gson().fromJson(tagApiResponse, JsonObject.class);
             }

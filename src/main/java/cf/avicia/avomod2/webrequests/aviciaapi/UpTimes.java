@@ -19,7 +19,7 @@ public class UpTimes {
 
     public UpTimes() {
         try {
-            this.upTimeData = new Gson().fromJson(WebRequest.getData("https://www.avicia.cf/api/up"), JsonObject.class);
+            this.upTimeData = new Gson().fromJson(WebRequest.getData(Utils.getApiUrl() + "/up"), JsonObject.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,5 +1,6 @@
 package cf.avicia.avomod2.utils;
 
+import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -117,5 +118,9 @@ public class Utils {
             return Instant.parse(timestamp.replace("000", "Z"));
         }
         return Instant.parse(timestamp);
+    }
+
+    public static String getApiUrl() {
+        return String.format("https://%s/api", ConfigsHandler.getConfig("aviciaApiDomain").replaceAll("https?://", "").replaceAll("/$", ""));
     }
 }
