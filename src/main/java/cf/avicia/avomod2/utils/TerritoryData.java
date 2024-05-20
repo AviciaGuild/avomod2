@@ -1,11 +1,14 @@
 package cf.avicia.avomod2.utils;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
+import cf.avicia.avomod2.utils.territory.TerritoriesHolder;
+import cf.avicia.avomod2.utils.territory.Territory;
 import cf.avicia.avomod2.webrequests.WebRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
 import oshi.util.tuples.Pair;
@@ -19,6 +22,7 @@ public class TerritoryData {
     private final static Map<String, String> defenses = new HashMap<>();
     public static List<String> territoryList;
     private static JsonObject territoryData;
+    public static TerritoriesHolder advancementsTerritoryData;
     private static boolean hasDataBeenRequested = false;
 
     private static int tick = 0;
@@ -26,6 +30,7 @@ public class TerritoryData {
     public static void updateTerritoryData() {
         try {
             if (MinecraftClient.getInstance().getNetworkHandler() == null) return;
+            Map<String, Territory> territoriesMap = new HashMap<>();
 
             for (PlacedAdvancement placedAdvancement : MinecraftClient.getInstance().getNetworkHandler().getAdvancementHandler().getManager().getAdvancements()) {
                 Advancement advancement = placedAdvancement.getAdvancement();
@@ -34,13 +39,14 @@ public class TerritoryData {
                         String territoryName = advancement.display().get().getTitle().getString().trim();
                         String territoryDataFormatted = Utils.getUnformattedString(advancement.display().get().getDescription().getString());
                         if (territoryDataFormatted == null) return;
-
                         String territoryData = territoryDataFormatted.trim().replaceAll("\\s+", " ").replaceAll("\\n", " ");
 
                         int index1 = territoryData.indexOf("Territory Defences: ");
                         int index2 = territoryData.indexOf(" Trading Routes");
 
                         if (index1 != -1 && index2 != -1) {
+                            Territory territory = Territory.parseTerritory(territoryData, advancement.display().get().getFrame() == AdvancementFrame.CHALLENGE);
+                            territoriesMap.put(territoryName, territory);
                             String territoryDefense = territoryData.substring(index1 + 20, index2);
 
                             defenses.put(territoryName, territoryDefense);
@@ -50,6 +56,7 @@ public class TerritoryData {
                     }
                 }
             }
+            advancementsTerritoryData = new TerritoriesHolder(territoriesMap);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
