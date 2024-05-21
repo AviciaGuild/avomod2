@@ -15,6 +15,7 @@ public class ConfigsHandler {
             new ConfigToggle("General", "Disable Everything", "Disabled", "disableAll"),
             new ConfigToggle("General", "(NOT IMPLEMENTED)Notify for AvoMod BETA Version (may have bugs)", "Disabled", "betaNotification"),
             new ConfigInput("General", "Avicia api domain (default: www.avicia.info)", "www.avicia.info", ".+", "^.+$", 80, "aviciaApiDomain"),
+            new ConfigToggle("General", "Share advancements data to avo map", "Enabled", "shareAdvancementsData"),
             new ConfigToggle("Guild", "Filter Out Bank Messages", "Disabled", "filterBankMessages"),
             new ConfigToggle("Guild", "Filter Out All Resource Messages", "Disabled", "filterResourceMessages"),
             new ConfigToggle("Chat", "Reveal Nicknames", "Enabled", "revealNicks"),

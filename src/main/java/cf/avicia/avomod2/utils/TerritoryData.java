@@ -3,16 +3,19 @@ package cf.avicia.avomod2.utils;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.utils.territory.TerritoriesHolder;
 import cf.avicia.avomod2.utils.territory.Territory;
+import cf.avicia.avomod2.webrequests.TerritoryDataHttpServer;
 import cf.avicia.avomod2.webrequests.WebRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.sun.net.httpserver.HttpServer;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.PlacedAdvancement;
 import net.minecraft.client.MinecraftClient;
 import oshi.util.tuples.Pair;
 
+import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,8 @@ public class TerritoryData {
     private static JsonObject territoryData;
     public static TerritoriesHolder advancementsTerritoryData;
     private static boolean hasDataBeenRequested = false;
+    private static boolean hasServerBeenStarted = false;
+    private static HttpServer server;
 
     private static int tick = 0;
 
@@ -108,7 +113,27 @@ public class TerritoryData {
 
     }
 
-    public static Coordinates getMiddleOfTerritory(String territory) {
+    private static void startHTTPServer() {
+        hasServerBeenStarted = true;
+        try {
+            server = HttpServer.create(new InetSocketAddress("127.0.0.1", 50036), 0);
+            server.createContext("/api/data", new TerritoryDataHttpServer());
+            server.setExecutor(null); // creates a default executor
+            server.start();
+            System.out.println("Territory data started on port 50036");
+        } catch (Exception e) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(60_000);
+                    startHTTPServer();
+                } catch (Exception err) {
+                    err.printStackTrace();
+                }
+            }).start();
+        }
+    }
+
+        public static Coordinates getMiddleOfTerritory(String territory) {
         if (territoryData == null) return null;
         if (!territoryData.has("Ragni")) return null;
         JsonObject territoryObject = territoryData.getAsJsonObject(territory);
@@ -130,6 +155,16 @@ public class TerritoryData {
         if (ConfigsHandler.getConfigBoolean("disableAll") || MinecraftClient.getInstance().player == null) return;
         if (!hasDataBeenRequested) {
             makeApiRequest();
+        }
+        if (ConfigsHandler.getConfigBoolean("shareAdvancementsData") && !hasServerBeenStarted) {
+            startHTTPServer();
+        }
+
+        if (!ConfigsHandler.getConfigBoolean("shareAdvancementsData") && hasServerBeenStarted) {
+            // If the setting was turned off after the server was already started, stop the server
+            server.stop(0);
+            // Also make it ready to start again if the feature is enabled again
+            hasServerBeenStarted = false;
         }
         tick++;
         if (tick >= 10000 || defenses.isEmpty()) {

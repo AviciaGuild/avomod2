@@ -17,8 +17,6 @@ import cf.avicia.avomod2.client.eventhandlers.screenevents.GuildBankKeybind;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.TriggerScreenEvents;
 import cf.avicia.avomod2.utils.BeaconManager;
 import cf.avicia.avomod2.utils.TerritoryData;
-import cf.avicia.avomod2.webrequests.TerritoryDataHttpServer;
-import com.sun.net.httpserver.HttpServer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -28,8 +26,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.gui.screen.Screen;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
 
 @Environment(EnvType.CLIENT)
 public class AvoMod2Client implements ClientModInitializer {
@@ -67,14 +63,5 @@ public class AvoMod2Client implements ClientModInitializer {
             }
         });
 
-        try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(50036), 0);
-            server.createContext("/api/data", new TerritoryDataHttpServer());
-            server.setExecutor(null); // creates a default executor
-            server.start();
-            System.out.println("Territory data started on port 50036");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
