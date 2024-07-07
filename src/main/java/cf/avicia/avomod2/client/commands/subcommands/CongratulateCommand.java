@@ -37,10 +37,10 @@ public class CongratulateCommand {
                         }));
     }
 
-    public static ActionResult onMessage(Text message) {
+    public static Text onMessage(Text message) {
         if (Utils.textWithoutTimeStamp(message).getString().startsWith("[!] Congratulations") && ConfigsHandler.getConfigBoolean("clickToSayCongrats")) {
             String[] firstSplit = message.getString().split(" for")[0].split("to ");
-            if (firstSplit.length <= 1) return ActionResult.SUCCESS;
+            if (firstSplit.length <= 1) return message;
             String username = firstSplit[1];
             congratulateWorthyPlayers.add(username);
             String congratsCommand = String.format("/avomod congratulate %s", username);
@@ -51,6 +51,6 @@ public class CongratulateCommand {
             );
             MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(congratulateMessage);
         }
-        return ActionResult.SUCCESS;
+        return message;
     }
 }

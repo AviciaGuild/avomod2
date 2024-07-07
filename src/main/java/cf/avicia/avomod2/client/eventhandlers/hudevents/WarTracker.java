@@ -122,15 +122,15 @@ public class WarTracker {
         return Long.parseLong(wars[0].split("/")[2]);
     }
 
-    public static ActionResult onMessage(Text msg) {
+    public static Text onMessage(Text msg) {
         String message = Utils.getUnformattedString(msg.getString());
-        if (message == null) return ActionResult.SUCCESS;
+        if (message == null) return msg;
 
         if (message.startsWith("[WAR] The war battle will start in 25 seconds.")) {
             timeOf25SecondMessage = System.currentTimeMillis();
             members = new HashSet<>();
         }
-        return ActionResult.SUCCESS;
+        return msg;
     }
 
     private static int entityTickCounter = 0;

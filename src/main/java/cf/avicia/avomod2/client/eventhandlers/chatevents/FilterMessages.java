@@ -9,44 +9,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FilterMessages {
-    public static ActionResult onMessage(Text message) {
-        List<ActionResult> actionResults = new ArrayList<>();
+    public static Text onMessage(Text message) {
+        List<Text> actionResults = new ArrayList<>();
 
         actionResults.add(filterWelcomeMessage(message));
         actionResults.add(filterGuildBankMessage(message));
         actionResults.add(filterResourceMessage(message));
 
-        if (actionResults.contains(ActionResult.FAIL)) {
-            return ActionResult.FAIL;
+        if (actionResults.contains(null)) {
+            return null;
         } else {
-            return ActionResult.SUCCESS;
-        }    }
+            return message;
+        }
+    }
 
-    private static ActionResult filterWelcomeMessage(Text message) {
+    private static Text filterWelcomeMessage(Text message) {
         if (ConfigsHandler.getConfigBoolean("filterWelcomeMessage")) {
             if (message.getString().contains("  §6§lWelcome to Wynncraft!") ||
                     Utils.textWithoutTimeStamp(message).getString().equals("Your class has automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
-                return ActionResult.FAIL;
+                return null;
             }
         }
-        return ActionResult.SUCCESS;
+        return message;
     }
 
-    private static ActionResult filterGuildBankMessage(Text message) {
+    private static Text filterGuildBankMessage(Text message) {
         if (ConfigsHandler.getConfigBoolean("filterBankMessages")) {
             if (Utils.textWithoutTimeStamp(message).getString().startsWith("§3[INFO§3]") && message.getString().contains("Guild Bank")) {
-                return ActionResult.FAIL;
+                return null;
             }
         }
-        return ActionResult.SUCCESS;
+        return message;
     }
-    private static ActionResult filterResourceMessage(Text message) {
+    private static Text filterResourceMessage(Text message) {
         if (ConfigsHandler.getConfigBoolean("filterResourceMessages")) {
             if (Utils.textWithoutTimeStamp(message).getString().startsWith("§3[INFO§3]") && message.getString().contains("resources")) {
-                return ActionResult.FAIL;
+                return null;
             }
         }
-        return ActionResult.SUCCESS;
+        return message;
     }
 
 }

@@ -8,42 +8,62 @@ import net.minecraft.util.ActionResult;
 import java.util.List;
 
 public class ShowRealName {
-    public static ActionResult onMessage(Text message) {
-        if (!ConfigsHandler.getConfigBoolean("revealNicks")) return ActionResult.SUCCESS;
-        addRealNameToMessage(message);
-        return ActionResult.SUCCESS;
+    public static Text onMessage(Text message) {
+        if (!ConfigsHandler.getConfigBoolean("revealNicks")) return message;
+        return addRealNameToMessage(message);
     }
 
-    private static boolean addRealNameToMessage(Text message) {
-        if (message.getSiblings().size() > 0) {
+    private static Text addRealNameToMessage(Text message) {
+        // No need to do anything if a nickname can't be found in the message
+        if (!messageHasNickHoverDeep(message)) {
+            return message;
+        }
+        Text finalMessage = Text.empty().fillStyle(message.getStyle());
+        if (!message.getSiblings().isEmpty()) {
             for (Text siblingMessage : message.getSiblings()) {
-                if (addRealNameToMessage(siblingMessage)) {
-                    return false;
+                // Don't mess with components without nicknames, to minimize potential errors
+                if (messageHasNickHoverDeep(siblingMessage)) {
+                    // Chat messages can be deeply nested, so we need to use recursion
+                    Text realNameMessage = addRealNameToMessage(siblingMessage);
+                    realNameMessage = tryToAddRealName(realNameMessage);
+                    finalMessage.getSiblings().addAll(realNameMessage.getWithStyle(message.getStyle()));
+                } else {
+                    finalMessage.getSiblings().addAll(siblingMessage.getWithStyle(siblingMessage.getStyle()));
                 }
             }
+        } else {
+            return message;
         }
-        if (messageHasNickHover(message)) {
-            HoverEvent hover = message.getStyle().getHoverEvent();
-            if (hover == null) return false;
-            if (hover.getValue(hover.getAction()) instanceof Text hoverText) {
-                String realName = hoverText.getString().split(" ")[hoverText.getString().split(" ").length - 1];
-                // Save all sibling of the message
-                List<Text> siblings = message.getSiblings();
-                // Make a TextElement with the real name
-                Text fullMessage = Text.of("§c(" + realName + ")§f");
-                // Add all old siblings to the real name
-                fullMessage.getSiblings().addAll(siblings);
-                // Clears everything except for the nickname (and [***] stuff if in guild chat)
-                message.getSiblings().clear();
-                // Adds the real name + the original message after the nickname
-                message.getSiblings().add(fullMessage);
-                return true;
-            }
-//            message.getSiblings().addAll(TextElement.of("§c(" + realName + ")§f").getWithStyle(message.getStyle())); // This is not used due to it appearing after the message in guild chat
-        }
-        return false;
+        return finalMessage;
     }
 
+    private static Text tryToAddRealName(Text message) {
+        if (messageHasNickHover(message)) {
+            HoverEvent hover = message.getStyle().getHoverEvent();
+            if (hover == null) return message;
+            if (hover.getValue(hover.getAction()) instanceof Text hoverText) {
+                String realName = hoverText.getString().split(" ")[hoverText.getString().split(" ").length - 1];
+                Text fullMessage = Text.empty().fillStyle(message.getStyle());
+                // Retain the old style
+                fullMessage.getSiblings().addAll(message.getWithStyle(message.getStyle()));
+                fullMessage.getSiblings().add(Text.of("§c(" + realName + ")§f"));
+                return fullMessage;
+            }
+        }
+        return message;
+    }
+
+    public static boolean messageHasNickHoverDeep(Text message) {
+        boolean hasNick = false;
+        if (!message.getSiblings().isEmpty()) {
+            for (Text messageSibling : message.getSiblings()) {
+                hasNick = hasNick || messageHasNickHoverDeep(messageSibling);
+            }
+        } else {
+            return messageHasNickHover(message);
+        }
+        return hasNick;
+    }
     public static boolean messageHasNickHover(Text message) {
         HoverEvent hover = message.getStyle().getHoverEvent();
         if (hover != null && hover.getValue(hover.getAction()) instanceof Text hoverText) {

@@ -66,22 +66,22 @@ public class AttackedTerritoryDifficulty {
         }
     }
 
-    public static ActionResult onMessage(Text message) {
+    public static Text onMessage(Text message) {
         if (ConfigsHandler.getConfigBoolean("disableAll") ||
-                !ConfigsHandler.getConfigBoolean("terrDefenseInChat")) return ActionResult.SUCCESS;
+                !ConfigsHandler.getConfigBoolean("terrDefenseInChat")) return message;
         String unformattedMessage = Utils.getUnformattedString(message.getString());
-        if (unformattedMessage == null) return ActionResult.SUCCESS;
+        if (unformattedMessage == null) return message;
 
         if (unformattedMessage.contains("The war for") && unformattedMessage.endsWith("minutes.")) {
             String territory = unformattedMessage.split("for ")[1].split(" will")[0];
             if (System.currentTimeMillis() - currentTime > 5000 || !territory.equals(currentTerritory))
-                return ActionResult.SUCCESS;
+                return message;
 
             if (MinecraftClient.getInstance().getNetworkHandler() != null) {
                 MinecraftClient.getInstance().getNetworkHandler().sendCommand(String.format("g %s defense is %s", currentTerritory, currentDefense));
             }
         }
-        return ActionResult.SUCCESS;
+        return message;
     }
 
 }

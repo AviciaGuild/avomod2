@@ -13,15 +13,10 @@ public interface ChatMessageCallback {
     Event<ChatMessageCallback> EVENT = EventFactory.createArrayBacked(ChatMessageCallback.class,
             (listeners) -> (message) -> {
                 for (ChatMessageCallback listener : listeners) {
-                    ActionResult result = listener.onMessage(message);
-
-                    if(result != ActionResult.PASS) {
-                        return result;
-                    }
+                    return listener.onMessage(message);
                 }
-
-                return ActionResult.PASS;
+                return message;
             });
 
-    ActionResult onMessage(Text message);
+    Text onMessage(Text message);
 }

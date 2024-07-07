@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
 import java.util.List;
+import java.util.Optional;
 
 public class StackDuplicateMessages {
 
@@ -15,8 +16,8 @@ public class StackDuplicateMessages {
     private static ChatHudLine.Visible lastVisibleMessage = null;
     private static int duplicateCount = 1;
 
-    public static ActionResult onMessage(Text message) {
-        if (!ConfigsHandler.getConfigBoolean("stackDuplicateMessages")) return ActionResult.SUCCESS;
+    public static Text onMessage(Text message) {
+        if (!ConfigsHandler.getConfigBoolean("stackDuplicateMessages")) return message;
 
         try {
             ChatHud chatHud = MinecraftClient.getInstance().inGameHud.getChatHud();
@@ -26,28 +27,31 @@ public class StackDuplicateMessages {
                 duplicateCount++;
                 // Visible messages are split per line, not per message, so remove all lines that were created at
                 // the same time as the last message to remove the visible message
-                if (visibleMessages.size() > 0) {
+                if (!visibleMessages.isEmpty()) {
                     while (!visibleMessages.get(0).equals(lastVisibleMessage)) {
                         visibleMessages.remove(0);
-                        if (visibleMessages.size() == 0) break;
+                        if (visibleMessages.isEmpty()) break;
                     }
                     messages.remove(0);
                 }
 
                 // If the previous message is successfully deleted add the duplicate count to the new message
                 // This makes it appear as the previous message gets a number added to it, since they have the same text
-                message.getSiblings().add(Text.of((message.getString().endsWith(" ") ? "" : " ") + String.format("§7(%s)", duplicateCount)));
+                Text tmpMessage = Text.of("");
+                tmpMessage.getSiblings().add(message);
+                tmpMessage.getSiblings().add(Text.of((message.getString().endsWith(" ") ? "" : " ") + String.format("§7(%s)", duplicateCount)));
+                message = tmpMessage;
             } else {
                 duplicateCount = 1;
                 lastMessage = message;
             }
-            if (visibleMessages.size() > 0) {
+            if (!visibleMessages.isEmpty()) {
                 lastVisibleMessage = visibleMessages.get(0);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return ActionResult.SUCCESS;
+        return message;
     }
 }

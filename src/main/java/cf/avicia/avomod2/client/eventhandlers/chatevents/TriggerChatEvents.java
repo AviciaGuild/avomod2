@@ -13,24 +13,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TriggerChatEvents {
-    public static ActionResult onMessage(Text message) {
-        if (ConfigsHandler.getConfigBoolean("disableAll")) return ActionResult.SUCCESS;
+    public static Text onMessage(Text message) {
+        if (ConfigsHandler.getConfigBoolean("disableAll")) return message;
 
-        List<ActionResult> actionResults = new ArrayList<>();
-        actionResults.add(ShowRealName.onMessage(message));
-        actionResults.add(MakeShoutsClickable.onMessage(message));
-        actionResults.add(AutoSkipDialogue.onMessage(message));
-        actionResults.add(FilterMessages.onMessage(message));
-        actionResults.add(CongratulateCommand.onMessage(message));
-        actionResults.add(StackDuplicateMessages.onMessage(message));
-        actionResults.add(AttackedTerritoryDifficulty.onMessage(message));
-        actionResults.add(BombBellTracker.onMessage(message));
-        actionResults.add(WarDPS.onMessage(message));
-        actionResults.add(WarTracker.onMessage(message));
-        if (actionResults.contains(ActionResult.FAIL)) {
-            return ActionResult.FAIL;
-        } else {
-            return ActionResult.SUCCESS;
+
+        message = ShowRealName.onMessage(message);
+        if (message == null) {
+            return null;
         }
+        MakeShoutsClickable.onMessage(message);
+        AutoSkipDialogue.onMessage(message);
+        message = FilterMessages.onMessage(message);
+        if (message == null) {
+            return null;
+        }
+        CongratulateCommand.onMessage(message);
+        message = StackDuplicateMessages.onMessage(message);
+        if (message == null) {
+            return null;
+        }
+        AttackedTerritoryDifficulty.onMessage(message);
+        BombBellTracker.onMessage(message);
+        WarDPS.onMessage(message);
+        WarTracker.onMessage(message);
+        return message;
     }
 }

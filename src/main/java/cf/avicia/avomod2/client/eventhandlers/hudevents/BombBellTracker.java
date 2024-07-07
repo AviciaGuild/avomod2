@@ -68,28 +68,28 @@ public class BombBellTracker {
         getElementsToDraw(storedBombs).draw(drawContext);
     }
 
-    public static ActionResult onMessage(Text message) {
-        if (!ConfigsHandler.getConfigBoolean("bombBellTracker")) return ActionResult.SUCCESS;
+    public static Text onMessage(Text message) {
+        if (!ConfigsHandler.getConfigBoolean("bombBellTracker")) return message;
         // Avoid registering fake bomb bell messages sent by nicked CHAMPION players
         if (message.getSiblings().size() > 0) {
             for (Text siblingMessage : message.getSiblings()) {
                 if (ShowRealName.messageHasNickHover(siblingMessage)) {
-                    return ActionResult.SUCCESS;
+                    return message;
                 }
             }
         }
 
         String unformattedMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
-        if (unformattedMessage == null || !unformattedMessage.startsWith("[Bomb Bell]")) return ActionResult.SUCCESS;
+        if (unformattedMessage == null || !unformattedMessage.startsWith("[Bomb Bell]")) return message;
 
         ArrayList<String> matches = Utils.getMatches(unformattedMessage, "(?<= thrown a )[a-zA-Z ]+(?= Bomb on)|(?<= on WC)\\d{1,4}");
-        if (matches.size() != 2) return ActionResult.SUCCESS;
+        if (matches.size() != 2) return message;
 
         String bombName = matches.get(0);
         String world = matches.get(1);
 
         BombType bombType = BombType.getBombType(bombName);
-        if(bombType == null) return ActionResult.SUCCESS;
+        if(bombType == null) return message;
 
         BombData bombData = new BombData(world, bombType);
 
@@ -97,7 +97,7 @@ public class BombBellTracker {
             storedBombs.add(bombData);
         }
 
-        return ActionResult.SUCCESS;
+        return message;
     }
 
     public static ActionResult mouseClicked(double mouseX, double mouseY) {

@@ -186,10 +186,10 @@ public class WarDPS {
         return new ElementGroup("warDPS", 1F, elementList);
     }
 
-    public static ActionResult onMessage(Text message) {
+    public static Text onMessage(Text message) {
 
         String unformattedMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
-        if (unformattedMessage == null) return ActionResult.SUCCESS;
+        if (unformattedMessage == null) return message;
 
         if (ConfigsHandler.getConfigBoolean("dpsInWars") && System.currentTimeMillis() - lastTimeInWar < 5000 && unformattedMessage.contains(previousTerritoryName.trim())) {
             // If you saw a tower health bar less than 5 seconds ago (if you're in a war)
@@ -200,7 +200,7 @@ public class WarDPS {
                 warEnded(false);
             }
         }
-        return ActionResult.SUCCESS;
+        return message;
     }
 
     public static ActionResult onRenderBossBar(DrawContext drawContext, int x, int y, BossBar bossBar) {
