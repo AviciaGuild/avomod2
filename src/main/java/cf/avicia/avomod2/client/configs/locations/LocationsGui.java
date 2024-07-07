@@ -7,6 +7,7 @@ import cf.avicia.avomod2.client.locationselements.ElementGroup;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
@@ -49,17 +50,17 @@ public class LocationsGui extends Screen {
     public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
         // Makes blur
         this.renderBackground(drawContext, mouseX, mouseY, delta);
-        // Draws a shadowed string with a dark color, to make it easier to read depending on the background
         drawContext.getMatrices().push();
         drawContext.getMatrices().scale(2.0F, 2.0F, 2.0F);
-        drawContext.drawCenteredTextWithShadow(textRenderer, "AvoMod Locations", this.width / 4 + 1, 11, 0x444444);
         drawContext.drawCenteredTextWithShadow(textRenderer, "AvoMod Locations", this.width / 4, 10, 0x1B33CF);
         drawContext.getMatrices().pop();
 
         if (items != null) {
             items.forEach(eg -> eg.drawGuiElement(drawContext));
         }
-        super.render(drawContext, mouseX, mouseY, delta);
+        for (Drawable drawable : this.drawables) {
+            drawable.render(drawContext, mouseX, mouseY, delta);
+        }
     }
 
     @Override

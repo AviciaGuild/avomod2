@@ -43,7 +43,7 @@ public class BeaconManager {
 
         matrices.push();
         matrices.translate(beaconDeltaX, beaconDeltaY, beaconDeltaZ);
-        BeaconBlockEntityRenderer.renderBeam(matrices, vertexConsumerProvider, BeaconBlockEntityRenderer.BEAM_TEXTURE, ctx.tickDelta(), 1.0F, ctx.world().getTime(), 0, BeaconBlockEntityRenderer.MAX_BEAM_HEIGHT, color.getRGBComponents(new float[4]), 0.2F, 0.25F);
+        BeaconBlockEntityRenderer.renderBeam(matrices, vertexConsumerProvider, BeaconBlockEntityRenderer.BEAM_TEXTURE, ctx.tickCounter().getTickDelta(true), 1.0F, ctx.world().getTime(), 0, BeaconBlockEntityRenderer.MAX_BEAM_HEIGHT, color.getRGB(), 0.2F, 0.25F);
         matrices.pop();
 
         matrices.push();

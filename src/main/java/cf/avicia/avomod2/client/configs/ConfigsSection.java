@@ -36,8 +36,6 @@ public class ConfigsSection {
     }
 
     public void drawSection(ConfigsGui configsGui, int x, int y) {
-        configsGui.drawContext.drawTextWithShadow(MinecraftClient.getInstance().inGameHud.getTextRenderer(), title, x, y, 0xFFFFFF);
-
         if (button != null) {
             button.setX(x);
             button.setY(y + configsGui.settingHeight - 5);
@@ -48,5 +46,9 @@ public class ConfigsSection {
             textField.setY(y + configsGui.settingHeight);
             configsGui.addTextField(textField);
         }
+//        configsGui.drawContext.getMatrices().push();
+//        configsGui.drawContext.getMatrices().translate(0f, 0f, 800f);
+        configsGui.drawContext.drawTextWithShadow(MinecraftClient.getInstance().inGameHud.getTextRenderer(), title, x, y, 0xFFFFFF);
+//        configsGui.drawContext.getMatrices().pop();
     }
 }

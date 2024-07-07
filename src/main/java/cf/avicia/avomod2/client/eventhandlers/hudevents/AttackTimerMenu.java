@@ -11,8 +11,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.ScoreboardEntry;
 import net.minecraft.scoreboard.ScoreboardObjective;
-import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import oshi.util.tuples.Pair;
@@ -188,9 +188,9 @@ public class AttackTimerMenu {
 
         List<String> upcomingAttacks = new ArrayList<>();
         for (ScoreboardObjective score : scoreboard.getObjectives()) {
-            for (ScoreboardPlayerScore allPlayerScore : scoreboard.getAllPlayerScores(score)) {
-                if (attackTimerPattern.matcher(allPlayerScore.getPlayerName()).find()) {
-                    upcomingAttacks.add(Utils.getUnformattedString(allPlayerScore.getPlayerName()).substring(2));
+            for (ScoreboardEntry allPlayerScore : scoreboard.getScoreboardEntries(score)) {
+                if (attackTimerPattern.matcher(allPlayerScore.name().getString()).find()) {
+                    upcomingAttacks.add(Utils.getUnformattedString(allPlayerScore.name().getString()).substring(2));
                 }
             }
             break;

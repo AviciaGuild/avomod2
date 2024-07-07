@@ -6,8 +6,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -32,7 +33,7 @@ public class AttackedTerritoryDifficulty {
 
             DefaultedList<Slot> containerSlots = client.player.currentScreenHandler.slots;
             ItemStack attackInfoItem = containerSlots.get(13).getStack();
-            List<Text> territoryLore = attackInfoItem.getTooltip(client.player, TooltipContext.Default.ADVANCED);
+            List<Text> territoryLore = attackInfoItem.getTooltip(Item.TooltipContext.DEFAULT, client.player, TooltipType.ADVANCED);
             if (territoryLore.size() < 2) {
                 return;
             }

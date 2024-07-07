@@ -24,6 +24,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
 
@@ -41,7 +42,7 @@ public class AvoMod2Client implements ClientModInitializer {
         GuildBankKeybind.init();
 
         ChatMessageCallback.EVENT.register(TriggerChatEvents::onMessage);
-        HudRenderCallback.EVENT.register(TriggerHudEvents::onRender);
+        HudRenderCallback.EVENT.register((context, renderTickCounter) -> TriggerHudEvents.onRender(context));
         RenderBossBarCallback.EVENT.register(TriggerHudEvents::onBossBarRender);
         ChatMouseClickedCallback.EVENT.register(TriggerChatMouseClickedEvents::mouseClicked);
         InventoryMouseClickedCallback.EVENT.register(TriggerInventoryMouseClickedEvents::mouseClicked);

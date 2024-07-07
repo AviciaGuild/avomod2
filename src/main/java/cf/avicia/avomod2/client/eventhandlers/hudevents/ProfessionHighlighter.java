@@ -8,7 +8,8 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.Item;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
@@ -76,7 +77,7 @@ public class ProfessionHighlighter {
             if (selectedProfIndex == 0) return;
             for (Slot slot : containerSlots) {
                 if (slot.getStack().getName().getString().equals("Air")) continue;
-                List<Text> territoryLore = slot.getStack().getTooltip(MinecraftClient.getInstance().player, TooltipContext.Default.ADVANCED);
+                List<Text> territoryLore = slot.getStack().getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.ADVANCED);
                 boolean loreContainsProf = territoryLore.stream().anyMatch(e -> e.getString().contains(profOptions.get(selectedProfIndex))) && territoryLore.stream().anyMatch(e -> e.getString().contains("Lv. Min:"));
                 if (loreContainsProf) {
                     highlightedSlots.add(new Point(slot.x, slot.y));

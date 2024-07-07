@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TriggerHudEvents {
-    public static void onRender(DrawContext drawContext, float tickDelta) {
+    public static void onRender(DrawContext drawContext) {
         if (ConfigsHandler.getConfigBoolean("disableAll")) return;
         WorldInfoOnTab.render(drawContext);
         AttackTimerMenu.render(drawContext);
