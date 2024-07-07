@@ -14,7 +14,7 @@ public class TradeMarketMiddleClickSearch {
 
     public static ActionResult mouseClicked(double mouseX, double mouseY, int button, Slot clickedSlot, ScreenHandler screenHandler) {
         if (MinecraftClient.getInstance().player == null || MinecraftClient.getInstance().currentScreen == null ||
-                !MinecraftClient.getInstance().currentScreen.getTitle().getString().equals("Trade Market") ||
+                !MinecraftClient.getInstance().currentScreen.getTitle().getString().equals("\uDAFF\uDFE8\uE011") ||
                 MinecraftClient.getInstance().getNetworkHandler() == null ||
                 button != 2 || clickedSlot == null) {
             return ActionResult.SUCCESS;
@@ -22,40 +22,19 @@ public class TradeMarketMiddleClickSearch {
         String name = Utils.getUnformattedString(clickedSlot.getStack().getName().getString());
         if (name.equals("Air")) return ActionResult.SUCCESS;
 
-        ItemStack compass = screenHandler.slots.get(35).getStack();
+        ItemStack searchItem = screenHandler.slots.get(47).getStack();
 
-        if (!compass.getName().getString().contains("Search Item") || executing) return ActionResult.SUCCESS;
+        if (!searchItem.getName().getString().contains("Search and Filter") || executing) return ActionResult.SUCCESS;
         executing = true;
 
         new Thread(() -> {
             Utils.sendClickPacket(
                     screenHandler,
-                    35,
+                    47,
                     0,
                     SlotActionType.PICKUP,
-                    compass
+                    searchItem
             );
-
-            for (int i = 0; i < 5; i++) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                ScreenHandler currentScreenHandler = MinecraftClient.getInstance().player.currentScreenHandler;
-                ItemStack sign = currentScreenHandler.slots.get(3).getStack();
-
-                if (!sign.getName().getString().contains("Add Name Contains Filter")) continue;
-
-                Utils.sendClickPacket(
-                        currentScreenHandler,
-                        3,
-                        0,
-                        SlotActionType.PICKUP,
-                        sign
-                );
-                break;
-            }
 
             try {
                 Thread.sleep(500);
@@ -64,26 +43,6 @@ public class TradeMarketMiddleClickSearch {
             }
 
             MinecraftClient.getInstance().getNetworkHandler().sendChatMessage(name.replaceAll(" \\[.*]|[^A-Za-z0-9 \\-']", ""));
-
-            for (int i = 0; i < 5; i++) {
-                try {
-                    Thread.sleep(500);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                ScreenHandler currentScreenHandler = MinecraftClient.getInstance().player.currentScreenHandler;
-                ItemStack searchItem = currentScreenHandler.slots.get(53).getStack();
-                if (!searchItem.getName().getString().contains("Search")) continue;
-
-                Utils.sendClickPacket(
-                        currentScreenHandler,
-                        53,
-                        0,
-                        SlotActionType.PICKUP,
-                        searchItem
-                );
-                break;
-            }
 
             executing = false;
         }).start();
