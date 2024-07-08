@@ -71,12 +71,8 @@ public class BombBellTracker {
     public static Text onMessage(Text message) {
         if (!ConfigsHandler.getConfigBoolean("bombBellTracker")) return message;
         // Avoid registering fake bomb bell messages sent by nicked CHAMPION players
-        if (message.getSiblings().size() > 0) {
-            for (Text siblingMessage : message.getSiblings()) {
-                if (ShowRealName.messageHasNickHover(siblingMessage)) {
-                    return message;
-                }
-            }
+        if (ShowRealName.messageHasNickHoverDeep(message)) {
+            return message;
         }
 
         String unformattedMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());

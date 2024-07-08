@@ -36,7 +36,8 @@ public class WarDPS {
     private static double lowerDpsDisplay = 0;
     private static double higherDpsDisplay = 0;
     private static long timeDisplay = 0;
-
+    private static String newWarMessagePrefix = "󏿼󏿿󏿾";
+    private static String repeatedWarMessagePrefix = "󏿼󐀆";
 
     public static void execute(String[] bossBarWords) {
         try {
@@ -190,13 +191,16 @@ public class WarDPS {
 
         String unformattedMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
         if (unformattedMessage == null) return message;
-
+        unformattedMessage = unformattedMessage.replaceAll(newWarMessagePrefix, "").replaceAll(repeatedWarMessagePrefix, "").replaceAll("\\s+", " ").trim();
         if (ConfigsHandler.getConfigBoolean("dpsInWars") && System.currentTimeMillis() - lastTimeInWar < 5000 && unformattedMessage.contains(previousTerritoryName.trim())) {
+            if (message.getString().contains("You have taken control of")) {
+                MinecraftClient.getInstance().keyboard.setClipboard(message.getString());
+            }
             // If you saw a tower health bar less than 5 seconds ago (if you're in a war)
-            if (unformattedMessage.startsWith("[WAR] You have taken control of ")) {
+            if (unformattedMessage.startsWith("You have taken control of ")) {
                 warEnded(true);
             }
-            if (unformattedMessage.startsWith("[WAR] Your guild has lost the war for ") || unformattedMessage.startsWith("Your active attack was canceled and refunded to your headquarter")) {
+            if (unformattedMessage.startsWith("Your guild has lost the war for ") || unformattedMessage.startsWith("Your active attack was canceled and refunded to your headquarter")) {
                 warEnded(false);
             }
         }
