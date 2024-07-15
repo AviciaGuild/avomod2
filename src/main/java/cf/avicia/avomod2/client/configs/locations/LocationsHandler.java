@@ -22,6 +22,7 @@ public class LocationsHandler {
         put("tabStatusDisplay", "0.4,.1,true");
         put("warDPS", "0,0.2,true");
         put("bombBellTracker", "1,0.25,false");
+        put("territoryName", "1,0.75,false");
     }};
 
     public static void initializeLocations() {

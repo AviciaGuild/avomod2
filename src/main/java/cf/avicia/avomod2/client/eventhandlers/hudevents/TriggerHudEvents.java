@@ -1,6 +1,7 @@
 package cf.avicia.avomod2.client.eventhandlers.hudevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
+import cf.avicia.avomod2.client.renderer.TerritoryOutlineRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.util.ActionResult;
@@ -17,6 +18,7 @@ public class TriggerHudEvents {
         BombBellTracker.render(drawContext);
         AuraHandler.render(drawContext);
         WarDPS.render(drawContext);
+        TerritoryOutlineRenderer.renderText(drawContext);
     }
 
     public static ActionResult onBossBarRender(DrawContext drawContext, int x, int y, BossBar bossBar) {

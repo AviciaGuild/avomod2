@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class TerritoryData {
     private final static Map<String, String> defenses = new HashMap<>();
     public static List<String> territoryList;
-    private static JsonObject territoryData;
+    public static JsonObject territoryData;
     public static TerritoriesHolder advancementsTerritoryData;
     private static boolean hasDataBeenRequested = false;
     private static boolean hasServerBeenStarted = false;

@@ -4,6 +4,7 @@ import cf.avicia.avomod2.client.AvoMod2Client;
 import cf.avicia.avomod2.client.configs.ConfigsGui;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.*;
 import cf.avicia.avomod2.client.locationselements.ElementGroup;
+import cf.avicia.avomod2.client.renderer.TerritoryOutlineRenderer;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -39,7 +40,8 @@ public class LocationsGui extends Screen {
 //                TabStatusDisplay.getElementsToDraw(Arrays.asList("Stealth Attack (00:01) x1", "90% Damage Bonus (00:04) x1")),
                 WarDPS.getElementsToDraw(224, 12523563, 24400, 36000),
                 BombBellTracker.getElementsToDraw(BombBellTracker.getSampleData()),
-                WorldInfoOnTab.getElementsToDraw()
+                WorldInfoOnTab.getElementsToDraw(),
+                TerritoryOutlineRenderer.getElementsToDraw("Detlas")
         );
         Screens.getButtons(this).add(new ResetLocationsButton( this.width / 2 - 50, this.height - 30, 100, 20, "Reset to Defaults", this));
         Screens.getButtons(this).add(new ButtonWidget.Builder( Text.of("Configs"), button -> AvoMod2Client.screenToRender = new ConfigsGui()).dimensions(10, 10, 50, 20).build());

@@ -15,6 +15,7 @@ import cf.avicia.avomod2.client.eventhandlers.hudevents.WorldInfoOnTab;
 import cf.avicia.avomod2.client.eventhandlers.inventoryclickedevents.TriggerInventoryMouseClickedEvents;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.GuildBankKeybind;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.TriggerScreenEvents;
+import cf.avicia.avomod2.client.renderer.TerritoryOutlineRenderer;
 import cf.avicia.avomod2.utils.BeaconManager;
 import cf.avicia.avomod2.utils.TerritoryData;
 import net.fabricmc.api.ClientModInitializer;
@@ -24,7 +25,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
 
@@ -40,6 +40,7 @@ public class AvoMod2Client implements ClientModInitializer {
         LocationsHandler.initializeLocations();
         CommandInitializer.initializeCommands();
         GuildBankKeybind.init();
+        TerritoryOutlineRenderer.initKeybind();
 
         ChatMessageCallback.EVENT.register(TriggerChatEvents::onMessage);
         HudRenderCallback.EVENT.register((context, renderTickCounter) -> TriggerHudEvents.onRender(context));
@@ -50,12 +51,14 @@ public class AvoMod2Client implements ClientModInitializer {
         WorldRenderEvents.AFTER_ENTITIES.register(context -> {
             BeaconManager.onWorldRender(context);
             WarTracker.afterEntityRender();
+            TerritoryOutlineRenderer.renderOutline(context);
         });
 
         ScreenEvents.AFTER_INIT.register(TriggerScreenEvents::afterInit);
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             TerritoryData.onTick();
             GuildBankKeybind.onTick();
+            TerritoryOutlineRenderer.onTick();
             WarTracker.onTick();
 
             if (screenToRender != null) {
