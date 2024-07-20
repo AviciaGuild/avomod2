@@ -21,6 +21,7 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3d;
 import oshi.util.tuples.Pair;
 
 import java.awt.*;
@@ -51,7 +52,7 @@ public class TerritoryOutlineRenderer {
         }
         if (MinecraftClient.getInstance().player != null && context.matrixStack() != null && TerritoryData.territoryData != null) {
             Camera camera = context.camera();
-
+            Vec3d playerPos = MinecraftClient.getInstance().player.getPos();
             for (Map.Entry<String, JsonElement> territory : TerritoryData.territoryData.entrySet()) {
                 JsonObject locationObject = territory.getValue().getAsJsonObject().getAsJsonObject("location");
                 int apiStartX = locationObject.get("start").getAsJsonArray().get(0).getAsInt();
@@ -63,34 +64,48 @@ public class TerritoryOutlineRenderer {
                 int endX = Math.max(apiStartX, apiEndX);
                 int endZ = Math.max(apiStartZ, apiEndZ);
 
-                WorldRenderer.drawBox(
-                        context.matrixStack(),
-                        context.consumers().getBuffer(RenderLayer.getLines()),
-                        startX - camera.getPos().x + .2,
-                        MinecraftClient.getInstance().player.getY() + .1 - camera.getPos().y,
-                        startZ - camera.getPos().z + .2,
-                        endX - camera.getPos().x - .2,
-                        MinecraftClient.getInstance().player.getY() + .2 - camera.getPos().y,
-                        endZ - camera.getPos().z - .2,
-                        100000,
-                        100000,
-                        0,
-                        100
-                );
-                WorldRenderer.drawBox(
-                        context.matrixStack(),
-                        context.consumers().getBuffer(RenderLayer.getLines()),
-                        startX - camera.getPos().x,
-                        MinecraftClient.getInstance().player.getY() + .1 - camera.getPos().y,
-                        startZ - camera.getPos().z,
-                        endX - camera.getPos().x,
-                        MinecraftClient.getInstance().player.getY() + .1 - camera.getPos().y,
-                        endZ - camera.getPos().z,
-                        0,
-                        0,
-                        0,
-                        1000000
-                );
+                double dist = Math.min(Math.abs(playerPos.x - startX), Math.abs(playerPos.x - endX)) + Math.min(Math.abs(playerPos.z - startZ), Math.abs(playerPos.z - endZ));
+                int maxDistance = MinecraftClient.getInstance().options.getClampedViewDistance() * 15;
+                if (dist > maxDistance) {
+                    continue;
+                }
+                final int lineAmount = 50;
+                float xLength = (startX - endX) / (2f *(float) lineAmount);
+                float zLength = (startZ - endZ) / (2f * (float) lineAmount);
+                final int levelHeight = 30;
+                for (int level = -1; level < 2; level++) {
+                    for (int i = 0; i < lineAmount; i++) {
+                        WorldRenderer.drawBox(
+                                context.matrixStack(),
+                                context.consumers().getBuffer(RenderLayer.getLines()),
+                                startX - camera.getPos().x - i * xLength,
+                                MinecraftClient.getInstance().player.getY() + .1 + levelHeight * level - camera.getPos().y,
+                                startZ - camera.getPos().z - i * zLength,
+                                endX - camera.getPos().x + i * xLength,
+                                MinecraftClient.getInstance().player.getY() + .1 + levelHeight * level - camera.getPos().y,
+                                endZ - camera.getPos().z + i * zLength,
+                                1 - i / (float) lineAmount,
+                                i / (float) lineAmount,
+                                0,
+                                .7f
+                        );
+                    }
+                    WorldRenderer.drawBox(
+                            context.matrixStack(),
+                            context.consumers().getBuffer(RenderLayer.getLines()),
+                            startX - camera.getPos().x,
+                            MinecraftClient.getInstance().player.getY() + .1 + levelHeight * level - camera.getPos().y,
+                            startZ - camera.getPos().z,
+                            endX - camera.getPos().x,
+                            MinecraftClient.getInstance().player.getY() + .1 + levelHeight * level - camera.getPos().y,
+                            endZ - camera.getPos().z,
+                            0,
+                            0,
+                            0,
+                            1000000
+                    );
+                }
+
             }
         }
     }
