@@ -36,8 +36,8 @@ public class WarDPS {
     private static double lowerDpsDisplay = 0;
     private static double higherDpsDisplay = 0;
     private static long timeDisplay = 0;
-    private static String newWarMessagePrefix = "󏿼󏿿󏿾";
-    private static String repeatedWarMessagePrefix = "󏿼󐀆";
+    private static final String newWarMessagePrefix = "󏿼󏿿󏿾";
+    private static final String repeatedWarMessagePrefix = "󏿼󐀆";
 
     public static void execute(String[] bossBarWords) {
         try {

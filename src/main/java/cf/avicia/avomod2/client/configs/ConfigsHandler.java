@@ -33,6 +33,7 @@ public class ConfigsHandler {
             new ConfigToggle("War", "Aura Ping", "Enabled", "auraPing"),
             new ConfigInput("War", "Aura Ping Color", "FF6F00", "[\\da-fA-F]+", "^[\\da-fA-F]{6}$", 6, "auraPingColor"),
             new ConfigToggle("War", "Display Weekly Warcount on Screen", "Disabled", "displayWeeklyWarcount"),
+            new ConfigToggle("War", "Play a sound when a territory gets taken", "Disabled", "territoryTakenSound"),
             new ConfigToggle("War", "(NOT IMPLEMENTED)Prevent joining wars when afk", "Enabled", "afkWarProtection"),
             new ConfigInput("War", "(NOT IMPLEMENTED)Minutes until considered afk", "10", "[0-9]+", "^[0-9]+$", 3, "afkTime"),
             new ConfigInput("War", "(NOT IMPLEMENTED)Territory attack confirmation threshold", "15000", "[0-9]+", "^[0-9]+$", 6, "attackConfirmation"),

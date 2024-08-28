@@ -35,6 +35,7 @@ public class TriggerChatEvents {
         AttackedTerritoryDifficulty.onMessage(message);
         BombBellTracker.onMessage(message);
         WarDPS.onMessage(message);
+        TerritoryTakenWarning.onMessage(message);
         WarTracker.onMessage(message);
         return message;
     }
