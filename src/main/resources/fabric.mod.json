@@ -22,8 +22,8 @@
     "avomod2.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.11",
     "fabric": "*",
-    "minecraft": "1.21"
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "${minecraft_version}"
   }
 }
