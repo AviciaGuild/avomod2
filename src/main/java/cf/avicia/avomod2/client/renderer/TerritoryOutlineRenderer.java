@@ -14,13 +14,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.*;
+import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import oshi.util.tuples.Pair;
 
@@ -43,9 +40,10 @@ public class TerritoryOutlineRenderer {
 
         if (keyBinding.wasPressed()) {
             showOutline = !showOutline;
-            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of(showOutline ? "§7Territory outlines §aEnabled": "§7Territory outlines §cDisabled"));
+            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of(showOutline ? "§7Territory outlines §aEnabled" : "§7Territory outlines §cDisabled"));
         }
     }
+
     public static void renderOutline(WorldRenderContext context) {
         if (!showOutline) {
             return;
@@ -69,40 +67,25 @@ public class TerritoryOutlineRenderer {
                 if (dist > maxDistance) {
                     continue;
                 }
-                final int lineAmount = 50;
-                float xLength = (startX - endX) / (2f *(float) lineAmount);
-                float zLength = (startZ - endZ) / (2f * (float) lineAmount);
-                final int levelHeight = 30;
-                for (int level = -1; level < 2; level++) {
-                    for (int i = 0; i < lineAmount; i++) {
-                        WorldRenderer.drawBox(
-                                context.matrixStack(),
-                                context.consumers().getBuffer(RenderLayer.getLines()),
-                                startX - camera.getPos().x - i * xLength,
-                                MinecraftClient.getInstance().player.getY() + .1 + levelHeight * level - camera.getPos().y,
-                                startZ - camera.getPos().z - i * zLength,
-                                endX - camera.getPos().x + i * xLength,
-                                MinecraftClient.getInstance().player.getY() + .1 + levelHeight * level - camera.getPos().y,
-                                endZ - camera.getPos().z + i * zLength,
-                                1 - i / (float) lineAmount,
-                                i / (float) lineAmount,
-                                0,
-                                .7f
-                        );
-                    }
-                    WorldRenderer.drawBox(
+                int xPos = MinecraftClient.getInstance().player.getBlockPos().getX();
+                int zPos = MinecraftClient.getInstance().player.getBlockPos().getZ();
+                String currentTerritory = TerritoryData.territoryAtCoordinates(new Pair<>(xPos, zPos));
+                boolean inTerr = currentTerritory != null && currentTerritory.equals(territory.getKey());
+
+                for (int level = -20; level < 20; level++) {
+                    DebugRenderer.drawBox(
                             context.matrixStack(),
-                            context.consumers().getBuffer(RenderLayer.getLines()),
+                            context.consumers(),
                             startX - camera.getPos().x,
-                            MinecraftClient.getInstance().player.getY() + .1 + levelHeight * level - camera.getPos().y,
+                            16 * level - camera.getPos().y,
                             startZ - camera.getPos().z,
                             endX - camera.getPos().x,
-                            MinecraftClient.getInstance().player.getY() + .1 + levelHeight * level - camera.getPos().y,
+                            16 * level - camera.getPos().y,
                             endZ - camera.getPos().z,
+                            inTerr ? 0 : 1,
+                            inTerr ? 1 : 0,
                             0,
-                            0,
-                            0,
-                            1000000
+                            .5f
                     );
                 }
 
@@ -113,6 +96,7 @@ public class TerritoryOutlineRenderer {
     public static void renderText(DrawContext drawContext) {
         getElementsToDraw().draw(drawContext);
     }
+
     public static ElementGroup getElementsToDraw() {
         List<Element> elementsList = new ArrayList<>();
         float scale = 1F;
@@ -136,6 +120,7 @@ public class TerritoryOutlineRenderer {
 
         return new ElementGroup("territoryName", scale, elementsList);
     }
+
     public static ElementGroup getElementsToDraw(String placeholder) {
         List<Element> elementsList = new ArrayList<>();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
