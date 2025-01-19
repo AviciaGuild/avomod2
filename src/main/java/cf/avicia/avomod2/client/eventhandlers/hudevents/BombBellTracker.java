@@ -37,7 +37,7 @@ public class BombBellTracker {
             double timeLeft = storedBomb.getTimeLeft();
             int minutesLeft = (int) timeLeft / 60;
             int secondsLeft = (int) timeLeft % 60;
-            String message = String.format("%s Bomb on WC%s - %02dm %02ds", storedBomb.getBombType().getBombName(), storedBomb.getWorld(), minutesLeft, secondsLeft);
+            String message = String.format("%s Bomb on %s - %02dm %02ds", storedBomb.getBombType().getBombName(), storedBomb.getWorld(), minutesLeft, secondsLeft);
 
             int rectangleWidth = MinecraftClient.getInstance().textRenderer.getWidth(message) + 4;
             float x = LocationsHandler.getStartX("bombBellTracker", rectangleWidth, scale);
@@ -70,15 +70,11 @@ public class BombBellTracker {
 
     public static Text onMessage(Text message) {
         if (!ConfigsHandler.getConfigBoolean("bombBellTracker")) return message;
-        // Avoid registering fake bomb bell messages sent by nicked CHAMPION players
-        if (ShowRealName.messageHasNickHoverDeep(message)) {
-            return message;
-        }
 
         String unformattedMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
         if (unformattedMessage == null || !unformattedMessage.startsWith("[Bomb Bell]")) return message;
 
-        ArrayList<String> matches = Utils.getMatches(unformattedMessage, "(?<= thrown a )[a-zA-Z ]+(?= Bomb on)|(?<= on WC)\\d{1,4}");
+        ArrayList<String> matches = Utils.getMatches(unformattedMessage, "(?<= thrown a )[a-zA-Z ]+(?= Bomb on)|(?<= on )(?:NA|EU)\\d{1,4}");
         if (matches.size() != 2) return message;
 
         String bombName = matches.get(0);

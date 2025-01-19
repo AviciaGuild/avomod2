@@ -30,7 +30,7 @@ public class MakeShoutsClickable {
     }
 
     private static boolean isMessageShout(Text message) {
-        Pattern pattern = Pattern.compile("^(.* \\[WC\\d*] shouts:) .*", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile("^(.* \\[(?:NA|EU)\\d*] shouts:) .*", Pattern.CASE_INSENSITIVE);
         String messageString =  Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
         return pattern.matcher(messageString).find();
     }
