@@ -193,9 +193,6 @@ public class WarDPS {
         if (unformattedMessage == null) return message;
         unformattedMessage = unformattedMessage.replaceAll(newWarMessagePrefix, "").replaceAll(repeatedWarMessagePrefix, "").replaceAll("\\s+", " ").trim();
         if (ConfigsHandler.getConfigBoolean("dpsInWars") && System.currentTimeMillis() - lastTimeInWar < 5000 && unformattedMessage.contains(previousTerritoryName.trim())) {
-            if (message.getString().contains("You have taken control of")) {
-                MinecraftClient.getInstance().keyboard.setClipboard(message.getString());
-            }
             // If you saw a tower health bar less than 5 seconds ago (if you're in a war)
             if (unformattedMessage.startsWith("You have taken control of ")) {
                 warEnded(true);
