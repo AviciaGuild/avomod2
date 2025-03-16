@@ -1,5 +1,10 @@
 accessWidener	v1	named
 accessible field net/minecraft/client/gui/hud/ChatHud visibleMessages Ljava/util/List;
 accessible field net/minecraft/client/gui/hud/ChatHud messages Ljava/util/List;
-accessible method net/minecraft/client/gui/widget/ButtonWidget <init> (IIIILnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;Lnet/minecraft/client/gui/widget/ButtonWidget$NarrationSupplier;)V
 accessible field net/minecraft/client/gui/screen/Screen drawables Ljava/util/List;
+accessible method net/minecraft/client/gui/widget/ButtonWidget <init> (IIIILnet/minecraft/text/Text;Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;Lnet/minecraft/client/gui/widget/ButtonWidget$NarrationSupplier;)V
+accessible field net/minecraft/client/MinecraftClient window Lnet/minecraft/client/util/Window;
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen x I
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen y I
+accessible field net/minecraft/client/gui/widget/ButtonWidget DEFAULT_NARRATION_SUPPLIER Lnet/minecraft/client/gui/widget/ButtonWidget$NarrationSupplier;
+accessible field net/minecraft/client/gui/widget/TextFieldWidget textRenderer Lnet/minecraft/client/font/TextRenderer;

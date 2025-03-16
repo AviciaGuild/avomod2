@@ -3,10 +3,7 @@ package cf.avicia.avomod2.client;
 import cf.avicia.avomod2.client.commands.CommandInitializer;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.client.configs.locations.LocationsHandler;
-import cf.avicia.avomod2.client.customevents.ChatMessageCallback;
-import cf.avicia.avomod2.client.customevents.ChatMouseClickedCallback;
-import cf.avicia.avomod2.client.customevents.InventoryMouseClickedCallback;
-import cf.avicia.avomod2.client.customevents.RenderBossBarCallback;
+import cf.avicia.avomod2.client.customevents.*;
 import cf.avicia.avomod2.client.eventhandlers.chatclickedevents.TriggerChatMouseClickedEvents;
 import cf.avicia.avomod2.client.eventhandlers.chatevents.TriggerChatEvents;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.TriggerHudEvents;
@@ -16,6 +13,9 @@ import cf.avicia.avomod2.client.eventhandlers.inventoryclickedevents.TriggerInve
 import cf.avicia.avomod2.client.eventhandlers.screenevents.GuildBankKeybind;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.TriggerScreenEvents;
 import cf.avicia.avomod2.client.renderer.TerritoryOutlineRenderer;
+import cf.avicia.avomod2.inventoryoverlay.gui.InventoryOverlay;
+import cf.avicia.avomod2.inventoryoverlay.gui.InventoryRenderer;
+import cf.avicia.avomod2.inventoryoverlay.util.ItemsDataHandler;
 import cf.avicia.avomod2.utils.BeaconManager;
 import cf.avicia.avomod2.utils.TerritoryData;
 import net.fabricmc.api.ClientModInitializer;
@@ -25,6 +25,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 
 
@@ -32,6 +33,7 @@ import net.minecraft.client.gui.screen.Screen;
 public class AvoMod2Client implements ClientModInitializer {
 
     public static Screen screenToRender = null;
+    public static boolean cancelContainerClose = false;
 
     @Override
     public void onInitializeClient() {
@@ -41,12 +43,15 @@ public class AvoMod2Client implements ClientModInitializer {
         CommandInitializer.initializeCommands();
         GuildBankKeybind.init();
         TerritoryOutlineRenderer.initKeybind();
+        ItemsDataHandler.updateItemsFromAPI();
 
         ChatMessageCallback.EVENT.register(TriggerChatEvents::onMessage);
         HudRenderCallback.EVENT.register((context, renderTickCounter) -> TriggerHudEvents.onRender(context));
         RenderBossBarCallback.EVENT.register(TriggerHudEvents::onBossBarRender);
         ChatMouseClickedCallback.EVENT.register(TriggerChatMouseClickedEvents::mouseClicked);
         InventoryMouseClickedCallback.EVENT.register(TriggerInventoryMouseClickedEvents::mouseClicked);
+        OnMouseScrollCallback.EVENT.register(InventoryRenderer::onMouseScroll);
+
 
         WorldRenderEvents.AFTER_ENTITIES.register(context -> {
             BeaconManager.onWorldRender(context);
@@ -60,6 +65,11 @@ public class AvoMod2Client implements ClientModInitializer {
             GuildBankKeybind.onTick();
             TerritoryOutlineRenderer.onTick();
             WarTracker.onTick();
+
+            if (MinecraftClient.getInstance().currentScreen == null && InventoryOverlay.isInteractedWith) {
+                // Hide the overlay if inventories are exited
+                InventoryOverlay.isInteractedWith = false;
+            }
 
             if (screenToRender != null) {
                 client.setScreen(screenToRender);
