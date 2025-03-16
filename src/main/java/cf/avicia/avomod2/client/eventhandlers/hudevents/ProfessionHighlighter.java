@@ -8,6 +8,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.Item;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.screen.slot.Slot;
@@ -34,6 +35,7 @@ public class ProfessionHighlighter {
                 if (buttonWidget.isMouseOver(mouseX, mouseY) && button == 1) {
                     selectedProfIndex = (selectedProfIndex + profOptions.size() - 1) % profOptions.size();
                     buttonWidget.setMessage(Text.of(profOptions.get(selectedProfIndex)));
+                    ClickableWidget.playClickSound(MinecraftClient.getInstance().getSoundManager());
                 }
             }
         });
