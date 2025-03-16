@@ -1,4 +1,4 @@
-package cf.avicia.avomod2.client.eventhandlers.hudevents;
+package cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu;
 
 import cf.avicia.avomod2.utils.*;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
@@ -15,6 +15,7 @@ import net.minecraft.scoreboard.ScoreboardEntry;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import org.jetbrains.annotations.NotNull;
 import oshi.util.tuples.Pair;
 
 import java.awt.*;
@@ -28,6 +29,7 @@ public class AttackTimerMenu {
 
     private static final HashMap<String, ScreenCoordinates> attackCoordinates = new HashMap<>();
     public static final HashMap<String, Pair<String, Long>> savedDefenses = new HashMap<>();
+    public static final HashMap<String, ChatDefenseInfo> chatDefenses = new HashMap<>();
 
     public static void render(DrawContext drawContext) {
         if (!ConfigsHandler.getConfigBoolean("attacksMenu")) return;
@@ -43,7 +45,7 @@ public class AttackTimerMenu {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 //        upcomingAttacks.addAll(Arrays.asList("13:47 Otherwordly Monolith", "5:23 Detlas", "9:52 Guild Hall"));
 
-        if (upcomingAttacks.size() == 0) {
+        if (upcomingAttacks.isEmpty()) {
             BeaconManager.soonestTerritory = null;
             BeaconManager.soonestTerritoryLocation = null;
             BeaconManager.compassTerritory = null;
@@ -98,9 +100,9 @@ public class AttackTimerMenu {
         });
 
         if (!sample) {
-            if (!upcomingAttacksSplit.get(0).getB().equals(BeaconManager.soonestTerritory) || BeaconManager.soonestTerritoryLocation == null) {
-                BeaconManager.soonestTerritory = upcomingAttacksSplit.get(0).getB();
-                BeaconManager.soonestTerritoryLocation = TerritoryData.getMiddleOfTerritory(upcomingAttacksSplit.get(0).getB());
+            if (!upcomingAttacksSplit.getFirst().getB().equals(BeaconManager.soonestTerritory) || BeaconManager.soonestTerritoryLocation == null) {
+                BeaconManager.soonestTerritory = upcomingAttacksSplit.getFirst().getB();
+                BeaconManager.soonestTerritoryLocation = TerritoryData.getMiddleOfTerritory(upcomingAttacksSplit.getFirst().getB());
             }
         }
 
@@ -127,19 +129,7 @@ public class AttackTimerMenu {
                     savedDefenses.put(attack.getB(), savedDefense);
                 }
 
-                String terrDefense = savedDefense.getA();
-                if (terrDefense.equals("Low") || terrDefense.equals("Very Low")) {
-                    terrDefense = "§a" + terrDefense;
-                } else if (terrDefense.equals("Medium")) {
-                    terrDefense = "§e" + terrDefense;
-                } else {
-                    terrDefense = "§c" + terrDefense;
-                }
-
-                String message = "§6" + attack.getB() + " (" + terrDefense + "§6) §b" + attack.getA();
-                if (attack.getB().equals(currentTerritory)) {
-                    message = "§d§l" + attack.getB() + "§6 (" + terrDefense + "§6) §b" + attack.getA();
-                }
+                String message = getAttackString(attack, savedDefense.getA(), currentTerritory, chatDefenses.get(attack.getB()));
 
                 int rectangleWidth = textRenderer.getWidth(message) + 4;
                 float startX = LocationsHandler.getStartX("attacksMenu", rectangleWidth, scale);
@@ -157,6 +147,33 @@ public class AttackTimerMenu {
 
         return new ElementGroup("attacksMenu", 1F, elementsList);
 
+    }
+
+    private static @NotNull String getAttackString(Pair<String, String> attack, String terrDefense, String currentTerritory, ChatDefenseInfo chatDefenseInfo) {
+        terrDefense = getFormattedDifficulty(terrDefense);
+        if (chatDefenseInfo != null && chatDefenseInfo.isRecent()) {
+            terrDefense = terrDefense + "§f/" + getFormattedDifficulty(chatDefenseInfo.defense());
+        }
+        String message = "§6" + attack.getB() + " (" + terrDefense + "§6) §b" + attack.getA();
+        if (attack.getB().equals(currentTerritory)) {
+            message = "§d§l" + attack.getB() + "§6 (" + terrDefense + "§6) §b" + attack.getA();
+        }
+        if (chatDefenseInfo != null && chatDefenseInfo.isRecent()) {
+            String timePassed = Utils.getReadableTimeFromMillis((int) (((System.currentTimeMillis() - chatDefenseInfo.timestamp()))));
+            message = "§f" + chatDefenseInfo.username() + " §7" + timePassed + " ago§f - " + message;
+        }
+        return message;
+    }
+
+    private static @NotNull String getFormattedDifficulty(String terrDefense) {
+        if (terrDefense.equals("Low") || terrDefense.equals("Very Low")) {
+            terrDefense = "§a" + terrDefense;
+        } else if (terrDefense.equals("Medium")) {
+            terrDefense = "§e" + terrDefense;
+        } else {
+            terrDefense = "§c" + terrDefense;
+        }
+        return terrDefense;
     }
 
     public static ActionResult mouseClicked(double mouseX, double mouseY) {

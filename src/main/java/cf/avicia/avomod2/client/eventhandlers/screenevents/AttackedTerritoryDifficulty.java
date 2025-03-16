@@ -1,6 +1,8 @@
 package cf.avicia.avomod2.client.eventhandlers.screenevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
+import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.AttackTimerMenu;
+import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.ChatDefenseInfo;
 import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -11,12 +13,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AttackedTerritoryDifficulty {
 
@@ -67,12 +70,11 @@ public class AttackedTerritoryDifficulty {
     }
 
     public static Text onMessage(Text message) {
-        if (ConfigsHandler.getConfigBoolean("disableAll") ||
-                !ConfigsHandler.getConfigBoolean("terrDefenseInChat")) return message;
+        if (ConfigsHandler.getConfigBoolean("disableAll")) return message;
         String unformattedMessage = Utils.getUnformattedString(message.getString());
         if (unformattedMessage == null) return message;
 
-        if (unformattedMessage.contains("The war for") && unformattedMessage.endsWith("minutes.")) {
+        if (ConfigsHandler.getConfigBoolean("terrDefenseInChat") && unformattedMessage.contains("The war for") && unformattedMessage.endsWith("minutes.")) {
             String territory = unformattedMessage.split("for ")[1].split(" will")[0];
             if (System.currentTimeMillis() - currentTime > 5000 || !territory.equals(currentTerritory))
                 return message;
@@ -81,6 +83,19 @@ public class AttackedTerritoryDifficulty {
                 MinecraftClient.getInstance().getNetworkHandler().sendCommand(String.format("g %s defense is %s", currentTerritory, currentDefense));
             }
         }
+
+        String regex = "(?:\uDAFF\uDFFC\uE006\uDAFF\uDFFF\uE002\uDAFF\uDFFE|\uDAFF\uDFFC\uE001\uDB00\uDC06) [^ ]* (?<username>[^:]+): (?<territory>.+) defense is (?<defense>Very Low|Low|Medium|High|Very High).*";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(unformattedMessage);
+
+        if (matcher.find()) {
+            String username = matcher.group("username");
+            String territory = matcher.group("territory");
+            String defense = matcher.group("defense");
+
+            AttackTimerMenu.chatDefenses.put(territory, new ChatDefenseInfo(username, territory, defense, System.currentTimeMillis()));
+        }
+
         return message;
     }
 

@@ -1,6 +1,7 @@
 package cf.avicia.avomod2.client.eventhandlers.hudevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
+import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.AttackTimerMenu;
 import cf.avicia.avomod2.client.renderer.TerritoryOutlineRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.boss.BossBar;

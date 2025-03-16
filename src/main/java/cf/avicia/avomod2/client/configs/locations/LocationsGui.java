@@ -3,6 +3,7 @@ package cf.avicia.avomod2.client.configs.locations;
 import cf.avicia.avomod2.client.AvoMod2Client;
 import cf.avicia.avomod2.client.configs.ConfigsGui;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.*;
+import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.AttackTimerMenu;
 import cf.avicia.avomod2.client.locationselements.ElementGroup;
 import cf.avicia.avomod2.client.renderer.TerritoryOutlineRenderer;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;

@@ -1,7 +1,7 @@
 package cf.avicia.avomod2.client.eventhandlers.chatclickedevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
-import cf.avicia.avomod2.client.eventhandlers.hudevents.AttackTimerMenu;
+import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.AttackTimerMenu;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.BombBellTracker;
 import net.minecraft.util.ActionResult;
 
