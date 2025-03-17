@@ -114,9 +114,34 @@ public class Utils {
         return Text.literal(text.getString().replaceAll("§8\\[§7.+§8\\]§[rf] *", "")).setStyle(text.getStyle());
     }
 
+    public static Text textWithoutDuplicate(Text text) {
+        // Removes the message stack duplicate from the message if there is one
+        return Text.literal(text.getString().replaceAll(" §7\\(\\d+\\)", "")).setStyle(text.getStyle());
+    }
+
     public static String removePrivateUseChars(String inputStr) {
         // Regular expression pattern to match characters in the private use areas (PUA) (the special characters used by Wynncraft)
         return inputStr.replaceAll("[\uE000-\uF8FF\uD800-\uDBFF\uDC00-\uDFFF\u200B\u2064]","").trim();
+    }
+
+    public static String getChatMessageWithOnlyMessage(Text message) {
+        return Utils.removePrivateUseChars(Utils.getUnformattedString(Utils.textWithoutDuplicate(Utils.textWithoutTimeStamp(message)).getString()));
+    }
+
+    public static List<Integer> getVisibleMessagesByMessageIndex(int index) {
+        ChatHud chatHud = MinecraftClient.getInstance().inGameHud.getChatHud();
+        List<Integer> result = new ArrayList<>();
+        int messageIndex = -1;
+        for (int i = 0; i < chatHud.visibleMessages.size(); i++) {
+            if (chatHud.visibleMessages.get(i).endOfEntry()) {
+                ++messageIndex;
+            }
+            if (messageIndex == index) {
+                // Add the indexes in reverse order so if they need to be removed it will not break
+                result.addFirst(i);
+            }
+        }
+        return result;
     }
 
     public static Text getChatMessageAt(double mouseX, double mouseY) {
