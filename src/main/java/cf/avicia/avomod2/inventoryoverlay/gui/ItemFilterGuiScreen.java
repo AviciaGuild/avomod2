@@ -20,6 +20,7 @@ import java.util.List;
 public class ItemFilterGuiScreen extends Screen {
     private final int labelMenuHeight = 30;
     private Screen previousScreen;
+    private boolean itemFilterGuiPreviouslyOpened;
 
     private final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
@@ -112,6 +113,7 @@ public class ItemFilterGuiScreen extends Screen {
 
             updateFilterListPositions();
         }).position(5, labelMenuHeight + 5 + filterListOption.size() * 25).size(80, 20).build();
+        itemFilterGuiPreviouslyOpened = true;
     }
 
     public void clearFilters() {
@@ -128,7 +130,7 @@ public class ItemFilterGuiScreen extends Screen {
     }
 
     private void updateFilterListPositions() {
-//        if (controller.itemFilterGuiPreviouslyOpened) {
+        if (itemFilterGuiPreviouslyOpened) {
             addFilterButton.setY(labelMenuHeight + 5 + filterListOption.size() * 25);
 
             filterListOption.forEach(i -> i.setY(labelMenuHeight + 8 + filterListOption.indexOf(i) * 25));
@@ -137,7 +139,7 @@ public class ItemFilterGuiScreen extends Screen {
             filterListConstant.forEach(i -> i.setY(labelMenuHeight + 5 + filterListConstant.indexOf(i) * 25));
             filterListDelete.forEach(i -> i.setY(labelMenuHeight + 5 + filterListDelete.indexOf(i) * 25));
             //filterListDuplicate.forEach(i -> i.y = labelMenuHeight + 5 + filterListDuplicate.indexOf(i) * 25);
-//        }
+        }
     }
 
     public ArrayList<Filter> getItemFilters() {
