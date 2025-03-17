@@ -32,7 +32,7 @@ public class Utils {
         long totalSeconds = millis / 1000;
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
-        return (minutes >= 60 ? (minutes / 60) + "m " : "") + seconds + "s";
+        return (minutes >= 1 ? minutes + "m " : "") + seconds + "s";
     }
 
     public static String getFormattedWorld(String world) {

@@ -1,6 +1,7 @@
 package cf.avicia.avomod2.client.eventhandlers.screenevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
+import cf.avicia.avomod2.client.eventhandlers.chatevents.ShowRealName;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.AttackTimerMenu;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.ChatDefenseInfo;
 import cf.avicia.avomod2.utils.Utils;
@@ -92,6 +93,10 @@ public class AttackedTerritoryDifficulty {
             String username = matcher.group("username");
             String territory = matcher.group("territory");
             String defense = matcher.group("defense");
+            String realName = ShowRealName.getRealName(message);
+            if (realName != null) {
+                username = realName;
+            }
 
             AttackTimerMenu.chatDefenses.put(territory, new ChatDefenseInfo(username, territory, defense, System.currentTimeMillis()));
         }

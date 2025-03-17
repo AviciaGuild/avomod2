@@ -3,9 +3,6 @@ package cf.avicia.avomod2.client.eventhandlers.chatevents;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-
-import java.util.List;
 
 public class ShowRealName {
     public static Text onMessage(Text message) {
@@ -51,6 +48,25 @@ public class ShowRealName {
             }
         }
         return message;
+    }
+
+    public static String getRealName(Text message) {
+        if (messageHasNickHover(message)) {
+            HoverEvent hover = message.getStyle().getHoverEvent();
+            if (hover == null) return null;
+            if (hover.getValue(hover.getAction()) instanceof Text hoverText) {
+                return hoverText.getString().split(" ")[hoverText.getString().split(" ").length - 1];
+            }
+        }
+        if (!message.getSiblings().isEmpty()) {
+            for (Text messageSibling : message.getSiblings()) {
+                String realName = getRealName(messageSibling);
+                if (realName != null) {
+                    return realName;
+                }
+            }
+        }
+        return null;
     }
 
     public static boolean messageHasNickHoverDeep(Text message) {
