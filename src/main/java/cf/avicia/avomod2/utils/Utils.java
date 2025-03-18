@@ -3,6 +3,7 @@ package cf.avicia.avomod2.utils;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.screen.ScreenHandler;
@@ -14,10 +15,7 @@ import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -119,6 +117,26 @@ public class Utils {
     public static String removePrivateUseChars(String inputStr) {
         // Regular expression pattern to match characters in the private use areas (PUA) (the special characters used by Wynncraft)
         return inputStr.replaceAll("[\uE000-\uF8FF\uD800-\uDBFF\uDC00-\uDFFF\u200B\u2064]","").trim();
+    }
+
+    public static Text getChatMessageAt(double mouseX, double mouseY) {
+        ChatHud chatHud = MinecraftClient.getInstance().inGameHud.getChatHud();
+        int index = chatHud.getMessageLineIndex(chatHud.toChatLineX(mouseX), chatHud.toChatLineY(mouseY));
+        if (index != -1) {
+            Map<Integer, Integer> visibleToMessageIndex = new HashMap<>();
+            int messageIndex = -1;
+            for (int i = 0; i < chatHud.visibleMessages.size(); i++) {
+                if (chatHud.visibleMessages.get(i).endOfEntry()) {
+                    ++messageIndex;
+                }
+                visibleToMessageIndex.put(i, messageIndex);
+            }
+            int clickedMessageIndex = visibleToMessageIndex.getOrDefault(index, -1);
+            if (clickedMessageIndex != -1 && clickedMessageIndex < chatHud.messages.size()) {
+                return chatHud.messages.get(clickedMessageIndex).content();
+            }
+        }
+        return null;
     }
 
     public static void sendClickPacket(ScreenHandler screenHandler, int slot, int button, SlotActionType slotActionType, ItemStack itemStack) {

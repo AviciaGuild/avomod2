@@ -51,6 +51,7 @@ public class AvoMod2Client implements ClientModInitializer {
         RenderBossBarCallback.EVENT.register(TriggerHudEvents::onBossBarRender);
         ChatMouseClickedCallback.EVENT.register(TriggerChatMouseClickedEvents::mouseClicked);
         ChatMessageClickedCallback.EVENT.register(CopyClickedMessage::messageClicked);
+        ChatRenderCallback.EVENT.register(CopyClickedMessage::render);
         InventoryMouseClickedCallback.EVENT.register(TriggerInventoryMouseClickedEvents::mouseClicked);
         OnMouseScrollCallback.EVENT.register(InventoryRenderer::onMouseScroll);
 

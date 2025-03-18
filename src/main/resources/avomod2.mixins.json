@@ -10,6 +10,7 @@
     "BossBarMixin",
     "CancelContainerCloseMixin",
     "ChatMouseClickedMixin",
+    "ChatRenderMixin",
     "EntityLabelRenderMixin",
     "InventoryMouseClickedMixin",
     "OnMouseScrollMixin",
