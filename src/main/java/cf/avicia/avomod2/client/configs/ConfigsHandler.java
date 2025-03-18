@@ -42,6 +42,7 @@ public class ConfigsHandler {
             new ConfigToggle("Misc", "Add item overlay and search bar to inventories", "Enabled", "itemOverlay"),
             new ConfigToggle("Misc", "Hide item overlay and show only search bar", "Disabled", "onlySearchBar"),
             new ConfigToggle("Misc", "Add profession highlighter to containers", "Enabled", "profHighlighter"),
+            new ConfigToggle("Misc", "Copy chat messages by ctrl clicking them", "Enabled", "copyChatMessages"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Prevent Moving Armor/Accessories", "Disabled", "disableMovingArmor"),
             new ConfigToggle("Misc", "Make Mob Health Bars More Readable", "Enabled", "readableHealth"),
             new ConfigToggle("Misc", "(NOT IMPLEMENTED)Display Some Tab Stats on Screen", "Disabled", "tabStatusDisplay"),

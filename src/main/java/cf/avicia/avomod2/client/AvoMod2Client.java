@@ -4,6 +4,7 @@ import cf.avicia.avomod2.client.commands.CommandInitializer;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.client.configs.locations.LocationsHandler;
 import cf.avicia.avomod2.client.customevents.*;
+import cf.avicia.avomod2.client.eventhandlers.chatclickedevents.CopyClickedMessage;
 import cf.avicia.avomod2.client.eventhandlers.chatclickedevents.TriggerChatMouseClickedEvents;
 import cf.avicia.avomod2.client.eventhandlers.chatevents.TriggerChatEvents;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.TriggerHudEvents;
@@ -49,6 +50,7 @@ public class AvoMod2Client implements ClientModInitializer {
         HudRenderCallback.EVENT.register((context, renderTickCounter) -> TriggerHudEvents.onRender(context));
         RenderBossBarCallback.EVENT.register(TriggerHudEvents::onBossBarRender);
         ChatMouseClickedCallback.EVENT.register(TriggerChatMouseClickedEvents::mouseClicked);
+        ChatMessageClickedCallback.EVENT.register(CopyClickedMessage::messageClicked);
         InventoryMouseClickedCallback.EVENT.register(TriggerInventoryMouseClickedEvents::mouseClicked);
         OnMouseScrollCallback.EVENT.register(InventoryRenderer::onMouseScroll);
 

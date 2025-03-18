@@ -2,6 +2,7 @@ package cf.avicia.avomod2.inventoryoverlay.gui;
 
 import cf.avicia.avomod2.inventoryoverlay.item.WynnItem;
 import cf.avicia.avomod2.inventoryoverlay.util.InventoryOverlayUtils;
+import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -66,7 +67,7 @@ public class ItemButtonWidget extends ButtonWidget {
         context.drawItem(item, minX + 2, minY + 2);
         context.getMatrices().pop();
         if (isHovered() && MinecraftClient.getInstance().currentScreen != null) {
-            Stream<Text> infoTooltip = InventoryOverlayUtils.isShiftDown() ? Stream.of(Text.empty(), Text.of("§7Left-click for Drop Info"), Text.of("§7Right-click to Open Wiki")) : Stream.of(Text.empty(), Text.of("§7Hold SHIFT for Hints"));
+            Stream<Text> infoTooltip = Utils.isShiftDown() ? Stream.of(Text.empty(), Text.of("§7Left-click for Drop Info"), Text.of("§7Right-click to Open Wiki")) : Stream.of(Text.empty(), Text.of("§7Hold SHIFT for Hints"));
             List<Text> tooltip = Stream.concat(Stream.concat(Stream.of(Text.of(item.getName())), wynnItem.getLore().stream()), infoTooltip).toList();
             context.drawTooltip(MinecraftClient.getInstance().textRenderer, tooltip, mouseX, mouseY);
         }

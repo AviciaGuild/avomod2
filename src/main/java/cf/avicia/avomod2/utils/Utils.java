@@ -11,6 +11,7 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -33,6 +34,18 @@ public class Utils {
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
         return (minutes >= 1 ? minutes + "m " : "") + seconds + "s";
+    }
+
+    public static boolean isKeyDown(int keyCode) {
+        return GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), keyCode) == 1;
+    }
+
+    public static boolean isShiftDown() {
+        return isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT) || isKeyDown(GLFW.GLFW_KEY_RIGHT_SHIFT);
+    }
+
+    public static boolean isCtrlDown() {
+        return isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) || isKeyDown(GLFW.GLFW_KEY_RIGHT_CONTROL);
     }
 
     public static String getFormattedWorld(String world) {
@@ -100,7 +113,12 @@ public class Utils {
 
     public static Text textWithoutTimeStamp(Text text) {
         // Removes the wynntils timestamp from the message if there is one
-        return Text.literal(text.getString().replaceAll("§8\\[§7.+§8\\]§r *", "")).setStyle(text.getStyle());
+        return Text.literal(text.getString().replaceAll("§8\\[§7.+§8\\]§[rf] *", "")).setStyle(text.getStyle());
+    }
+
+    public static String removePrivateUseChars(String inputStr) {
+        // Regular expression pattern to match characters in the private use areas (PUA) (the special characters used by Wynncraft)
+        return inputStr.replaceAll("[\uE000-\uF8FF\uD800-\uDBFF\uDC00-\uDFFF\u200B\u2064]","").trim();
     }
 
     public static void sendClickPacket(ScreenHandler screenHandler, int slot, int button, SlotActionType slotActionType, ItemStack itemStack) {
