@@ -12,6 +12,7 @@ import cf.avicia.avomod2.client.eventhandlers.hudevents.WarTracker;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.WorldInfoOnTab;
 import cf.avicia.avomod2.client.eventhandlers.inventoryclickedevents.TriggerInventoryMouseClickedEvents;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.GuildBankKeybind;
+import cf.avicia.avomod2.client.eventhandlers.screenevents.TerritoryMenuKeybind;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.TriggerScreenEvents;
 import cf.avicia.avomod2.client.renderer.TerritoryOutlineRenderer;
 import cf.avicia.avomod2.inventoryoverlay.gui.InventoryOverlay;
@@ -43,6 +44,7 @@ public class AvoMod2Client implements ClientModInitializer {
         LocationsHandler.initializeLocations();
         CommandInitializer.initializeCommands();
         GuildBankKeybind.init();
+        TerritoryMenuKeybind.init();
         TerritoryOutlineRenderer.initKeybind();
         ItemsDataHandler.updateItemsFromAPI();
 
@@ -66,6 +68,7 @@ public class AvoMod2Client implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             TerritoryData.onTick();
             GuildBankKeybind.onTick();
+            TerritoryMenuKeybind.onTick();
             TerritoryOutlineRenderer.onTick();
             WarTracker.onTick();
 

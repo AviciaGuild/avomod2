@@ -28,6 +28,7 @@ public class TriggerScreenEvents {
     }
     public static void afterRender(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight, Screen screen1, DrawContext drawContext, int mouseX, int mouseY) {
         GuildBankKeybind.afterRender(client, screen, screen1);
+        TerritoryMenuKeybind.afterRender(client, screen, screen1);
         ProfessionHighlighter.render(screen1, client, drawContext, scaledWidth, scaledHeight);
         if (screen instanceof HandledScreen<?>) {
             InventoryRenderer.render(screen1, client, drawContext, scaledWidth, scaledHeight);
