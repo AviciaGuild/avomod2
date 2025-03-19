@@ -27,6 +27,13 @@ public class StackDuplicateMessages {
             if (!message.equals(lastMessage)) {
                 duplicateCount = 1;
             }
+            if (message.equals(lastMessage) && MinecraftClient.getInstance().inGameHud.getTicks() == messages.getFirst().creationTick()) {
+                // Allow duplicates created at the exact same time to not break Wynntils chat tabs.
+                // The chat tabs call ChatHud's addMessage twice at the same time for it to appear in two tabs,
+                // for this mod however they look like distinct messages, so I make the assumption here that two
+                // identical messages created at the exact same time are a byproduct of chat tabs and don't filter them.
+                return message;
+            }
             lastMessage = message;
             if (Utils.getChatMessageWithOnlyMessage(messages.getFirst().content()).equals(Utils.getChatMessageWithOnlyMessage(message))) {
                 for (int i : Utils.getVisibleMessagesByMessageIndex(0)) {
