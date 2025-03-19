@@ -11,12 +11,10 @@ import java.util.List;
 
 public class StackDuplicateMessages {
 
-    private static Text lastMessage = null;
     private static int duplicateCount = 1;
 
     public static Text onMessage(Text message) {
         if (!ConfigsHandler.getConfigBoolean("stackDuplicateMessages")) return message;
-
         try {
             ChatHud chatHud = MinecraftClient.getInstance().inGameHud.getChatHud();
             List<ChatHudLine.Visible> visibleMessages = chatHud.visibleMessages;
@@ -24,18 +22,16 @@ public class StackDuplicateMessages {
             if (messages.isEmpty()) {
                 return message;
             }
-            if (!message.equals(lastMessage)) {
-                duplicateCount = 1;
-            }
-            if (message.equals(lastMessage) && MinecraftClient.getInstance().inGameHud.getTicks() == messages.getFirst().creationTick()) {
+            String mostRecentMessage = Utils.getChatMessageWithOnlyMessage(messages.getFirst().content());
+            String newMessage = Utils.getChatMessageWithOnlyMessage(message);
+            if (newMessage.equals(mostRecentMessage) && MinecraftClient.getInstance().inGameHud.getTicks() == messages.getFirst().creationTick()) {
                 // Allow duplicates created at the exact same time to not break Wynntils chat tabs.
                 // The chat tabs call ChatHud's addMessage twice at the same time for it to appear in two tabs,
                 // for this mod however they look like distinct messages, so I make the assumption here that two
                 // identical messages created at the exact same time are a byproduct of chat tabs and don't filter them.
                 return message;
             }
-            lastMessage = message;
-            if (Utils.getChatMessageWithOnlyMessage(messages.getFirst().content()).equals(Utils.getChatMessageWithOnlyMessage(message))) {
+            if (mostRecentMessage.equals(newMessage)) {
                 for (int i : Utils.getVisibleMessagesByMessageIndex(0)) {
                     visibleMessages.remove(i);
                 }
@@ -47,6 +43,8 @@ public class StackDuplicateMessages {
                 tmpMessage.getSiblings().add(message);
                 tmpMessage.getSiblings().add(Text.of((message.getString().endsWith(" ") ? "" : " ") + String.format("§7(%s)", duplicateCount)));
                 message = tmpMessage;
+            } else {
+                duplicateCount = 1;
             }
 
         } catch (Exception e) {
