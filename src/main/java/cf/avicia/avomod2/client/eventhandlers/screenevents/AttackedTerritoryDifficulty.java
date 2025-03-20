@@ -4,6 +4,7 @@ import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.client.eventhandlers.chatevents.ShowRealName;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.AttackTimerMenu;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.ChatDefenseInfo;
+import cf.avicia.avomod2.utils.MessageType;
 import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -84,12 +85,12 @@ public class AttackedTerritoryDifficulty {
                 MinecraftClient.getInstance().getNetworkHandler().sendCommand(String.format("g %s defense is %s", currentTerritory, currentDefense));
             }
         }
-
-        String regex = "(?:\uDAFF\uDFFC\uE006\uDAFF\uDFFF\uE002\uDAFF\uDFFE|\uDAFF\uDFFC\uE001\uDB00\uDC06) [^ ]* (?<username>[^:]+): (?<territory>.+) defense is (?<defense>Very Low|Low|Medium|High|Very High).*";
+        boolean isGuildMessage = Utils.getMessageType(message) == MessageType.GUILD;
+        String regex = "(?<username>[^:]+): (?<territory>.+) defense is (?<defense>Very Low|Low|Medium|High|Very High).*";
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(unformattedMessage);
+        Matcher matcher = pattern.matcher(Utils.getChatMessageWithOnlyMessage(message));
 
-        if (matcher.find()) {
+        if (isGuildMessage && matcher.find()) {
             String username = matcher.group("username");
             String territory = matcher.group("territory");
             String defense = matcher.group("defense");

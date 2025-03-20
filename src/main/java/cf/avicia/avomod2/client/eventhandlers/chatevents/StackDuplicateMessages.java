@@ -1,6 +1,7 @@
 package cf.avicia.avomod2.client.eventhandlers.chatevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
+import cf.avicia.avomod2.utils.MessageType;
 import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
@@ -12,7 +13,7 @@ import java.util.List;
 public class StackDuplicateMessages {
 
     private static int duplicateCount = 1;
-    private static String lastMessageType = null;
+    private static MessageType lastMessageType = null;
 
     public static Text onMessage(Text message) {
         if (!ConfigsHandler.getConfigBoolean("stackDuplicateMessages")) return message;
@@ -23,13 +24,12 @@ public class StackDuplicateMessages {
             if (messages.isEmpty()) {
                 return message;
             }
-            String messageType = Utils.getMessageType(message);
-            if (!messageType.equals(lastMessageType)) {
+            MessageType messageType = Utils.getMessageType(message);
+            if (messageType != lastMessageType) {
                 duplicateCount = 1;
                 lastMessageType = messageType;
                 return message;
             }
-            lastMessageType = messageType;
 
             String mostRecentMessage = Utils.getChatMessageWithOnlyMessage(messages.getFirst().content());
             String newMessage = Utils.getChatMessageWithOnlyMessage(message);

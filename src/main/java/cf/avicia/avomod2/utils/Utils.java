@@ -120,7 +120,7 @@ public class Utils {
 
     public static String removePrivateUseChars(String inputStr) {
         // Regular expression pattern to match characters in the private use areas (PUA) (the special characters used by Wynncraft)
-        return inputStr.replaceAll("[\uE000-\uF8FF\uD800-\uDBFF\uDC00-\uDFFF\u200B\u2064]", "").trim();
+        return inputStr.replaceAll("[\uE000-\uF8FF\uD800-\uDBFF\uDC00-\uDFFF\u200B\u2064]", "").replaceAll("\\s+", " ").trim();
     }
 
     public static String getChatMessageWithOnlyMessage(Text message) {
@@ -138,42 +138,42 @@ public class Utils {
         return colors;
     }
 
-    public static String getMessageType(Text message) {
+    public static MessageType getMessageType(Text message) {
         if (message == null) {
-            return "Other";
+            return MessageType.OTHER;
         }
-        List<Pair<Pattern, String>> patterns = new ArrayList<>();
 
+        List<Pair<Pattern, MessageType>> patterns = new ArrayList<>();
 
-        patterns.add(new Pair<>(Pattern.compile("^\\[\\d+/\\d+]? ?25] ?.+: ?+$", Pattern.DOTALL), "NPC"));
-        patterns.add(new Pair<>(Pattern.compile("^[\uE040-\uE059]{2}[\uE060-\uE069]{1,3}? .+", Pattern.DOTALL), "Local"));
-        patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE006\uDAFF\uDFFF\uE002\uDAFF\uDFFE).*$", Pattern.DOTALL), "Guild"));
-        patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE005\uDAFF\uDFFF\uE002\uDAFF\uDFFE) .*$", Pattern.DOTALL), "Party"));
-        patterns.add(new Pair<>(Pattern.compile("^((\uDAFF\uDFFC\uE007\uDAFF\uDFFF\uE002\uDAFF\uDFFE)|(\uDAFF\uDFFC\uE001\uDB00\uDC06)) .* \uE003 .*: .*$", Pattern.DOTALL), "Private"));
-        patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE001\uDB00\uDC06).*$", Pattern.DOTALL), "Ambiguous"));
-        patterns.add(new Pair<>(Pattern.compile("^.* \\[[A-Z0-9]+] shouts: .*$", Pattern.DOTALL), "Shout"));
-        patterns.add(new Pair<>(Pattern.compile("^[A-Z0-9].*$", Pattern.DOTALL), "Game Message"));
+        patterns.add(new Pair<>(Pattern.compile("^\\[\\d+/\\d+]? ?25] ?.+: ?+$", Pattern.DOTALL), MessageType.NPC));
+        patterns.add(new Pair<>(Pattern.compile("^[\uE040-\uE059]{2}[\uE060-\uE069]{1,3}? .+", Pattern.DOTALL), MessageType.LOCAL));
+        patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE006\uDAFF\uDFFF\uE002\uDAFF\uDFFE).*$", Pattern.DOTALL), MessageType.GUILD));
+        patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE005\uDAFF\uDFFF\uE002\uDAFF\uDFFE) .*$", Pattern.DOTALL), MessageType.PARTY));
+        patterns.add(new Pair<>(Pattern.compile("^((\uDAFF\uDFFC\uE007\uDAFF\uDFFF\uE002\uDAFF\uDFFE)|(\uDAFF\uDFFC\uE001\uDB00\uDC06)) .* \uE003 .*: .*$", Pattern.DOTALL), MessageType.PRIVATE));
+        patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE001\uDB00\uDC06).*$", Pattern.DOTALL), MessageType.AMBIGUOUS));
+        patterns.add(new Pair<>(Pattern.compile("^.* \\[[A-Z0-9]+] shouts: .*$", Pattern.DOTALL), MessageType.SHOUT));
+        patterns.add(new Pair<>(Pattern.compile("^[A-Z0-9].*$", Pattern.DOTALL), MessageType.GAME_MESSAGE));
 
-        for (Pair<Pattern, String> entry : patterns) {
+        for (Pair<Pattern, MessageType> entry : patterns) {
             Matcher matcher = entry.getLeft().matcher(textWithoutDuplicate(textWithoutTimeStamp(message)).getString());
             if (matcher.matches()) {
-                if (entry.getRight().equals("Ambiguous")) {
+                if (entry.getRight() == MessageType.AMBIGUOUS) {
                     List<String> textColors = getAllColors(message);
                     if (textColors.contains("#FFFF55")) {
                         // Party is yellow
-                        return "Party";
+                        return MessageType.PARTY;
                     }
                     if (textColors.contains("#55FFFF")) {
                         // Guild is blue
-                        return "Guild";
+                        return MessageType.GUILD;
                     }
-                    return "Other";
+                    return MessageType.OTHER;
                 }
                 return entry.getRight();
             }
         }
 
-        return "Other";
+        return MessageType.OTHER;
     }
 
     public static List<Integer> getVisibleMessagesByMessageIndex(int index) {
