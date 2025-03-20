@@ -8,10 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.text.*;
+import net.minecraft.util.Pair;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Instant;
@@ -27,6 +25,7 @@ public class Utils {
     public static String getReadableTime(int minutes) {
         return (minutes >= 1440.0 ? (int) Math.floor((minutes / 1440.0)) + "d " : "") + (int) (Math.floor((minutes % 1440) / 60.0)) + "h " + minutes % 60 + "m";
     }
+
     public static String getReadableTimeFromMillis(long millis) {
         long totalSeconds = millis / 1000;
         long minutes = totalSeconds / 60;
@@ -121,11 +120,60 @@ public class Utils {
 
     public static String removePrivateUseChars(String inputStr) {
         // Regular expression pattern to match characters in the private use areas (PUA) (the special characters used by Wynncraft)
-        return inputStr.replaceAll("[\uE000-\uF8FF\uD800-\uDBFF\uDC00-\uDFFF\u200B\u2064]","").trim();
+        return inputStr.replaceAll("[\uE000-\uF8FF\uD800-\uDBFF\uDC00-\uDFFF\u200B\u2064]", "").trim();
     }
 
     public static String getChatMessageWithOnlyMessage(Text message) {
         return Utils.removePrivateUseChars(Utils.getUnformattedString(Utils.textWithoutDuplicate(Utils.textWithoutTimeStamp(message)).getString()));
+    }
+
+    public static List<String> getAllColors(Text text) {
+        List<String> colors = new ArrayList<>();
+        if (text.getStyle().getColor() != null) {
+            colors.add(text.getStyle().getColor().getHexCode());
+        }
+        for (Text sibling : text.getSiblings()) {
+            colors.addAll(getAllColors(sibling));
+        }
+        return colors;
+    }
+
+    public static String getMessageType(Text message) {
+        if (message == null) {
+            return "Other";
+        }
+        List<Pair<Pattern, String>> patterns = new ArrayList<>();
+
+
+        patterns.add(new Pair<>(Pattern.compile("^\\[\\d+/\\d+]? ?25] ?.+: ?+$", Pattern.DOTALL), "NPC"));
+        patterns.add(new Pair<>(Pattern.compile("^[\uE040-\uE059]{2}[\uE060-\uE069]{1,3}? .+", Pattern.DOTALL), "Local"));
+        patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE006\uDAFF\uDFFF\uE002\uDAFF\uDFFE).*$", Pattern.DOTALL), "Guild"));
+        patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE005\uDAFF\uDFFF\uE002\uDAFF\uDFFE) .*$", Pattern.DOTALL), "Party"));
+        patterns.add(new Pair<>(Pattern.compile("^((\uDAFF\uDFFC\uE007\uDAFF\uDFFF\uE002\uDAFF\uDFFE)|(\uDAFF\uDFFC\uE001\uDB00\uDC06)) .* \uE003 .*: .*$", Pattern.DOTALL), "Private"));
+        patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE001\uDB00\uDC06).*$", Pattern.DOTALL), "Ambiguous"));
+        patterns.add(new Pair<>(Pattern.compile("^.* \\[[A-Z0-9]+] shouts: .*$", Pattern.DOTALL), "Shout"));
+        patterns.add(new Pair<>(Pattern.compile("^[A-Z0-9].*$", Pattern.DOTALL), "Game Message"));
+
+        for (Pair<Pattern, String> entry : patterns) {
+            Matcher matcher = entry.getLeft().matcher(textWithoutDuplicate(textWithoutTimeStamp(message)).getString());
+            if (matcher.matches()) {
+                if (entry.getRight().equals("Ambiguous")) {
+                    List<String> textColors = getAllColors(message);
+                    if (textColors.contains("#FFFF55")) {
+                        // Party is yellow
+                        return "Party";
+                    }
+                    if (textColors.contains("#55FFFF")) {
+                        // Guild is blue
+                        return "Guild";
+                    }
+                    return "Other";
+                }
+                return entry.getRight();
+            }
+        }
+
+        return "Other";
     }
 
     public static List<Integer> getVisibleMessagesByMessageIndex(int index) {

@@ -12,6 +12,7 @@ import java.util.List;
 public class StackDuplicateMessages {
 
     private static int duplicateCount = 1;
+    private static String lastMessageType = null;
 
     public static Text onMessage(Text message) {
         if (!ConfigsHandler.getConfigBoolean("stackDuplicateMessages")) return message;
@@ -22,6 +23,14 @@ public class StackDuplicateMessages {
             if (messages.isEmpty()) {
                 return message;
             }
+            String messageType = Utils.getMessageType(message);
+            if (!messageType.equals(lastMessageType)) {
+                duplicateCount = 1;
+                lastMessageType = messageType;
+                return message;
+            }
+            lastMessageType = messageType;
+
             String mostRecentMessage = Utils.getChatMessageWithOnlyMessage(messages.getFirst().content());
             String newMessage = Utils.getChatMessageWithOnlyMessage(message);
             if (newMessage.equals(mostRecentMessage) && MinecraftClient.getInstance().inGameHud.getTicks() == messages.getFirst().creationTick()) {
