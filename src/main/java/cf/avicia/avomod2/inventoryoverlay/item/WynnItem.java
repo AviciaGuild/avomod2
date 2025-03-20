@@ -258,16 +258,16 @@ public class WynnItem {
         return getItemTypeString().equals(typeString) || type.equals(typeString);
     }
 
-    public int getRawIdentificationValue(String identification) {
+    public int getMaxIdentificationValue(String identification) {
         int res = 0;
         if (identifications != null) {
             if (identifications.containsKey(identification)) {
-                res = identifications.get(identification).raw;
+                res = identifications.get(identification).max;
             }
         }
         if (base != null) {
             if (base.containsKey(identification)) {
-                res = base.get(identification).raw;
+                res = base.get(identification).max;
             }
         }
         switch (identification) {
@@ -285,7 +285,7 @@ public class WynnItem {
     }
 
     public boolean hasIdentification(String identification) {
-        return getRawIdentificationValue(identification) != 0;
+        return getMaxIdentificationValue(identification) != 0;
     }
 
     public boolean hasMajorId(String majorId) {

@@ -229,18 +229,18 @@ public class InventoryOverlay {
                         case NOT_EXISTS ->
                                 filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> !itemStackWynnItemPair.getB().hasIdentification(filter.value)).toList();
                         case LT ->
-                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().hasIdentification(filter.value) && itemStackWynnItemPair.getB().getRawIdentificationValue(filter.value) < filter.constant).toList();
+                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().hasIdentification(filter.value) && itemStackWynnItemPair.getB().getMaxIdentificationValue(filter.value) < filter.constant).toList();
                         case LTE ->
-                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().hasIdentification(filter.value) && itemStackWynnItemPair.getB().getRawIdentificationValue(filter.value) <= filter.constant).toList();
+                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().hasIdentification(filter.value) && itemStackWynnItemPair.getB().getMaxIdentificationValue(filter.value) <= filter.constant).toList();
                         case GT ->
-                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().hasIdentification(filter.value) && itemStackWynnItemPair.getB().getRawIdentificationValue(filter.value) > filter.constant).toList();
+                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().hasIdentification(filter.value) && itemStackWynnItemPair.getB().getMaxIdentificationValue(filter.value) > filter.constant).toList();
                         case GTE ->
-                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().hasIdentification(filter.value) && itemStackWynnItemPair.getB().getRawIdentificationValue(filter.value) >= filter.constant).toList();
+                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().hasIdentification(filter.value) && itemStackWynnItemPair.getB().getMaxIdentificationValue(filter.value) >= filter.constant).toList();
                         case EQUALS ->
-                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().hasIdentification(filter.value) && itemStackWynnItemPair.getB().getRawIdentificationValue(filter.value) == filter.constant).toList();
+                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().hasIdentification(filter.value) && itemStackWynnItemPair.getB().getMaxIdentificationValue(filter.value) == filter.constant).toList();
                     }
                     if (filter.comparator != cf.avicia.avomod2.inventoryoverlay.util.Comparator.NOT_EXISTS) {
-                        filteredItems = filteredItems.stream().sorted((o1, o2) -> o2.getB().getRawIdentificationValue(filter.value) - o1.getB().getRawIdentificationValue(filter.value)).toList();
+                        filteredItems = filteredItems.stream().sorted((o1, o2) -> o2.getB().getMaxIdentificationValue(filter.value) - o1.getB().getMaxIdentificationValue(filter.value)).toList();
                         sortingIndex = 5;
                     }
                 }
