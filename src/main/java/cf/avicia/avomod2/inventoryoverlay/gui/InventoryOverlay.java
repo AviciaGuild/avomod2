@@ -121,8 +121,6 @@ public class InventoryOverlay {
     }
 
     public ActionResult onMouseScroll(double mouseX, double mouseY, double verticalAmount) {
-        System.out.println(mouseX);
-        System.out.println(mouseY);
         if (mouseX > startX && mouseX < scaledWidth && mouseY > 0 && mouseY < scaledHeight) {
             if (verticalAmount < 0) {
                 nextPage();
