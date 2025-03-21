@@ -35,7 +35,11 @@ public class CustomFile extends File {
     public JsonObject readJson() {
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(this), StandardCharsets.UTF_8); JsonReader jsonReader = new JsonReader(reader)) {
             jsonReader.setLenient(true);
-            return new Gson().fromJson(jsonReader, JsonObject.class);
+            JsonObject jsonObject = new Gson().fromJson(jsonReader, JsonObject.class);
+            if (jsonObject == null) {
+                return new Gson().fromJson("{}", JsonObject.class);
+            }
+            return jsonObject;
         } catch (Exception e) {
             e.printStackTrace();
             this.writeJson("{}");

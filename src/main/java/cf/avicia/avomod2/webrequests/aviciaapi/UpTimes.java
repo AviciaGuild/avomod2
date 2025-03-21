@@ -19,7 +19,10 @@ public class UpTimes {
 
     public UpTimes() {
         try {
-            this.upTimeData = new Gson().fromJson(WebRequest.getData(Utils.getApiUrl() + "/up"), JsonObject.class);
+            String apiUrl = Utils.getApiUrl();
+            if (!apiUrl.isEmpty()) {
+                this.upTimeData = new Gson().fromJson(WebRequest.getData(apiUrl + "/up"), JsonObject.class);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

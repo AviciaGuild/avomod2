@@ -11,11 +11,15 @@ import java.util.Set;
 
 public class GuildNameFromTag {
     JsonObject guildNameData = null;
+
     public GuildNameFromTag(String tag) {
         try {
-            String tagApiResponse = WebRequest.getData(Utils.getApiUrl() + "/tag/" + tag);
-            if (!tagApiResponse.equals("null")) {
-                this.guildNameData = new Gson().fromJson(tagApiResponse, JsonObject.class);
+            String apiUrl = Utils.getApiUrl();
+            if (!apiUrl.isEmpty()) {
+                String tagApiResponse = WebRequest.getData(apiUrl + "/tag/" + tag);
+                if (!tagApiResponse.equals("null")) {
+                    this.guildNameData = new Gson().fromJson(tagApiResponse, JsonObject.class);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

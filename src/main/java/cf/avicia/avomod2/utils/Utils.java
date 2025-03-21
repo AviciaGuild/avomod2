@@ -236,6 +236,10 @@ public class Utils {
     }
 
     public static String getApiUrl() {
-        return String.format("https://%s/api", ConfigsHandler.getConfig("aviciaApiDomain").replaceAll("https?://", "").replaceAll("/$", ""));
+        String configUrl = ConfigsHandler.getConfig("aviciaApiDomain");
+        if (!configUrl.isEmpty()) {
+            return String.format("https://%s/api", configUrl.replaceAll("https?://", "").replaceAll("/$", ""));
+        }
+        return "";
     }
 }

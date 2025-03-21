@@ -67,6 +67,9 @@ public class ConfigsHandler {
     }
 
     public static String getConfig(String configKey) {
+        if (configs == null) {
+            return "";
+        }
         JsonElement configElement = configs.get(configKey);
 
         if (configElement == null || configElement.isJsonNull()) {
