@@ -74,7 +74,7 @@ public class BombBellTracker {
         String unformattedMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
         if (unformattedMessage == null || !unformattedMessage.startsWith("[Bomb Bell]")) return message;
 
-        ArrayList<String> matches = Utils.getMatches(unformattedMessage, "(?<= thrown a )[a-zA-Z ]+(?= Bomb on)|(?<= on )(?:NA|EU)\\d{1,4}");
+        ArrayList<String> matches = Utils.getMatches(unformattedMessage, "(?<= thrown a )[a-zA-Z ]+(?= Bomb on)|(?<= on )[A-Z]{2}\\d{1,4}");
         if (matches.size() != 2) return message;
 
         String bombName = matches.get(0);
