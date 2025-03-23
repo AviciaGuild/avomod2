@@ -4,7 +4,6 @@ import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 
 import java.util.regex.Pattern;
 
@@ -30,7 +29,7 @@ public class MakeShoutsClickable {
     }
 
     private static boolean isMessageShout(Text message) {
-        Pattern pattern = Pattern.compile("^(.* \\[(?:NA|EU|AS)\\d*] shouts:) .*", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile("^(.* \\[[A-Z]{2}\\d*] shouts:) .*", Pattern.CASE_INSENSITIVE);
         String messageString =  Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
         return pattern.matcher(messageString).find();
     }
