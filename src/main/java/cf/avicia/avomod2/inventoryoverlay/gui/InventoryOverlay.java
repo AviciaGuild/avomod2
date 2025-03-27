@@ -102,6 +102,7 @@ public class InventoryOverlay {
             final int itemsPerRow = overlayWidth / slotSize;
             List<Pair<ItemStack, WynnItem>> filteredItems = getFilteredItems();
             updatePageCounts(filteredItems.size());
+            Screens.getButtons(screen).add(getCollapseButton());
             Screens.getButtons(screen).add(getPrevButton());
             Screens.getButtons(screen).add(getPageDisplayButton());
             Screens.getButtons(screen).add(getNextButton());
@@ -277,6 +278,13 @@ public class InventoryOverlay {
         }
     }
 
+    private ElevatedButtonWidget getCollapseButton() {
+        return new ElevatedButtonWidget(startX - 20, pageControlHeight / 4, 20, 20, Text.of("§c→|"), Text.of("Collapse Overlay"), button -> {
+            isInteractedWith = false;
+            hasChanged = true;
+            redraw();
+        });
+    }
     private ElevatedButtonWidget getPrevButton() {
         return new ElevatedButtonWidget(startX, pageControlHeight / 4, overlayWidth / 4, pageControlHeight / 2, Text.of("< Prev"), button -> {
             previousPage();
