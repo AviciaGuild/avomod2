@@ -15,6 +15,7 @@ import cf.avicia.avomod2.client.eventhandlers.screenevents.GuildBankKeybind;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.TerritoryMenuKeybind;
 import cf.avicia.avomod2.client.eventhandlers.screenevents.TriggerScreenEvents;
 import cf.avicia.avomod2.client.renderer.TerritoryOutlineRenderer;
+import cf.avicia.avomod2.customitemtextures.CustomItemTextures;
 import cf.avicia.avomod2.inventoryoverlay.gui.InventoryOverlay;
 import cf.avicia.avomod2.inventoryoverlay.gui.InventoryRenderer;
 import cf.avicia.avomod2.inventoryoverlay.util.ItemsDataHandler;
@@ -56,6 +57,7 @@ public class AvoMod2Client implements ClientModInitializer {
         ChatRenderCallback.EVENT.register(CopyClickedMessage::render);
         InventoryMouseClickedCallback.EVENT.register(TriggerInventoryMouseClickedEvents::mouseClicked);
         OnMouseScrollCallback.EVENT.register(InventoryRenderer::onMouseScroll);
+        RenderItemCallback.EVENT.register(CustomItemTextures::applyCustomTexture);
 
 
         WorldRenderEvents.AFTER_ENTITIES.register(context -> {
