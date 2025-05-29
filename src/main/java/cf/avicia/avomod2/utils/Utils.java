@@ -119,8 +119,38 @@ public class Utils {
     }
 
     public static String removePrivateUseChars(String inputStr) {
-        // Regular expression pattern to match characters in the private use areas (PUA) (the special characters used by Wynncraft)
-        return inputStr.replaceAll("[\uE000-\uF8FF\uD800-\uDBFF\uDC00-\uDFFF\u200B\u2064]", "").replaceAll("\\s+", " ").trim();
+        StringBuilder result = new StringBuilder();
+
+        // Iterate through the string, checking each character and removing PUAs
+        for (int i = 0; i < inputStr.length(); i++) {
+            char c = inputStr.charAt(i);
+
+            // Check if it's a high surrogate (I.e the start of a UTF-16 character, 2 UTF-8 characters make 1 character)
+            if (Character.isHighSurrogate(c) && i + 1 < inputStr.length()) {
+                char low = inputStr.charAt(i + 1);
+                int codePoint = Character.toCodePoint(c, low);
+
+                // Check if the code point is within the PUA range or supplementary PUA range item shares should be above 0xF0000 and will be kept
+                if (codePoint >= 0xFFFF && codePoint <= 0xF0000) {
+                    // Skip the surrogate pair
+                    i++; // Skip the next low surrogate as it's part of the pair
+                    continue;
+                }
+                // Append the valid supplementary character (surrogate pair)
+                result.append(c).append(low);
+            }
+            else if (c >= 0xE000 && c <= 0xF8FF) {
+                // Check for BMP PUA characters and skip them
+                continue;
+            }
+            // For normal characters, just append them
+            result.append(c);
+        }
+        // Regex to match invisible characters (whitespace, format control, invisible punctuation, etc.)
+        String invisibleCharactersRegex = "[\\u0000-\\u001F\\u007F\\u200B\\u200C\\u200D\\u2060\\u2061\\u2062\\u2063\\u2064\\u2028\\u2029\\uFEFF]";
+
+        // Normalize spaces and trim the result
+        return result.toString().replaceAll(invisibleCharactersRegex, "").replaceAll("\\s+", " ").trim();
     }
 
     public static String getChatMessageWithOnlyMessage(Text message) {
