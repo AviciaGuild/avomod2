@@ -35,7 +35,7 @@ public class CustomItemTextures {
         return isCrafted(loreLines) && isConsumable(loreLines) && itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:diamond_axe"))) && itemStack.getDamage() <= foodScrollLimit;
     }
     private static boolean isPotion(ItemStack itemStack, List<Text> loreLines) {
-        return isConsumable(loreLines) && itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:potion")));
+        return isConsumable(loreLines) && (itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:potion"))) || itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:splash_potion"))));
     }
 
     private static boolean isOfType(ItemStack itemStack, List<Text> loreLines, String type) {
@@ -55,7 +55,7 @@ public class CustomItemTextures {
     private static boolean isEligible(ItemStack itemStack) {
         // This method is used to reduce lag, couldn't think of a neat solution
         Identifier itemModel = itemStack.get(DataComponentTypes.ITEM_MODEL);
-        return !hasCustomTextureApplied(itemStack) && (itemModel != null && (itemModel.getPath().equals("diamond_axe") || itemModel.getPath().equals("potion")));
+        return !hasCustomTextureApplied(itemStack) && (itemModel != null && (itemModel.getPath().equals("diamond_axe") || itemModel.getPath().equals("potion")) || itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:splash_potion"))));
     }
 
     public static void applyCustomTexture(ItemStack itemStack) {
