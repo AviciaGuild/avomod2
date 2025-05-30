@@ -23,15 +23,19 @@ public class CustomItemTextures {
         return loreLines.stream().anyMatch(lineText -> lineText.getString().contains("Crafted"));
     }
 
+    private static boolean isConsumable(List<Text> loreLines) {
+        return loreLines.stream().anyMatch(lineText -> lineText.getString().contains("Effect:"));
+    }
+
     private static boolean isFood(ItemStack itemStack, List<Text> loreLines) {
-        return isCrafted(loreLines) && itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:diamond_axe"))) && itemStack.getDamage() > foodScrollLimit;
+        return isCrafted(loreLines) && isConsumable(loreLines) && itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:diamond_axe"))) && itemStack.getDamage() > foodScrollLimit;
     }
 
     private static boolean isScroll(ItemStack itemStack, List<Text> loreLines) {
-        return isCrafted(loreLines) && itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:diamond_axe"))) && itemStack.getDamage() <= foodScrollLimit;
+        return isCrafted(loreLines) && isConsumable(loreLines) && itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:diamond_axe"))) && itemStack.getDamage() <= foodScrollLimit;
     }
     private static boolean isPotion(ItemStack itemStack, List<Text> loreLines) {
-        return isCrafted(loreLines) && itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:potion")));
+        return isConsumable(loreLines) && itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:potion")));
     }
 
     private static boolean isOfType(ItemStack itemStack, List<Text> loreLines, String type) {
@@ -61,7 +65,6 @@ public class CustomItemTextures {
             String itemName = itemStack.getName().getString();
             if (itemName.equals("Air") || !isEligible(itemStack)) return;
             List<Text> loreLines = itemStack.getTooltip(Item.TooltipContext.DEFAULT, player, TooltipType.ADVANCED);
-            if (!isCrafted(loreLines)) return;
             for (CustomItem customItem : CustomItemData.customItems) {
                 if (isOfType(itemStack, loreLines, customItem.type())) {
                     if (doesLoreContainRegexes(customItem.lores(), loreLines) && doesNameMatchRegexes(customItem.names(), itemName)) {
