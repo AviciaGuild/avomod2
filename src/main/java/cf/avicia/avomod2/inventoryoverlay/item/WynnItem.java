@@ -277,8 +277,8 @@ public class WynnItem {
             case "intelligenceRequirement" -> res = (itemOnlyIDs.intelligenceRequirement != null && itemOnlyIDs.intelligenceRequirement != 0) ? itemOnlyIDs.intelligenceRequirement: res;
             case "defenceRequirement" -> res = (itemOnlyIDs.defenceRequirement != null && itemOnlyIDs.defenceRequirement != 0) ? itemOnlyIDs.defenceRequirement: res;
             case "agilityRequirement" -> res = (itemOnlyIDs.agilityRequirement != null && itemOnlyIDs.agilityRequirement != 0) ? itemOnlyIDs.agilityRequirement: res;
-            case "duration" -> res = (consumableOnlyIDs.duration != null && consumableOnlyIDs.duration != 0) ? consumableOnlyIDs.duration: res;
-            case "charges" -> res = (consumableOnlyIDs.charges != null && consumableOnlyIDs.charges != 0) ? consumableOnlyIDs.charges: res;
+            case "duration" -> res = (consumableOnlyIDs != null && consumableOnlyIDs.duration != null && consumableOnlyIDs.duration != 0) ? consumableOnlyIDs.duration: res;
+            case "charges" -> res = (consumableOnlyIDs != null && consumableOnlyIDs.charges != null && consumableOnlyIDs.charges != 0) ? consumableOnlyIDs.charges: res;
             case "ingredientEffectiveness" -> res = isEffectivenessIngredient() ? getTotalIngredientEffectiveness() : res;
         }
         return res;
