@@ -27,8 +27,6 @@ public class CommandInitializer {
                             .then(ConfigsCommand.command("cf"))
                             .then(UpCommand.command("up"))
                             .then(AgeCommand.command("age"))
-                            .then(SoulpointsCommand.command("soulpoints"))
-                            .then(SoulpointsCommand.command("sp"))
                             .then(AutoStreamCommand.command("autostream"))
                             .then(AutoStreamCommand.command("as"))
                             .then(LocationsCommand.command("locations"))
