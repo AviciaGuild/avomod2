@@ -7,10 +7,11 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.*;
-import net.minecraft.util.ActionResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
@@ -38,18 +39,21 @@ public class CongratulateCommand {
     }
 
     public static Text onMessage(Text message) {
-        if (Utils.textWithoutTimeStamp(message).getString().startsWith("[!] Congratulations") && ConfigsHandler.getConfigBoolean("clickToSayCongrats")) {
-            String[] firstSplit = message.getString().split(" for")[0].split("to ");
-            if (firstSplit.length <= 1) return message;
-            String username = firstSplit[1];
-            congratulateWorthyPlayers.add(username);
-            String congratsCommand = String.format("/avomod congratulate %s", username);
-            MutableText congratulateMessage = Text.literal("§b§nClick to say Congratulations!");
-            congratulateMessage.fillStyle(congratulateMessage.getStyle()
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, congratsCommand))
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of(congratsCommand)))
-            );
-            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(congratulateMessage);
+        if (ConfigsHandler.getConfigBoolean("clickToSayCongrats")) {
+            Pattern pattern = Pattern.compile("\\[!] Congratulations to (\\w+) for reaching .+!");
+            String rawMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
+            Matcher matcher = pattern.matcher(rawMessage);
+            if (matcher.find()) {
+                String username = matcher.group(1);
+                congratulateWorthyPlayers.add(username);
+                String congratsCommand = String.format("/avomod congratulate %s", username);
+                MutableText congratulateMessage = Text.literal(" §b§nClick to say Congratulations!");
+                congratulateMessage.fillStyle(congratulateMessage.getStyle()
+                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, congratsCommand))
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of(congratsCommand)))
+                );
+                message.getSiblings().add(congratulateMessage);
+            }
         }
         return message;
     }
