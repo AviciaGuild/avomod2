@@ -42,8 +42,8 @@ public class UpTimes {
         if (worldUpTimeData == null) {
             return null;
         }
-        if (worldUpTimeData.size() > 0) {
-            return worldUpTimeData.get(0).getKey();
+        if (!worldUpTimeData.isEmpty()) {
+            return worldUpTimeData.getFirst().getKey();
         }
         return null;
     }

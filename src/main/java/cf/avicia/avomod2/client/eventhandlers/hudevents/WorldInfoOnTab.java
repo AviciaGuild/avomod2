@@ -1,5 +1,6 @@
 package cf.avicia.avomod2.client.eventhandlers.hudevents;
 
+import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.utils.Utils;
 import cf.avicia.avomod2.client.configs.locations.LocationsHandler;
 import cf.avicia.avomod2.client.locationselements.Element;
@@ -37,6 +38,7 @@ public class WorldInfoOnTab {
     }
 
     public static void render(DrawContext drawContext) {
+        if (!ConfigsHandler.getConfigBoolean("worldInfoOnTab") || ConfigsHandler.getConfigBoolean("disableAll")) return;
         if (upTimes != null && MinecraftClient.getInstance().options.playerListKey.isPressed()) {
             getElementsToDraw().draw(drawContext);
         }

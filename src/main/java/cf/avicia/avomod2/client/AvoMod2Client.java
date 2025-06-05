@@ -40,9 +40,9 @@ public class AvoMod2Client implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        WorldInfoOnTab.updateUpTimes();
         ConfigsHandler.initializeConfigs();
         LocationsHandler.initializeLocations();
+        WorldInfoOnTab.updateUpTimes();
         CommandInitializer.initializeCommands();
         GuildBankKeybind.init();
         TerritoryMenuKeybind.init();

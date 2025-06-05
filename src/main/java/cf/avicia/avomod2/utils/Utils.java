@@ -62,7 +62,7 @@ public class Utils {
 
     public static String getCurrentWorld() {
         try {
-            String name = Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).getPlayerListEntry(UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af"))).getDisplayName()).getString();
+            String name = Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).getPlayerListEntry(UUID.fromString("16ff7452-714f-2752-b3cd-c3cb2068f6af"))).getDisplayName()).getString();
             return name.substring(name.indexOf("[") + 1, name.indexOf("]"));
         } catch (NullPointerException | IndexOutOfBoundsException ignored) {
             return null;

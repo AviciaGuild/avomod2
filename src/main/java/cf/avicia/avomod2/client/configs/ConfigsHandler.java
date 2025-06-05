@@ -39,6 +39,7 @@ public class ConfigsHandler {
             new ConfigToggle("Misc", "Add profession highlighter to containers", "Enabled", "profHighlighter"),
             new ConfigToggle("Misc", "Copy chat messages by ctrl clicking them", "Enabled", "copyChatMessages"),
             new ConfigToggle("Misc", "Make Mob Health Bars More Readable", "Enabled", "readableHealth"),
+            new ConfigToggle("Misc", "Display world info on tab", "Enabled", "worldInfoOnTab"),
             new ConfigToggle("Misc", "Bomb Bell Tracker (REQUIRES CHAMPION)", "Enabled", "bombBellTracker"),
             new ConfigToggle("Misc", "Bomb Bell Tracker - Click to Switch World", "Enabled", "bombBellSwitchWorld"),
             new ConfigToggle("Locations", "Edit AvoMod Locations", "Edit", "locations")
