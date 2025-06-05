@@ -271,12 +271,12 @@ public class WynnItem {
             }
         }
         switch (identification) {
-            case "durabilityModifier" -> res = (itemOnlyIDs.durabilityModifier != null && itemOnlyIDs.durabilityModifier != 0) ? itemOnlyIDs.durabilityModifier : res;
-            case "strengthRequirement" -> res = (itemOnlyIDs.strengthRequirement != null && itemOnlyIDs.strengthRequirement != 0) ? itemOnlyIDs.strengthRequirement : res;
-            case "dexterityRequirement" -> res = (itemOnlyIDs.dexterityRequirement != null && itemOnlyIDs.dexterityRequirement != 0) ? itemOnlyIDs.dexterityRequirement: res;
-            case "intelligenceRequirement" -> res = (itemOnlyIDs.intelligenceRequirement != null && itemOnlyIDs.intelligenceRequirement != 0) ? itemOnlyIDs.intelligenceRequirement: res;
-            case "defenceRequirement" -> res = (itemOnlyIDs.defenceRequirement != null && itemOnlyIDs.defenceRequirement != 0) ? itemOnlyIDs.defenceRequirement: res;
-            case "agilityRequirement" -> res = (itemOnlyIDs.agilityRequirement != null && itemOnlyIDs.agilityRequirement != 0) ? itemOnlyIDs.agilityRequirement: res;
+            case "durabilityModifier" -> res = (itemOnlyIDs != null && itemOnlyIDs.durabilityModifier != null && itemOnlyIDs.durabilityModifier != 0) ? itemOnlyIDs.durabilityModifier : res;
+            case "strengthRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.strengthRequirement != null && itemOnlyIDs.strengthRequirement != 0) ? itemOnlyIDs.strengthRequirement : res;
+            case "dexterityRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.dexterityRequirement != null && itemOnlyIDs.dexterityRequirement != 0) ? itemOnlyIDs.dexterityRequirement: res;
+            case "intelligenceRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.intelligenceRequirement != null && itemOnlyIDs.intelligenceRequirement != 0) ? itemOnlyIDs.intelligenceRequirement: res;
+            case "defenceRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.defenceRequirement != null && itemOnlyIDs.defenceRequirement != 0) ? itemOnlyIDs.defenceRequirement: res;
+            case "agilityRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.agilityRequirement != null && itemOnlyIDs.agilityRequirement != 0) ? itemOnlyIDs.agilityRequirement: res;
             case "duration" -> res = (consumableOnlyIDs != null && consumableOnlyIDs.duration != null && consumableOnlyIDs.duration != 0) ? consumableOnlyIDs.duration: res;
             case "charges" -> res = (consumableOnlyIDs != null && consumableOnlyIDs.charges != null && consumableOnlyIDs.charges != 0) ? consumableOnlyIDs.charges: res;
             case "ingredientEffectiveness" -> res = isEffectivenessIngredient() ? getTotalIngredientEffectiveness() : res;
