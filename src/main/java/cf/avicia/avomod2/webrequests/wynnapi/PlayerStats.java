@@ -72,10 +72,19 @@ public class PlayerStats {
         }
     }
 
-    public String getGuild() {
+    public String getGuildName() {
         try {
             return Objects.requireNonNull(getGuildData())
                     .get("name").getAsString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public String getGuildTag() {
+        try {
+            return Objects.requireNonNull(getGuildData())
+                    .get("prefix").getAsString();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

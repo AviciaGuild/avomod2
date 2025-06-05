@@ -21,13 +21,14 @@ public class PlayerGuildCommand {
                             Thread thread = new Thread(() -> {
                                 PlayerStats playerStats = new PlayerStats(username);
                                 String formattedUsername = playerStats.getUsername();
-                                String guild = playerStats.getGuild();
+                                String guildName = playerStats.getGuildName();
+                                String guildTag = playerStats.getGuildTag();
                                 String guildRank = playerStats.getGuildRank();
-                                if (formattedUsername != null && guild != null && guildRank != null) {
-                                    GuildStats guildStats = new GuildStats(guild);
+                                if (formattedUsername != null && guildName != null && guildRank != null) {
+                                    GuildStats guildStats = new GuildStats(guildName);
                                     context.getSource().sendFeedback(Text.literal(
-                                            "§b" + formattedUsername + "§7 is a §b" + Utils.firstLetterCapital(guildRank) + "§7 in the guild §b" + guild +
-                                                    "§7. They have been in the guild for §b" + guildStats.getTimeInGuild(formattedUsername)));
+                                            "§b" + formattedUsername + "§7 is a §b" + Utils.firstLetterCapital(guildRank) + "§7 in the guild §b" + guildName + "§3 [§b" + guildTag +
+                                                    "§3]§7. They have been in the guild for §b" + guildStats.getTimeInGuild(formattedUsername)));
                                 } else if (formattedUsername == null) {
                                     context.getSource().sendFeedback(Text.literal("§4" + username + "§c is not a Wynncraft player!"));
                                 } else {
