@@ -66,7 +66,7 @@ public class TerritoryOutlineRenderer {
             Iterable<Map.Entry<String, JsonElement>> entriesToLoop;
             if (showOutline) {
                 entriesToLoop = TerritoryData.territoryData.entrySet();
-            } else if (BeaconManager.soonestTerritory != null && TerritoryData.territoryData.has(BeaconManager.soonestTerritory)) {
+            } else if (ConfigsHandler.getConfigBoolean("outlineSoonestWarTerr") && BeaconManager.soonestTerritory != null && TerritoryData.territoryData.has(BeaconManager.soonestTerritory)) {
                 JsonElement territoryElement = TerritoryData.territoryData.get(BeaconManager.soonestTerritory);
                 Map.Entry<String, JsonElement> singleEntry =
                         new AbstractMap.SimpleEntry<>(BeaconManager.soonestTerritory, territoryElement);

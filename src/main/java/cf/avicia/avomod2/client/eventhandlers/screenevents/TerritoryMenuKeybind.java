@@ -52,5 +52,6 @@ public class TerritoryMenuKeybind {
                 SlotActionType.PICKUP,
                 territoryMenuItem
         );
+        openingTerritoryMenu = false;
     }
 }

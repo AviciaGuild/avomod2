@@ -52,5 +52,6 @@ public class GuildBankKeybind {
                 SlotActionType.PICKUP,
                 guildBankItem
         );
+        openingBank = false;
     }
 }

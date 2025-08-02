@@ -3,6 +3,7 @@ package cf.avicia.avomod2.client.eventhandlers.hudevents;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.AttackTimerMenu;
 import cf.avicia.avomod2.client.renderer.TerritoryOutlineRenderer;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.util.ActionResult;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class TriggerHudEvents {
     public static void onRender(DrawContext drawContext) {
-        if (ConfigsHandler.getConfigBoolean("disableAll")) return;
+        if (ConfigsHandler.getConfigBoolean("disableAll") || !MinecraftClient.isHudEnabled()) return;
         WorldInfoOnTab.render(drawContext);
         AttackTimerMenu.render(drawContext);
         WarTracker.render(drawContext);
