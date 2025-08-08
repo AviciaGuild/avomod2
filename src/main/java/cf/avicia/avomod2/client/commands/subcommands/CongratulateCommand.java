@@ -52,7 +52,9 @@ public class CongratulateCommand {
                         .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, congratsCommand))
                         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of(congratsCommand)))
                 );
-                message.getSiblings().add(congratulateMessage);
+                MutableText messageCopy = message.copy();
+                messageCopy.getSiblings().add(congratulateMessage);
+                return messageCopy;
             }
         }
         return message;
