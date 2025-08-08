@@ -22,11 +22,15 @@ public class InventoryRenderer {
 
     public static void init(Screen screen, int scaledWidth, int scaledHeight) {
         if (ConfigsHandler.getConfigBoolean("disableAll") || !ConfigsHandler.getConfigBoolean("itemOverlay")) return;
-        inventoryOverlay = new InventoryOverlay(ItemStackBuilder.getAllItems(ItemsDataHandler.items), screen, scaledWidth, scaledHeight, s -> {
-            InventoryOverlay.currentSearchText = s;
-            updateHighlightedSlots();
-        });
-        inventoryOverlay.redraw();
+        try {
+            inventoryOverlay = new InventoryOverlay(ItemStackBuilder.getAllItems(ItemsDataHandler.items), screen, scaledWidth, scaledHeight, s -> {
+                InventoryOverlay.currentSearchText = s;
+                updateHighlightedSlots();
+            });
+            inventoryOverlay.redraw();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static final Set<Integer> highlightedSlots = new HashSet<>();
