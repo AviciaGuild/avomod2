@@ -39,11 +39,4 @@ public class MakeShoutsClickable {
             }
         }
     }
-
-    private static boolean isMessageShout(Text message) {
-//        Pattern pattern = Pattern.compile("^(.* \\[[A-Z]{2}\\d*] shouts:) .*", Pattern.CASE_INSENSITIVE);
-        String messageString =  Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
-//        return pattern.matcher(messageString).find();
-        return messageString.startsWith("\uDAFF\uDFFC\uE015\uDAFF\uDFFF\uE002\uDAFF\uDFFE") || messageString.startsWith("\uDAFF\uDFFC\uE001\uDB00\uDC06");
-    }
 }
