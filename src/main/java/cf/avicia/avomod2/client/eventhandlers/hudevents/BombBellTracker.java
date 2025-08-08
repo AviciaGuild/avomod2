@@ -18,6 +18,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BombBellTracker {
     private static final HashMap<String, ScreenCoordinates> bombBellCoordinates = new HashMap<>();
@@ -72,21 +74,21 @@ public class BombBellTracker {
         if (!ConfigsHandler.getConfigBoolean("bombBellTracker")) return message;
 
         String unformattedMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
-        if (unformattedMessage == null || !unformattedMessage.startsWith("[Bomb Bell]")) return message;
+        String regex = "^(?:\uE01E\uE002|\uE001) .+ has thrown an? (?<bombName>.+) Bomb on (?<world>.+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(unformattedMessage);
+        if (matcher.find()) {
+            String bombName = matcher.group("bombName");
+            String world = matcher.group("world");
 
-        ArrayList<String> matches = Utils.getMatches(unformattedMessage, "(?<= thrown a )[a-zA-Z ]+(?= Bomb on)|(?<= on )[A-Z]{2}\\d{1,4}");
-        if (matches.size() != 2) return message;
+            BombType bombType = BombType.getBombType(bombName);
+            if (bombType == null) return message;
 
-        String bombName = matches.get(0);
-        String world = matches.get(1);
+            BombData bombData = new BombData(world, bombType);
 
-        BombType bombType = BombType.getBombType(bombName);
-        if(bombType == null) return message;
-
-        BombData bombData = new BombData(world, bombType);
-
-        if (!isDuplicateBomb(bombData)) {
-            storedBombs.add(bombData);
+            if (!isDuplicateBomb(bombData)) {
+                storedBombs.add(bombData);
+            }
         }
 
         return message;

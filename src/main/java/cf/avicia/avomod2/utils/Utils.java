@@ -96,18 +96,6 @@ public class Utils {
         return String.valueOf((int) number);
     }
 
-    public static ArrayList<String> getMatches(String text, String regex) {
-        ArrayList<String> matches = new ArrayList<>();
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
-
-        while (matcher.find()) {
-            matches.add(matcher.group());
-        }
-
-        return matches;
-    }
-
     public static Text textWithoutTimeStamp(Text text) {
         // Removes the wynntils timestamp from the message if there is one
         return Text.literal(text.getString().replaceAll("§8\\[§7.+§8\\]§[rf] *", "")).setStyle(text.getStyle());
