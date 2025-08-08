@@ -55,7 +55,11 @@ public class ItemStackBuilder {
                 case "attribute" -> {
                     Map<String, String> value = wynnItem.icon.getMap();
                     result = new ItemStack(Registries.ITEM.get(Identifier.of(value.get("id"))));
-                    result.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(Float.parseFloat(value.get("customModelData"))), List.of(), List.of(), List.of()));
+                    try {
+                        result.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(Float.parseFloat(value.get("customModelData"))), List.of(), List.of(), List.of()));
+                    } catch (Exception ignored) {
+                        // If the model breaks it should not break the rest of the features, the api seems broken atm
+                    }
                 }
                 case "legacy" -> {
                     result = new ItemStack(Registries.ITEM.get(Identifier.of("minecraft:" + InventoryOverlayUtils.legacyNameMap.getOrDefault(wynnItem.icon.getString(), "stone"))));

@@ -242,7 +242,7 @@ public class WynnItem {
     }
 
     private int getTotalIngredientEffectiveness() {
-        return ingredientPositionModifiers.above + ingredientPositionModifiers.left + ingredientPositionModifiers.notTouching + ingredientPositionModifiers.touching + ingredientPositionModifiers.right + ingredientPositionModifiers.under;
+        return ingredientPositionModifiers.above + ingredientPositionModifiers.left + ingredientPositionModifiers.not_touching + ingredientPositionModifiers.touching + ingredientPositionModifiers.right + ingredientPositionModifiers.under;
     }
 
     private String getItemTypeString() {
@@ -458,8 +458,8 @@ public class WynnItem {
                     result.add(Text.of((ingredientPositionModifiers.touching < 0 ? "§c" : "§a+") + ingredientPositionModifiers.touching + "% §7Ingredient Effectiveness"));
                     result.add(Text.of("§7(To ingredients touching this one)"));
                 }
-                if (ingredientPositionModifiers.notTouching != 0) {
-                    result.add(Text.of((ingredientPositionModifiers.notTouching < 0 ? "§c" : "§a+") + ingredientPositionModifiers.notTouching + "% §7Ingredient Effectiveness"));
+                if (ingredientPositionModifiers.not_touching != 0) {
+                    result.add(Text.of((ingredientPositionModifiers.not_touching < 0 ? "§c" : "§a+") + ingredientPositionModifiers.not_touching + "% §7Ingredient Effectiveness"));
                     result.add(Text.of("§7(To ingredients not touching this one)"));
                 }
 
