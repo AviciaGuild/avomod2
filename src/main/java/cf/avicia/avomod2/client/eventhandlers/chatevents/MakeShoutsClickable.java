@@ -1,10 +1,12 @@
 package cf.avicia.avomod2.client.eventhandlers.chatevents;
 
+import cf.avicia.avomod2.utils.MessageType;
 import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MakeShoutsClickable {
@@ -17,10 +19,20 @@ public class MakeShoutsClickable {
     }
 
     private static void makeShoutClickable(MutableText message) {
-        if (isMessageShout(message)) {
+        if (Utils.getMessageType(message) == MessageType.SHOUT) {
             try {
-                String messageString = Utils.getUnformattedString(message.getString());
-                String command = "/msg " + messageString.substring(0, messageString.indexOf("[") - 1) + " ";
+                String username = "";
+                if (ShowRealName.messageHasNickHoverDeep(message)) {
+                    username = ShowRealName.getRealName(message);
+                } else {
+                    String regex = "(?<username>[^ ]+) shouts: .*";
+                    Pattern pattern = Pattern.compile(regex);
+                    Matcher matcher = pattern.matcher(Utils.getChatMessageWithOnlyMessage(message));
+                    if (matcher.find()) {
+                        username = matcher.group("username");
+                    }
+                }
+                String command = "/msg " + username + " ";
                 message.fillStyle(message.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -29,8 +41,9 @@ public class MakeShoutsClickable {
     }
 
     private static boolean isMessageShout(Text message) {
-        Pattern pattern = Pattern.compile("^(.* \\[[A-Z]{2}\\d*] shouts:) .*", Pattern.CASE_INSENSITIVE);
+//        Pattern pattern = Pattern.compile("^(.* \\[[A-Z]{2}\\d*] shouts:) .*", Pattern.CASE_INSENSITIVE);
         String messageString =  Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
-        return pattern.matcher(messageString).find();
+//        return pattern.matcher(messageString).find();
+        return messageString.startsWith("\uDAFF\uDFFC\uE015\uDAFF\uDFFF\uE002\uDAFF\uDFFE") || messageString.startsWith("\uDAFF\uDFFC\uE001\uDB00\uDC06");
     }
 }
