@@ -8,6 +8,7 @@ public enum MessageType {
     PRIVATE,
     AMBIGUOUS,
     SHOUT,
+    BOMB_BELL,
     GAME_MESSAGE,
     OTHER
 }

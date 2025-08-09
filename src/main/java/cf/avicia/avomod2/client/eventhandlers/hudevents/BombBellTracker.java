@@ -2,11 +2,11 @@ package cf.avicia.avomod2.client.eventhandlers.hudevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.client.configs.locations.LocationsHandler;
-import cf.avicia.avomod2.client.eventhandlers.chatevents.ShowRealName;
 import cf.avicia.avomod2.client.locationselements.Element;
 import cf.avicia.avomod2.client.locationselements.ElementGroup;
 import cf.avicia.avomod2.client.locationselements.RectangleElement;
 import cf.avicia.avomod2.client.locationselements.TextElement;
+import cf.avicia.avomod2.utils.MessageType;
 import cf.avicia.avomod2.utils.ScreenCoordinates;
 import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.client.MinecraftClient;
@@ -72,9 +72,9 @@ public class BombBellTracker {
 
     public static Text onMessage(Text message) {
         if (!ConfigsHandler.getConfigBoolean("bombBellTracker")) return message;
-
-        String unformattedMessage = Utils.getUnformattedString(Utils.textWithoutTimeStamp(message).getString());
-        String regex = "^(?:\uE01E\uE002|\uE001) .+ has thrown an? (?<bombName>.+) Bomb on (?<world>.+)$";
+        if (Utils.getMessageType(message) != MessageType.BOMB_BELL) return message;
+        String unformattedMessage = Utils.getChatMessageWithOnlyMessage(message);
+        String regex = ".+ has thrown an? (?<bombName>.+) Bomb on (?<world>.+)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(unformattedMessage);
         if (matcher.find()) {
@@ -108,11 +108,12 @@ public class BombBellTracker {
     }
 
         private enum BombType {
-        COMBAT_XP("Combat XP"),
-        PROFESSION_XP("Profession XP"),
+        COMBAT_XP("Combat Experience"),
+        PROFESSION_XP("Profession Experience"),
         PROFESSION_SPEED("Profession Speed"),
         DUNGEON("Dungeon"),
-        LOOT("Loot");
+        LOOT("Loot"),
+        LOOT_CHEST("Loot Chest");
 
         private final String bombName;
 
@@ -138,7 +139,7 @@ public class BombBellTracker {
         }
     }
 
-    private static class BombData {
+    public static class BombData {
         private final String world;
         private final long startTime;
         private final BombType bombType;

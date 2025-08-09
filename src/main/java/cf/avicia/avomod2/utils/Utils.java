@@ -169,6 +169,7 @@ public class Utils {
         patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE005\uDAFF\uDFFF\uE002\uDAFF\uDFFE) .*$", Pattern.DOTALL), MessageType.PARTY));
         patterns.add(new Pair<>(Pattern.compile("^((\uDAFF\uDFFC\uE007\uDAFF\uDFFF\uE002\uDAFF\uDFFE)|(\uDAFF\uDFFC\uE001\uDB00\uDC06)) .* \uE003 .*: .*$", Pattern.DOTALL), MessageType.PRIVATE));
         patterns.add(new Pair<>(Pattern.compile("^((\uDAFF\uDFFC\uE015\uDAFF\uDFFF\uE002\uDAFF\uDFFE)|(\uDAFF\uDFFC\uE001\uDB00\uDC06)) .+ shouts: .+$", Pattern.DOTALL), MessageType.SHOUT));
+        patterns.add(new Pair<>(Pattern.compile("^((\uDAFF\uDFFC\uE01E\uDAFF\uDFFF\uE002\uDAFF\uDFFE)|(\uDAFF\uDFFC\uE001\uDB00\uDC06)) .+ has thrown an? .+ Bomb.* on .+$", Pattern.DOTALL), MessageType.BOMB_BELL));
         patterns.add(new Pair<>(Pattern.compile("^(\uDAFF\uDFFC\uE001\uDB00\uDC06).*$", Pattern.DOTALL), MessageType.AMBIGUOUS));
         patterns.add(new Pair<>(Pattern.compile("^[A-Z0-9].*$", Pattern.DOTALL), MessageType.GAME_MESSAGE));
 
