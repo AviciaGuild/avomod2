@@ -1,28 +1,40 @@
 package cf.avicia.avomod2.inventoryoverlay.item;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Icon {
     public Object value; // Can be a Map<String, String> or a String
     public String format;
 
-    public Map<String, String> getMap() {
+
+    public IconValue getMap() {
+        IconValue item = new IconValue();
         if (value instanceof Map<?, ?> rawMap) {
-            Map<String, String> safeMap = new HashMap<>();
+            item.id = (String) rawMap.get("id");
+            item.name = (String) rawMap.get("name");
 
-            for (Map.Entry<?, ?> entry : rawMap.entrySet()) {
-                if (entry.getKey() instanceof String && entry.getValue() instanceof String) {
-                    safeMap.put((String) entry.getKey(), (String) entry.getValue());
-                } else {
-                    return null;
+            Object cmdObj = rawMap.get("customModelData");
+            CustomModelData cmd = new CustomModelData();
+
+            if (cmdObj instanceof Map<?, ?> cmdMap) {
+                Object range = cmdMap.get("rangeDispatch");
+                if (range instanceof List<?> list) {
+                    cmd.rangeDispatch = list.stream()
+                            .map(v -> ((Number) v).floatValue())
+                            .toList();
                 }
+            } else if (cmdObj instanceof Number singleValue) {
+                // Special case: just a single float, wrap it in a list
+                cmd.rangeDispatch = List.of(singleValue.floatValue());
             }
-            return safeMap;
-        }
 
+            item.customModelData = cmd;
+            return item;
+        }
         return null;
     }
+
     public String getString() {
         if (value instanceof String) {
             return (String) value;

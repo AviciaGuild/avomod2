@@ -1,5 +1,6 @@
 package cf.avicia.avomod2.inventoryoverlay.util;
 
+import cf.avicia.avomod2.inventoryoverlay.item.IconValue;
 import cf.avicia.avomod2.inventoryoverlay.item.WynnItem;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.DataComponentTypes;
@@ -53,10 +54,10 @@ public class ItemStackBuilder {
         if (wynnItem.icon != null) {
             switch (wynnItem.icon.format) {
                 case "attribute" -> {
-                    Map<String, String> value = wynnItem.icon.getMap();
-                    result = new ItemStack(Registries.ITEM.get(Identifier.of(value.get("id"))));
+                    IconValue value = wynnItem.icon.getMap();
+                    result = new ItemStack(Registries.ITEM.get(Identifier.of(value.id)));
                     try {
-                        result.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(List.of(Float.parseFloat(value.get("customModelData").replaceAll("[^0-9]", ""))), List.of(), List.of(), List.of()));
+                        result.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(value.customModelData.rangeDispatch, List.of(), List.of(), List.of()));
                     } catch (Exception ignored) {
                         // If the model breaks it should not break the rest of the features, the api seems broken atm
                     }
