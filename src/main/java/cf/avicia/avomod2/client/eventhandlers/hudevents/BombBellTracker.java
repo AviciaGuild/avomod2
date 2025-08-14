@@ -74,7 +74,7 @@ public class BombBellTracker {
         if (!ConfigsHandler.getConfigBoolean("bombBellTracker")) return message;
         if (Utils.getMessageType(message) != MessageType.BOMB_BELL) return message;
         String unformattedMessage = Utils.getChatMessageWithOnlyMessage(message);
-        String regex = ".+ has thrown an? (?<bombName>.+) Bomb on (?<world>.+)";
+        String regex = ".+ has thrown an? (?<bombName>.+) Bomb on (?<world>.{2}\\d+)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(unformattedMessage);
         if (matcher.find()) {
