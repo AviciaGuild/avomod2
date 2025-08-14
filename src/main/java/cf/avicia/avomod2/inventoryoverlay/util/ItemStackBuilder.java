@@ -21,14 +21,20 @@ import java.util.Map;
 
 public class ItemStackBuilder {
 
+    private static List<Pair<ItemStack, WynnItem>> cachedItems = null;
+
     public static List<Pair<ItemStack, WynnItem>> getAllItems(Map<String, WynnItem> items) {
         if (items == null) {
             return null;
+        }
+        if (cachedItems != null) {
+            return cachedItems;
         }
         List<Pair<ItemStack, WynnItem>> itemStacks = new ArrayList<>();
         for (Map.Entry<String, WynnItem> wynnItem : items.entrySet()) {
             itemStacks.add(new Pair<>(ItemStackBuilder.buildItem(wynnItem.getKey(), wynnItem.getValue()), wynnItem.getValue()));
         }
+        cachedItems = itemStacks;
         return itemStacks;
     }
 
