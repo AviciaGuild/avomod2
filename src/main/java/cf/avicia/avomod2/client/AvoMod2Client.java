@@ -4,6 +4,8 @@ import cf.avicia.avomod2.client.commands.CommandInitializer;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.client.configs.locations.LocationsHandler;
 import cf.avicia.avomod2.client.customevents.*;
+import cf.avicia.avomod2.client.emotes.EmotesGui;
+import cf.avicia.avomod2.client.emotes.EmotesKeybind;
 import cf.avicia.avomod2.client.eventhandlers.chatclickedevents.CopyClickedMessage;
 import cf.avicia.avomod2.client.eventhandlers.chatclickedevents.TriggerChatMouseClickedEvents;
 import cf.avicia.avomod2.client.eventhandlers.chatevents.TriggerChatEvents;
@@ -46,6 +48,8 @@ public class AvoMod2Client implements ClientModInitializer {
         CommandInitializer.initializeCommands();
         GuildBankKeybind.init();
         TerritoryMenuKeybind.init();
+        EmotesKeybind.init();
+        EmotesGui.updateFromConfig();
         TerritoryOutlineRenderer.initKeybind();
         ItemsDataHandler.updateItemsFromAPI();
 
@@ -71,6 +75,7 @@ public class AvoMod2Client implements ClientModInitializer {
             TerritoryData.onTick();
             GuildBankKeybind.onTick();
             TerritoryMenuKeybind.onTick();
+            EmotesKeybind.onTick();
             TerritoryOutlineRenderer.onTick();
             WarTracker.onTick();
 

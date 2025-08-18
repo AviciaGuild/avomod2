@@ -44,6 +44,7 @@ public class ConfigsHandler {
             new ConfigToggle("Misc", "Display world info on tab", "Enabled", "worldInfoOnTab"),
             new ConfigToggle("Misc", "Bomb Bell Tracker (REQUIRES CHAMPION)", "Enabled", "bombBellTracker"),
             new ConfigToggle("Misc", "Bomb Bell Tracker - Click to Switch World", "Enabled", "bombBellSwitchWorld"),
+            new ConfigToggle("Misc", "Add emotes button to emotes menu", "Enabled", "emotesButton"),
             new ConfigToggle("Locations", "Edit AvoMod Locations", "Edit", "locations")
     };
     public static void initializeConfigs() {

@@ -27,6 +27,7 @@ public class DropdownWidget extends TextFieldWidget {
     private int scrollAmount;
 
     private final Consumer<String> onUpdate;
+    private boolean updateOnType = false;
 
     public DropdownWidget(TextRenderer textRenderer, int x, int y, int width, Text text, String defaultText, List<String> choices, Consumer<String> onUpdate) {
         super(textRenderer, x, y - 6, width, 14, text);
@@ -44,6 +45,13 @@ public class DropdownWidget extends TextFieldWidget {
         visualValidChoices = new ArrayList<>(visualChoices);
         updateMaxShown();
     }
+    public DropdownWidget(TextRenderer textRenderer, int x, int y, int width, Text text, String defaultText, List<String> choices, Consumer<String> onUpdate, boolean updateOnType) {
+        this(textRenderer, x, y, width, text, defaultText, choices, onUpdate);
+        this.updateOnType = updateOnType;
+        lastChoice = text.getString();
+        visualLastChoice = text.getString();
+        setText(visualLastChoice);
+    }
 
     public void setChoices(List<String> newChoices) {
         choices = newChoices;
@@ -56,7 +64,7 @@ public class DropdownWidget extends TextFieldWidget {
 
     @Override
     public void setText(String text) {
-        super.setText(InventoryOverlayUtils.toUpperCamelCaseWithSpaces(text));
+        super.setText(updateOnType ? text : InventoryOverlayUtils.toUpperCamelCaseWithSpaces(text));
     }
 
     public void setDefaultText(String newDefaultText) {
@@ -118,14 +126,15 @@ public class DropdownWidget extends TextFieldWidget {
             }
         }
         setFocused(isMouseOver(mouseX, mouseY));
-
-        if (isFocused()) {
-            setText("");
-            validChoices = new ArrayList<>(choices);
-            visualValidChoices = new ArrayList<>(visualChoices);
-        } else {
-            setText(visualLastChoice);
-        }
+//        if (!updateOnType) {
+            if (isFocused()) {
+                setText("");
+                validChoices = new ArrayList<>(choices);
+                visualValidChoices = new ArrayList<>(visualChoices);
+            } else {
+                setText(visualLastChoice);
+            }
+//        }
 
         return true;
     }
@@ -153,6 +162,11 @@ public class DropdownWidget extends TextFieldWidget {
     @Override
     public boolean charTyped(char chr, int modifiers) {
         super.charTyped(chr, modifiers);
+        if (updateOnType) {
+            visualLastChoice = getText();
+            lastChoice = getText();
+            onUpdate.accept(getText());
+        }
         updateShownChoices();
         return true;
     }
@@ -182,7 +196,7 @@ public class DropdownWidget extends TextFieldWidget {
         context.fill(getX() - 1, getY() - 3, getX() + getWidth() + 1, getY() + getHeight() + 3, isFocused() ? Color.WHITE.getRGB() : Color.GRAY.getRGB());
         context.fill(getX(), getY() - 2, getX() + getWidth(), getY() + getHeight() + 2, Color.BLACK.getRGB());
 
-        if (lastChoice.isEmpty() && !isFocused())
+        if (lastChoice.isEmpty() && !isFocused() && !(updateOnType && !getText().isEmpty()))
             context.drawTextWithShadow(textRenderer, InventoryOverlayUtils.toUpperCamelCaseWithSpaces(defaultText), this.getX() + 3, this.getY() + 3, 0x666666);
     }
 
@@ -216,7 +230,7 @@ public class DropdownWidget extends TextFieldWidget {
                     finalText = visualValidChoices.get(i + scrollAmount);
                 }
                 //String finalText = textRenderer.trimToWidth(validChoices.get(i), this.width - 8);
-                context.drawTextWithShadow(textRenderer, InventoryOverlayUtils.toUpperCamelCaseWithSpaces(finalText), this.getX() + 4, this.getY() + this.height + ((this.height + 1) * i) + 4, 0xFFFFFFFF);
+                context.drawTextWithShadow(textRenderer, updateOnType ? finalText : InventoryOverlayUtils.toUpperCamelCaseWithSpaces(finalText), this.getX() + 4, this.getY() + this.height + ((this.height + 1) * i) + 4, 0xFFFFFFFF);
             }
 
             // draw scroll bar if needed
