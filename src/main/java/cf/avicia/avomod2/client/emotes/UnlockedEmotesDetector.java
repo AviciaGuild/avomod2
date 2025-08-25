@@ -2,14 +2,18 @@ package cf.avicia.avomod2.client.emotes;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.core.CustomFile;
+import cf.avicia.avomod2.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Text;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +26,7 @@ public class UnlockedEmotesDetector {
     private static Set<String> lastSavedEmotes = new HashSet<>();
 
     public static String extractEmoteName(String input) {
-        Pattern pattern = Pattern.compile("^([A-Za-z0-9_]+) Emote$");
+        Pattern pattern = Pattern.compile(".*Command: /emote ([A-Za-z0-9_]+).*");
         Matcher matcher = pattern.matcher(input);
 
         if (matcher.matches()) {
@@ -40,7 +44,8 @@ public class UnlockedEmotesDetector {
             if (slot.getStack().isOf(Items.AIR) || slot.inventory.equals(client.player.getInventory())) {
                 continue;
             }
-            String emoteName = extractEmoteName(slot.getStack().getName().getString());
+            String lore = Utils.getUnformattedString(String.join(" ", slot.getStack().getTooltip(Item.TooltipContext.DEFAULT, MinecraftClient.getInstance().player, TooltipType.ADVANCED).stream().map(Text::getString).toList()));
+            String emoteName = extractEmoteName(lore);
             if (emoteName != null) {
                 detectedEmotes.add(emoteName);
             }
