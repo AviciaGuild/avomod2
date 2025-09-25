@@ -19,6 +19,7 @@ public class TerritoryDataHttpServer implements HttpHandler {
 
         String response = "null";
         Gson gson = new Gson();
+        TerritoryData.updateTerritoryData();
         if (TerritoryData.advancementsTerritoryData != null) {
             response = gson.toJson(TerritoryData.advancementsTerritoryData);
         }

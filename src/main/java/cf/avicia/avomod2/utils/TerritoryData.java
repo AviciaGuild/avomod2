@@ -167,7 +167,7 @@ public class TerritoryData {
             hasServerBeenStarted = false;
         }
         tick++;
-        if (tick >= 10000 || defenses.isEmpty()) {
+        if (tick >= 20 * 10 || defenses.isEmpty()) {
             updateTerritoryData();
             tick = 0;
         }
