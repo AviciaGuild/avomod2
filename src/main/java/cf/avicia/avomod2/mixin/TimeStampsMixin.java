@@ -18,7 +18,7 @@ public class TimeStampsMixin {
     )
     private Text init(Text message) {
         if (ConfigsHandler.getConfigBoolean("chatTimestamps") && !ConfigsHandler.getConfigBoolean("disableAll")) {
-            if (!message.getString().matches("§8\\[§7.+§8\\]§r.*")) {  // If there is already a wynntils timestamp don't add a timestamp
+            if (!message.getString().matches("§8\\[§7.+§8\\]§.*")) {  // If there is already a timestamp don't add a timestamp
                 String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
                 Text res = Text.of("§8[§7" + timeStamp + "§8]§f ");
                 res.getSiblings().add(message);

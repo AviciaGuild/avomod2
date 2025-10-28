@@ -7,10 +7,10 @@ import net.minecraft.text.Text;
 public class ShowRealName {
     public static Text onMessage(Text message) {
         if (!ConfigsHandler.getConfigBoolean("revealNicks")) return message;
-        return addRealNameToMessage(message);
+        return addRealNameToMessage(message, message);
     }
 
-    private static Text addRealNameToMessage(Text message) {
+    private static Text addRealNameToMessage(Text message, Text originalMessage) {
         // No need to do anything if a nickname can't be found in the message
         if (!messageHasNickHoverDeep(message)) {
             return message;
@@ -21,8 +21,8 @@ public class ShowRealName {
                 // Don't mess with components without nicknames, to minimize potential errors
                 if (messageHasNickHoverDeep(siblingMessage)) {
                     // Chat messages can be deeply nested, so we need to use recursion
-                    Text realNameMessage = addRealNameToMessage(siblingMessage);
-                    realNameMessage = tryToAddRealName(realNameMessage);
+                    Text realNameMessage = addRealNameToMessage(siblingMessage, originalMessage);
+                    realNameMessage = tryToAddRealName(realNameMessage, originalMessage);
                     finalMessage.getSiblings().addAll(realNameMessage.getWithStyle(message.getStyle()));
                 } else {
                     finalMessage.getSiblings().addAll(siblingMessage.getWithStyle(siblingMessage.getStyle()));
@@ -34,12 +34,16 @@ public class ShowRealName {
         return finalMessage;
     }
 
-    private static Text tryToAddRealName(Text message) {
+    private static Text tryToAddRealName(Text message, Text originalMessage) {
         if (messageHasNickHover(message)) {
             HoverEvent hover = message.getStyle().getHoverEvent();
             if (hover == null) return message;
             if (hover.getValue(hover.getAction()) instanceof Text hoverText) {
                 String realName = hoverText.getString().split(" ")[hoverText.getString().split(" ").length - 1];
+                if (originalMessage.getString().contains("§c(" + realName + ")§f")) {
+                    // The real name has already been added (some sort of mod incompatibility)
+                    return message;
+                }
                 Text fullMessage = Text.empty().fillStyle(message.getStyle());
                 // Retain the old style
                 fullMessage.getSiblings().addAll(message.getWithStyle(message.getStyle()));
