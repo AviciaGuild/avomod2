@@ -55,11 +55,11 @@ public class AuraHandler {
             long timeRemaining = (auraProcTime - (currentTime - firstAura));
             String remainingTimer = Double.toString(Math.floor(timeRemaining / 100.0) / 10.0);
 
-            drawContext.getMatrices().push();
-            drawContext.getMatrices().scale(6.0F, 6.0F, 6.0F);
+            drawContext.getMatrices().pushMatrix();
+            drawContext.getMatrices().scale(6.0F, 6.0F, drawContext.getMatrices());
             Window window = MinecraftClient.getInstance().getWindow();
             drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(remainingTimer), window.getScaledWidth() / 12 - MinecraftClient.getInstance().textRenderer.getWidth(remainingTimer) / 3, window.getScaledHeight() / 12 - 10, Color.CYAN.getRGB());
-            drawContext.getMatrices().pop();
+            drawContext.getMatrices().popMatrix();
 
             if (currentTime - firstAura < 400) {
                 Color color;

@@ -8,8 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.sync.ItemStackHash;
 import net.minecraft.text.*;
 import net.minecraft.util.Pair;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 
 import java.time.Instant;
@@ -31,6 +33,13 @@ public class Utils {
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
         return (minutes >= 1 ? minutes + "m " : "") + seconds + "s";
+    }
+
+    public static boolean isMouseDown(int button) {
+        return GLFW.glfwGetMouseButton(
+                MinecraftClient.getInstance().getWindow().getHandle(),
+                button
+        ) == GLFW.GLFW_PRESS;
     }
 
     public static boolean isKeyDown(int keyCode) {
@@ -71,8 +80,8 @@ public class Utils {
 
     public static MutableText makeMessageThatRunsCommand(String message, String command) {
         MutableText messageRes = Text.literal(message);
-        messageRes.fillStyle(messageRes.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)));
-        messageRes.fillStyle(messageRes.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("§7Click to run §f" + command))));
+        messageRes.fillStyle(messageRes.getStyle().withClickEvent(new ClickEvent.RunCommand(command)));
+        messageRes.fillStyle(messageRes.getStyle().withHoverEvent(new HoverEvent.ShowText(Text.of("§7Click to run §f" + command))));
         return messageRes;
     }
 
@@ -212,26 +221,52 @@ public class Utils {
     }
 
     public static Text getChatMessageAt(double mouseX, double mouseY) {
-        ChatHud chatHud = MinecraftClient.getInstance().inGameHud.getChatHud();
-        int index = chatHud.getMessageLineIndex(chatHud.toChatLineX(mouseX), chatHud.toChatLineY(mouseY));
-        if (index != -1) {
-            Map<Integer, Integer> visibleToMessageIndex = new HashMap<>();
-            int messageIndex = -1;
-            for (int i = 0; i < chatHud.visibleMessages.size(); i++) {
-                if (chatHud.visibleMessages.get(i).endOfEntry()) {
-                    ++messageIndex;
-                }
-                visibleToMessageIndex.put(i, messageIndex);
-            }
-            int clickedMessageIndex = visibleToMessageIndex.getOrDefault(index, -1);
-            if (clickedMessageIndex != -1 && clickedMessageIndex < chatHud.messages.size()) {
-                return chatHud.messages.get(clickedMessageIndex).content();
+        MinecraftClient client = MinecraftClient.getInstance();
+        ChatHud chatHud = client.inGameHud.getChatHud();
+
+        int windowHeight = client.getWindow().getScaledHeight();
+
+        // 1. Convert mouse to chat-local coordinates
+        double scale = chatHud.getChatScale();
+        double chatX = mouseX / scale - 4.0; // undo translate(4, 0)
+        double chatY = mouseY / scale;
+
+        // 2. Chat vertical bounds
+        int chatBottomY = MathHelper.floor((windowHeight - 40) / scale);
+        int chatTopY = chatBottomY - chatHud.getHeight();
+
+        if (chatY < chatTopY || chatY > chatBottomY) {
+            return null;
+        }
+
+        // 3. Determine visible line index
+        int lineHeight = chatHud.getLineHeight();
+        int relativeY = chatBottomY - (int) chatY;
+        int visibleLineIndex = relativeY / lineHeight;
+
+        int index = visibleLineIndex + chatHud.scrolledLines;
+
+        if (index < 0 || index >= chatHud.visibleMessages.size()) {
+            return null;
+        }
+
+        // 4. Map visible line → logical message (same as your old logic)
+        int messageIndex = -1;
+        for (int i = 0; i <= index; i++) {
+            if (chatHud.visibleMessages.get(i).endOfEntry()) {
+                ++messageIndex;
             }
         }
+
+        if (messageIndex >= 0 && messageIndex < chatHud.messages.size()) {
+            return chatHud.messages.get(messageIndex).content();
+        }
+
         return null;
     }
 
-    public static void sendClickPacket(ScreenHandler screenHandler, int slot, int button, SlotActionType slotActionType, ItemStack itemStack) {
+
+    public static void sendClickPacket(ScreenHandler screenHandler, short slot, byte button, SlotActionType slotActionType, ItemStack itemStack) {
         if (MinecraftClient.getInstance().getNetworkHandler() != null) {
             MinecraftClient.getInstance().getNetworkHandler().sendPacket(
                     new ClickSlotC2SPacket(
@@ -240,8 +275,8 @@ public class Utils {
                             slot,
                             button,
                             slotActionType,
-                            itemStack,
-                            Int2ObjectMaps.emptyMap()
+                            Int2ObjectMaps.emptyMap(),
+                            ItemStackHash.fromItemStack(itemStack, Objects::hashCode)
                     )
             );
         }

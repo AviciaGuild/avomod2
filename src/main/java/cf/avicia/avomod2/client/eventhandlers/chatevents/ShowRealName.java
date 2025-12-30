@@ -38,8 +38,8 @@ public class ShowRealName {
         if (messageHasNickHover(message)) {
             HoverEvent hover = message.getStyle().getHoverEvent();
             if (hover == null) return message;
-            if (hover.getValue(hover.getAction()) instanceof Text hoverText) {
-                String realName = hoverText.getString().split(" ")[hoverText.getString().split(" ").length - 1];
+            if (hover instanceof HoverEvent.ShowText(Text value)) {
+                String realName = value.getString().split(" ")[value.getString().split(" ").length - 1];
                 if (originalMessage.getString().contains("§c(" + realName + ")§f")) {
                     // The real name has already been added (some sort of mod incompatibility)
                     return message;
@@ -58,8 +58,8 @@ public class ShowRealName {
         if (messageHasNickHover(message)) {
             HoverEvent hover = message.getStyle().getHoverEvent();
             if (hover == null) return null;
-            if (hover.getValue(hover.getAction()) instanceof Text hoverText) {
-                return hoverText.getString().split(" ")[hoverText.getString().split(" ").length - 1];
+            if (hover instanceof HoverEvent.ShowText(Text value)) {
+                return value.getString().split(" ")[value.getString().split(" ").length - 1];
             }
         }
         if (!message.getSiblings().isEmpty()) {
@@ -86,8 +86,8 @@ public class ShowRealName {
     }
     public static boolean messageHasNickHover(Text message) {
         HoverEvent hover = message.getStyle().getHoverEvent();
-        if (hover != null && hover.getValue(hover.getAction()) instanceof Text hoverText) {
-            return hoverText.getString().contains("real username") || hoverText.getString().contains("real name");
+        if (hover instanceof HoverEvent.ShowText(Text value)) {
+            return value.getString().contains("real username") || value.getString().contains("real name");
         }
         return false;
     }

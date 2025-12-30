@@ -11,6 +11,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.Identifier;
 
 public class TerritoryMenuKeybind {
     private static boolean openingTerritoryMenu;
@@ -19,7 +20,7 @@ public class TerritoryMenuKeybind {
     private static long lastKeybindPress = System.currentTimeMillis();
 
     public static void init() {
-        keyBinding = new KeyBinding("Keybind to open territory menu", InputUtil.GLFW_KEY_I, "Avomod");
+        keyBinding = new KeyBinding("Keybind to open territory menu", InputUtil.GLFW_KEY_I, new KeyBinding.Category(Identifier.of("avomod")));
         KeyBindingRegistryImpl.registerKeyBinding(keyBinding);
     }
 
@@ -32,7 +33,7 @@ public class TerritoryMenuKeybind {
         if (keyBinding.isPressed()) {
             lastKeybindPress = System.currentTimeMillis();
             if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-                MinecraftClient.getInstance().getNetworkHandler().sendCommand("gu manage");
+                MinecraftClient.getInstance().getNetworkHandler().sendChatCommand("gu manage");
                 openingTerritoryMenu = true;
             }
         }
@@ -47,8 +48,8 @@ public class TerritoryMenuKeybind {
         if (!territoryMenuItem.getName().getString().contains("Territories")) return;
         Utils.sendClickPacket(
                 screenHandler,
-                14,
-                0,
+                (short) 14,
+                (byte) 0,
                 SlotActionType.PICKUP,
                 territoryMenuItem
         );

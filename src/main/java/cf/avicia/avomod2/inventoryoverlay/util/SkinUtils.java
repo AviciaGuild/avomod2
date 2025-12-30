@@ -4,9 +4,11 @@
  */
 package cf.avicia.avomod2.inventoryoverlay.util;
 
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.ItemStack;
@@ -34,12 +36,10 @@ public final class SkinUtils {
     }
 
     public static void setPlayerHeadSkin(ItemStack itemStack, String textureString) {
-        // If this starts being done repeatedly for the same texture string,
-        // we should cache the UUID.
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
-        gameProfile.getProperties().put("textures", new Property("textures", textureString, null));
+        PropertyMap propertyMap = new PropertyMap(ImmutableListMultimap.of("textures", new Property("textures", textureString, null)));
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "", propertyMap);
 
-        itemStack.set(DataComponentTypes.PROFILE, new ProfileComponent(gameProfile));
+        itemStack.set(DataComponentTypes.PROFILE, ProfileComponent.ofStatic(gameProfile));
     }
 
 }

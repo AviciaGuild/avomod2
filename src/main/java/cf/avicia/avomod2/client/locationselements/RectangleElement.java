@@ -18,10 +18,10 @@ public class RectangleElement extends Element {
     }
 
     public void draw(DrawContext drawContext) {
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(scale, scale, scale);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(scale, scale, drawContext.getMatrices());
         drawContext.fill((int) x, (int) y, (int) (x + width), (int) (y + height), color.getRGB());
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
     }
 
     public float getRightEdge() {

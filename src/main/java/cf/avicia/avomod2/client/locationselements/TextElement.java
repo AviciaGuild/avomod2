@@ -19,10 +19,10 @@ public class TextElement extends Element {
     }
 
     public void draw(DrawContext drawContext) {
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(scale, scale, scale);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(scale, scale, drawContext.getMatrices());
         drawContext.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.of(text), (int) x, (int) y, color.getRGB());
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
     }
 
     public String getText() {

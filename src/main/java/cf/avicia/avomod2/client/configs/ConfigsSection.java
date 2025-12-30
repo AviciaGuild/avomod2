@@ -1,7 +1,7 @@
 package cf.avicia.avomod2.client.configs;
 
 import cf.avicia.avomod2.core.CustomFile;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
 
 public class ConfigsSection {
     public final String configsCategory;
@@ -48,7 +48,8 @@ public class ConfigsSection {
         }
 //        configsGui.drawContext.getMatrices().push();
 //        configsGui.drawContext.getMatrices().translate(0f, 0f, 800f);
-        configsGui.drawContext.drawTextWithShadow(MinecraftClient.getInstance().inGameHud.getTextRenderer(), title, x, y, 0xFFFFFF);
+        configsGui.drawContext.getTextConsumer().text(x, y, Text.of(title));
+//        configsGui.drawContext.drawTextWithShadow(MinecraftClient.getInstance().inGameHud.getTextRenderer(), title, x, y, 0xFFFFFF);
 //        configsGui.drawContext.getMatrices().pop();
     }
 }

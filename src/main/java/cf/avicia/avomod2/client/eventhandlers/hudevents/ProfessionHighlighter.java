@@ -1,6 +1,7 @@
 package cf.avicia.avomod2.client.eventhandlers.hudevents;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
+import cf.avicia.avomod2.inventoryoverlay.gui.RegularButtonWidget;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
@@ -29,15 +30,18 @@ public class ProfessionHighlighter {
         if (ConfigsHandler.getConfigBoolean("disableAll") || !ConfigsHandler.getConfigBoolean("profHighlighter")) return;
         init(screen, scaledWidth, scaledHeight);
         Screens.getButtons(screen).add(buttonWidget);
-        ScreenMouseEvents.afterMouseClick(screen).register((screen1, mouseX, mouseY, button) -> {
+        ScreenMouseEvents.afterMouseClick(screen).register((screen1, click, doubled) -> {
             if (buttonWidget != null) {
                 buttonWidget.setFocused(false);
-                if (buttonWidget.isMouseOver(mouseX, mouseY) && button == 1) {
+                if (buttonWidget.isMouseOver(click.x(), click.y()) && click.button() == 1) {
                     selectedProfIndex = (selectedProfIndex + profOptions.size() - 1) % profOptions.size();
-                    buttonWidget.setMessage(Text.of(profOptions.get(selectedProfIndex)));
-                    ClickableWidget.playClickSound(MinecraftClient.getInstance().getSoundManager());
+                    if (selectedProfIndex < profOptions.size()) {
+                        buttonWidget.setMessage(Text.of(profOptions.get(selectedProfIndex)));
+                        ClickableWidget.playClickSound(MinecraftClient.getInstance().getSoundManager());
+                    }
                 }
             }
+            return true;
         });
     }
 
@@ -49,15 +53,15 @@ public class ProfessionHighlighter {
         final int slots = client.player != null ? client.player.currentScreenHandler.slots.size() : 0;
         final int rows = slots / 9;
         final int rowHeight = 18;
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().translate(0.0, 0.0, 200F);
+        drawContext.getMatrices().pushMatrix();
+//        drawContext.getMatrices().translate(0.0, 0.0, 200F);
         final double rowHeightAdjustment = Math.floor(((rows - 3) * -0.5) * rowHeight);
         for (Point p : highlightedSlots) {
             int x = (scaledWidth / 2) + p.x - 88;
             int y = (int) ((scaledHeight / 2) + p.y - rowHeightAdjustment - (rows - 1) * rowHeight - 12);
             drawContext.fill(x, y, x + 17, y + 17, new Color(0, 0, 255, 100).getRGB());
         }
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
     }
 
     private static void init(Screen screen, int scaledWidth, int scaledHeight) {
@@ -66,11 +70,11 @@ public class ProfessionHighlighter {
         final int rowHeight = 18;
         final double rowHeightAdjustment = Math.floor(((rows - 3) * -0.5) * rowHeight);
         int topLeftY = (int) ((scaledHeight / 2) - rowHeightAdjustment - (rows - 1) * rowHeight - 12);
-        buttonWidget = new ButtonWidget((scaledWidth / 2) + 90, topLeftY, 20, 20, Text.of(profOptions.get(selectedProfIndex)), button -> {
+        buttonWidget = new RegularButtonWidget((scaledWidth / 2) + 90, topLeftY, 20, 20, Text.of(profOptions.get(selectedProfIndex)), button -> {
             selectedProfIndex = (selectedProfIndex + 1) % profOptions.size();
             buttonWidget.setMessage(Text.of(profOptions.get(selectedProfIndex)));
             updateHighlightedSlots();
-        }, textSupplier -> Text.literal(profOptions.get(selectedProfIndex)));
+        });
     }
     public static void updateHighlightedSlots() {
         if (MinecraftClient.getInstance().player != null) {

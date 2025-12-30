@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Unit;
 import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class ItemStackBuilder {
         ComponentChanges.Builder builder = ComponentChanges.builder();
         builder.add(DataComponentTypes.CUSTOM_NAME, wynnItem.getFormattedDisplayName(name));
         builder.add(DataComponentTypes.LORE, new LoreComponent(wynnItem.getLore()));
-        builder.add(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+//        builder.add(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
         try {
             ItemStack result = getBaseItem(wynnItem);
             result.applyChanges(builder.build());
@@ -80,7 +79,7 @@ public class ItemStackBuilder {
             String itemId = (wynnItem.armourMaterial.equals("chain") ? "chainmail" : wynnItem.armourMaterial) + "_" + wynnItem.armourType;
             result = new ItemStack(Registries.ITEM.get(Identifier.of("minecraft:" + itemId)));
             if (wynnItem.armourColor != null) {
-                result.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(InventoryOverlayUtils.parseRGB(wynnItem.armourColor).getRGB(), false));
+                result.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(InventoryOverlayUtils.parseRGB(wynnItem.armourColor).getRGB()));
             }
         }
         if (result.toString().contains("minecraft:air")) {

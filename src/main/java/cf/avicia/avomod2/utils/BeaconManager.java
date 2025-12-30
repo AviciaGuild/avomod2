@@ -1,7 +1,7 @@
 package cf.avicia.avomod2.utils;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
@@ -19,14 +19,14 @@ public class BeaconManager {
     public static String soonestTerritory = null;
 
     public static void drawBeamWithTitle(WorldRenderContext ctx, Coordinates loc, Color color, String title) {
-        MatrixStack matrices = ctx.matrixStack();
-        Camera camera = ctx.camera();
+        MatrixStack matrices = ctx.matrices();
+        Camera camera = ctx.gameRenderer().getCamera();
         VertexConsumerProvider vertexConsumerProvider = ctx.consumers();
         if (camera == null || vertexConsumerProvider == null || MinecraftClient.getInstance().player == null) return;
 
-        double titleDeltaX = loc.x() - camera.getPos().x, beaconDeltaX = loc.x() - camera.getPos().x;
+        double titleDeltaX = loc.x() - camera.getCameraPos().x, beaconDeltaX = loc.x() - camera.getCameraPos().x;
         double titleDeltaY = 0, beaconDeltaY = -300;
-        double titleDeltaZ = loc.z() - camera.getPos().z, beaconDeltaZ = loc.z() - camera.getPos().z;
+        double titleDeltaZ = loc.z() - camera.getCameraPos().z, beaconDeltaZ = loc.z() - camera.getCameraPos().z;
         double distSq = beaconDeltaX * titleDeltaX + beaconDeltaY * titleDeltaY + beaconDeltaZ * titleDeltaZ;
         double dist = Math.sqrt(distSq);
         int maxDistance = MinecraftClient.getInstance().options.getClampedViewDistance() * 15;
@@ -43,7 +43,7 @@ public class BeaconManager {
 
         matrices.push();
         matrices.translate(beaconDeltaX, beaconDeltaY, beaconDeltaZ);
-        BeaconBlockEntityRenderer.renderBeam(matrices, vertexConsumerProvider, BeaconBlockEntityRenderer.BEAM_TEXTURE, ctx.tickCounter().getTickDelta(true), 1.0F, ctx.world().getTime(), 0, BeaconBlockEntityRenderer.MAX_BEAM_HEIGHT, color.getRGB(), 0.2F, 0.25F);
+        BeaconBlockEntityRenderer.renderBeam(matrices, ctx.commandQueue(), BeaconBlockEntityRenderer.BEAM_TEXTURE, camera.getLastTickProgress(), 1.0F, camera.getFocusedEntity().age, 0, BeaconBlockEntityRenderer.MAX_BEAM_HEIGHT, color.getRGB(), 0.2F);
         matrices.pop();
 
         matrices.push();

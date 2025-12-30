@@ -2,8 +2,11 @@ package cf.avicia.avomod2.inventoryoverlay.gui;
 
 import cf.avicia.avomod2.inventoryoverlay.util.InventoryOverlayUtils;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -16,8 +19,8 @@ public class SearchTextFieldWidget extends TextFieldWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
+    public void onClick(Click click, boolean doubled) {
+        super.onClick(click, doubled);
         InventoryOverlay.isInteractedWith = true;
         if (System.currentTimeMillis() - lastClick < 200) {
             InventoryOverlay.highlightSearchedString = !InventoryOverlay.highlightSearchedString;
@@ -39,7 +42,10 @@ public class SearchTextFieldWidget extends TextFieldWidget {
         super.renderWidget(context, mouseX, mouseY, delta);
         String evaluatedExpression = evaluateExpression();
         if (evaluatedExpression != null) {
-            context.drawText(textRenderer, Text.of("=" + evaluatedExpression), getCharacterX(getText().length() - 1) + 10, getY() + 6, 0x00ff00, false);
+//            context.drawText(textRenderer, Text.of("=" + evaluatedExpression), getCharacterX(getText().length() - 1) + 10, getY() + 6, 0x00ff00, false);
+            MutableText text = Text.literal("=" + evaluatedExpression);
+            text.setStyle(Style.EMPTY.withColor(0x00ff00));
+            context.getTextConsumer().text(getCharacterX(getText().length() - 1) + 10, getY() + 6, text);
         }
         if (InventoryOverlay.highlightSearchedString) {
             context.fill(getX(), getY(), getX() + width, getY() + height, new Color(255, 255, 0, 50).getRGB());

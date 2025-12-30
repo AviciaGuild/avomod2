@@ -6,11 +6,14 @@ import cf.avicia.avomod2.inventoryoverlay.util.ItemsDataHandler;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
@@ -24,13 +27,13 @@ public class ItemFilterGuiScreen extends Screen {
 
     private final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
-    private ElevatedButtonWidget backButton;
+    private RegularButtonWidget backButton;
     private ButtonWidget addFilterButton;
     private final ArrayList<DropdownWidget> filterListOption;
     private final ArrayList<DropdownWidget> filterListValue;
     private final ArrayList<ButtonWidget> filterListComparator;
     private final ArrayList<TextFieldWidget> filterListConstant;
-    private final ArrayList<ElevatedButtonWidget> filterListDelete;
+    private final ArrayList<RegularButtonWidget> filterListDelete;
 
     private final ArrayList<Filter> itemFilters = new ArrayList<>();
     public int levelMin = 0;
@@ -56,7 +59,7 @@ public class ItemFilterGuiScreen extends Screen {
     }
 
     public void postInit() {
-        backButton = new ElevatedButtonWidget(5, 5, 30, 20, Text.literal("Back"), Text.of("Go Back"), (button) -> close());
+        backButton = new RegularButtonWidget(5, 5, 30, 20, Text.literal("Back"), Text.of("Go Back"), (button) -> close());
         NumberTextFieldWidget levelMinField = new NumberTextFieldWidget(textRenderer, 115, 5, 30, 20, levelMin, integer -> levelMin = integer);
         levelMinField.setTooltip(Tooltip.of(Text.of("Minimum")));
         NumberTextFieldWidget levelMaxField = new NumberTextFieldWidget(textRenderer, 155, 5, 30, 20, levelMax, integer -> levelMax = integer);
@@ -103,7 +106,7 @@ public class ItemFilterGuiScreen extends Screen {
                 comparator.setMessage(Text.literal("Matches"));
 
             });
-            ElevatedButtonWidget delete = new ElevatedButtonWidget(5, labelMenuHeight + 5 + index * 25, 20, 20, Text.literal("D"), Text.of("Delete"), b -> removeIndex = filterListOption.indexOf(options));
+            RegularButtonWidget delete = new RegularButtonWidget(5, labelMenuHeight + 5 + index * 25, 20, 20, Text.literal("D"), Text.of("Delete"), b -> removeIndex = filterListOption.indexOf(options));
 
             filterListOption.add(options);
             filterListValue.add(valueWidget);
@@ -187,61 +190,61 @@ public class ItemFilterGuiScreen extends Screen {
         }
 
         // draw the label at the top
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, 110);
-        context.fill(0, 0, width, labelMenuHeight, 0xFF555555);
+        context.getMatrices().pushMatrix();
+//        context.getMatrices().translate(0, 0, 110);
+//        context.fill(0, 0, width, labelMenuHeight, 0xFF555555);
         context.drawHorizontalLine(0, width, labelMenuHeight, 0xFFFFFFFF);
         context.drawCenteredTextWithShadow(textRenderer, Text.literal("Item Filters").setStyle(Style.EMPTY.withBold(true)), width / 2, (labelMenuHeight - textRenderer.fontHeight) / 2, 0xFFFFAA00);
         context.drawTextWithShadow(textRenderer, Text.of("Level Range"), 50, (labelMenuHeight - textRenderer.fontHeight) / 2 + 1, 0xFFFFFFFF);
         context.drawTextWithShadow(textRenderer, Text.of("-"), 148, (labelMenuHeight - textRenderer.fontHeight) / 2 + 1, 0xFFFFFFFF);
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
 
         // draw gui elements
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, 110);
+        context.getMatrices().pushMatrix();
+//        context.getMatrices().translate(0, 0, 110);
         backButton.render(context, mouseX, mouseY, delta);
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
 
 //        super.render(context, mouseX, mouseY, delta);
 
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(Click click, boolean doubled) {
+        super.mouseClicked(click, doubled);
 
-        backButton.mouseClicked(mouseX, mouseY, button);
+        backButton.mouseClicked(click, doubled);
 
         for (DropdownWidget o : filterListOption) {
-            if (o.willClick(mouseX, mouseY)) {
-                o.mouseClicked(mouseX, mouseY, button);
+            if (o.willClick(click.x(), click.y())) {
+                o.mouseClicked(click, doubled);
                 return false;
             }
-            o.mouseClicked(mouseX, mouseY, button);
+            o.mouseClicked(click, doubled);
         }
         for (DropdownWidget v : filterListValue) {
-            if (v.willClick(mouseX, mouseY)) {
+            if (v.willClick(click.x(), click.y())) {
                 if (!filterListOption.get(filterListValue.indexOf(v)).getLastChoice().isEmpty())
-                    v.mouseClicked(mouseX, mouseY, button);
+                    v.mouseClicked(click, doubled);
                 return false;
             }
             if (!filterListOption.get(filterListValue.indexOf(v)).getLastChoice().isEmpty())
-                v.mouseClicked(mouseX, mouseY, button);
+                v.mouseClicked(click, doubled);
         }
         for (ButtonWidget c : filterListComparator) {
             if (!filterListOption.get(filterListComparator.indexOf(c)).getLastChoice().isEmpty())
-                c.mouseClicked(mouseX, mouseY, button);
+                c.mouseClicked(click, doubled);
         }
         for (TextFieldWidget c : filterListConstant) {
             if ((filterListOption.get(filterListConstant.indexOf(c)).getLastChoice().equals("identification") || filterListOption.get(filterListConstant.indexOf(c)).getLastChoice().equals("base")) && !(itemFilters.get(filterListConstant.indexOf(c)).comparator.ordinal() <= Comparator.NOT_EXISTS.ordinal())) {
-                c.setFocused(c.isMouseOver(mouseX, mouseY));
-//                c.mouseClicked(mouseX, mouseY, button);
+                c.setFocused(c.isMouseOver(click.x(), click.y()));
+//                c.mouseClicked(click, doubled);
             }
         }
-        filterListDelete.forEach(i -> i.mouseClicked(mouseX, mouseY, button));
-        //filterListDuplicate.forEach(i -> i.mouseClicked(mouseX, mouseY, button));
+        filterListDelete.forEach(i -> i.mouseClicked(click, doubled));
+        //filterListDuplicate.forEach(i -> i.mouseClicked(click, doubled));
 
-        addFilterButton.mouseClicked(mouseX, mouseY, button);
+        addFilterButton.mouseClicked(click, doubled);
 
         if (removeIndex != -1) {
             filterListOption.remove(removeIndex);
@@ -260,32 +263,30 @@ public class ItemFilterGuiScreen extends Screen {
     }
 
     @Override
-    public boolean charTyped(char chr, int modifiers) {
-        super.charTyped(chr, modifiers);
+    public boolean charTyped(CharInput input) {
+        super.charTyped(input);
 
-        filterListOption.forEach(i -> i.charTyped(chr, modifiers));
-        filterListValue.forEach(i -> i.charTyped(chr, modifiers));
-        filterListConstant.forEach(i -> i.charTyped(chr, modifiers));
-
-        return true;
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        super.keyPressed(keyCode, scanCode, modifiers);
-
-        filterListOption.forEach(i -> i.keyPressed(keyCode, scanCode, modifiers));
-        filterListValue.forEach(i -> i.keyPressed(keyCode, scanCode, modifiers));
-        filterListConstant.forEach(i -> i.keyPressed(keyCode, scanCode, modifiers));
+        filterListOption.forEach(i -> i.charTyped(input));
+        filterListValue.forEach(i -> i.charTyped(input));
+        filterListConstant.forEach(i -> i.charTyped(input));
 
         return true;
     }
 
     @Override
-    public void resize(MinecraftClient client, int width, int height) {
-        super.resize(client, width, height);
+    public boolean keyPressed(KeyInput input) {
+        super.keyPressed(input);
 
+        filterListOption.forEach(i -> i.keyPressed(input));
+        filterListValue.forEach(i -> i.keyPressed(input));
+        filterListConstant.forEach(i -> i.keyPressed(input));
 
+        return true;
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
     }
 
     @Override

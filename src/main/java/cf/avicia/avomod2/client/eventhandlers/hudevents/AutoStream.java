@@ -26,7 +26,7 @@ public class AutoStream {
                                 // Makes sure to wait at least one second between /stream command, to prevent it from spamming
                                 // This means streamer mode has time to activate before the command runs again, so it doesn't run again until streamer mode is disabled
                                 try {
-                                    MinecraftClient.getInstance().getNetworkHandler().sendCommand("stream");
+                                    MinecraftClient.getInstance().getNetworkHandler().sendChatCommand("stream");
                                     Thread.sleep(1000);
                                 } catch (InterruptedException e) {
                                     throw new RuntimeException(e);

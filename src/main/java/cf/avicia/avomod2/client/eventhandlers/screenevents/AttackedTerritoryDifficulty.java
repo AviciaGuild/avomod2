@@ -82,7 +82,7 @@ public class AttackedTerritoryDifficulty {
                 return message;
 
             if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-                MinecraftClient.getInstance().getNetworkHandler().sendCommand(String.format("g %s defense is %s", currentTerritory, currentDefense));
+                MinecraftClient.getInstance().getNetworkHandler().sendChatCommand(String.format("g %s defense is %s", currentTerritory, currentDefense));
             }
         }
         boolean isGuildMessage = Utils.getMessageType(message) == MessageType.GUILD;

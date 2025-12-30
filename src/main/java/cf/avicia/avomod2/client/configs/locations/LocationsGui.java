@@ -6,12 +6,12 @@ import cf.avicia.avomod2.client.eventhandlers.hudevents.*;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.attacktimermenu.AttackTimerMenu;
 import cf.avicia.avomod2.client.locationselements.ElementGroup;
 import cf.avicia.avomod2.client.renderer.TerritoryOutlineRenderer;
+import cf.avicia.avomod2.inventoryoverlay.gui.RegularButtonWidget;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
 import java.util.Arrays;
@@ -45,18 +45,18 @@ public class LocationsGui extends Screen {
                 TerritoryOutlineRenderer.getElementsToDraw("Detlas")
         );
         Screens.getButtons(this).add(new ResetLocationsButton( this.width / 2 - 50, this.height - 30, 100, 20, "Reset to Defaults", this));
-        Screens.getButtons(this).add(new ButtonWidget.Builder( Text.of("Configs"), button -> AvoMod2Client.screenToRender = new ConfigsGui()).dimensions(10, 10, 50, 20).build());
+        Screens.getButtons(this).add(new RegularButtonWidget(10, 10, 50, 20, Text.of("Configs"), button -> AvoMod2Client.screenToRender = new ConfigsGui()));
         isOpen = true;
     }
 
     @Override
     public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
-        // Makes blur
-        this.renderBackground(drawContext, mouseX, mouseY, delta);
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(2.0F, 2.0F, 2.0F);
+//        // Makes blur
+//        this.renderBackground(drawContext, mouseX, mouseY, delta);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(2.0F, 2.0F, drawContext.getMatrices());
         drawContext.drawCenteredTextWithShadow(textRenderer, "AvoMod Locations", this.width / 4, 10, 0x1B33CF);
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
 
         if (items != null) {
             items.forEach(eg -> eg.drawGuiElement(drawContext));
@@ -67,31 +67,31 @@ public class LocationsGui extends Screen {
     }
 
     @Override
-    public void resize(MinecraftClient client, int width, int height) {
-        super.resize(client, width, height);
+    public void resize(int width, int height) {
+        super.resize(width, height);
     }
 
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        items.forEach(e -> e.pickup((int) mouseX, (int) mouseY));
+    public boolean mouseClicked(Click click, boolean doubled) {
+        items.forEach(e -> e.pickup((int) click.x(), (int) click.y()));
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        items.forEach(e -> e.move((int) mouseX, (int) mouseY));
+    public boolean mouseDragged(Click click, double offsetX, double offsetY) {
+        items.forEach(e -> e.move((int) click.x(), (int) click.y()));
 
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        return super.mouseDragged(click, offsetX, offsetY);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        items.forEach(e -> e.release((int) mouseX, (int) mouseY));
+    public boolean mouseReleased(Click click) {
+        items.forEach(e -> e.release((int) click.x(), (int) click.y()));
 
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(click);
     }
 
     @Override

@@ -45,14 +45,14 @@ public class InventoryRenderer {
         final int slotSize = 18;
 
         final int searchMissColor = new Color(0, 0, 0, 150).getRGB();
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().translate(0.0, 0.0, 358F);
+        drawContext.getMatrices().pushMatrix();
+//        drawContext.getMatrices().translate(0.0, 0.0, 358F);
         int screenX = ((HandledScreen<?>) screen1).x;
         int screenY = ((HandledScreen<?>) screen1).y;
         highlightMatchingSLots(drawContext, slots, screenX, screenY, slotSize, searchMissColor);
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
         if (inventoryOverlay.shouldRenderItems()) {
-            inventoryOverlay.renderBackground(drawContext);
+//            inventoryOverlay.renderBackground(drawContext);
             inventoryOverlay.redraw();
         }
     }

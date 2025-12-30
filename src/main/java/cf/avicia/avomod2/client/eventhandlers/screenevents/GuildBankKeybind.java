@@ -11,6 +11,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.Identifier;
 
 public class GuildBankKeybind {
     private static boolean openingBank;
@@ -19,7 +20,7 @@ public class GuildBankKeybind {
     private static long lastKeybindPress = System.currentTimeMillis();
 
     public static void init() {
-        keyBinding = new KeyBinding("Keybind to open guild bank", InputUtil.GLFW_KEY_Y, "Avomod");
+        keyBinding = new KeyBinding("Keybind to open guild bank", InputUtil.GLFW_KEY_Y, new KeyBinding.Category(Identifier.of("avomod")));
         KeyBindingRegistryImpl.registerKeyBinding(keyBinding);
     }
 
@@ -32,7 +33,7 @@ public class GuildBankKeybind {
         if (keyBinding.isPressed()) {
             lastKeybindPress = System.currentTimeMillis();
             if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-                MinecraftClient.getInstance().getNetworkHandler().sendCommand("gu manage");
+                MinecraftClient.getInstance().getNetworkHandler().sendChatCommand("gu manage");
                 openingBank = true;
             }
         }
@@ -47,8 +48,8 @@ public class GuildBankKeybind {
         if (!guildBankItem.getName().getString().contains("Bank")) return;
         Utils.sendClickPacket(
                 screenHandler,
-                15,
-                0,
+                (short) 15,
+                (byte) 0,
                 SlotActionType.PICKUP,
                 guildBankItem
         );

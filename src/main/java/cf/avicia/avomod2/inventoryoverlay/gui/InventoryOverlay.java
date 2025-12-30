@@ -90,7 +90,7 @@ public class InventoryOverlay {
         Screens.getButtons(screen).add(searchLoreCheckbox);
         if (shouldRenderItems()) {
             if (items == null) {
-                Screens.getButtons(screen).add(new ElevatedButtonWidget(startX, 0, overlayWidth, 20, Text.of("Error fetching items"), Text.of("Click here to retry"), button -> {
+                Screens.getButtons(screen).add(new RegularButtonWidget(startX, 0, overlayWidth, 20, Text.of("Error fetching items"), Text.of("Click here to retry"), button -> {
                     button.setMessage(Text.of("Retrying..."));
                     ItemsDataHandler.updateItemsFromAPI(stringWynnItemMap -> {
                         this.items = ItemStackBuilder.getAllItems(stringWynnItemMap);
@@ -278,15 +278,15 @@ public class InventoryOverlay {
         }
     }
 
-    private ElevatedButtonWidget getCollapseButton() {
-        return new ElevatedButtonWidget(startX - 20, pageControlHeight / 4, 20, 20, Text.of("§c→|"), Text.of("Collapse Overlay"), button -> {
+    private RegularButtonWidget getCollapseButton() {
+        return new RegularButtonWidget(startX - 20, pageControlHeight / 4, 20, 20, Text.of("§c→|"), Text.of("Collapse Overlay"), button -> {
             isInteractedWith = false;
             hasChanged = true;
             redraw();
         });
     }
-    private ElevatedButtonWidget getPrevButton() {
-        return new ElevatedButtonWidget(startX, pageControlHeight / 4, overlayWidth / 4, pageControlHeight / 2, Text.of("< Prev"), button -> {
+    private RegularButtonWidget getPrevButton() {
+        return new RegularButtonWidget(startX, pageControlHeight / 4, overlayWidth / 4, pageControlHeight / 2, Text.of("< Prev"), button -> {
             previousPage();
         });
     }
@@ -299,8 +299,8 @@ public class InventoryOverlay {
         hasChanged = true;
     }
 
-    private ElevatedButtonWidget getNextButton() {
-        return new ElevatedButtonWidget(startX + 3 * overlayWidth / 4, pageControlHeight / 4, overlayWidth / 4, pageControlHeight / 2, Text.of("Next >"), button -> {
+    private RegularButtonWidget getNextButton() {
+        return new RegularButtonWidget(startX + 3 * overlayWidth / 4, pageControlHeight / 4, overlayWidth / 4, pageControlHeight / 2, Text.of("Next >"), button -> {
             nextPage();
         });
     }
@@ -313,24 +313,24 @@ public class InventoryOverlay {
         hasChanged = true;
     }
 
-    private ElevatedButtonWidget getPageDisplayButton() {
-        return new ElevatedButtonWidget(startX + overlayWidth / 4, pageControlHeight / 4, overlayWidth / 2, pageControlHeight / 2, Text.of(String.format("Page %d/%d", currentPage, totalPages)), button -> {
+    private RegularButtonWidget getPageDisplayButton() {
+        return new RegularButtonWidget(startX + overlayWidth / 4, pageControlHeight / 4, overlayWidth / 2, pageControlHeight / 2, Text.of(String.format("Page %d/%d", currentPage, totalPages)), button -> {
         });
     }
 
-    private List<ElevatedButtonWidget> getFilterButtons() {
-        List<ElevatedButtonWidget> filterButtons = new ArrayList<>();
+    private List<RegularButtonWidget> getFilterButtons() {
+        List<RegularButtonWidget> filterButtons = new ArrayList<>();
         final int y = scaledHeight - 3 * filterHeight / 4;
-        filterButtons.add(new ElevatedButtonWidget(startX, y, overlayWidth / 4, 20, Text.of(sortings.get(sortingIndex).getA()), Text.of("Sort " + sortings.get(sortingIndex).getB()), button -> {
+        filterButtons.add(new RegularButtonWidget(startX, y, overlayWidth / 4, 20, Text.of(sortings.get(sortingIndex).getA()), Text.of("Sort " + sortings.get(sortingIndex).getB()), button -> {
             nextSorting();
         }, button -> {
             previousSorting();
         }));
-        filterButtons.add(new ElevatedButtonWidget(startX + overlayWidth / 4, y, overlayWidth / 2, 20, Text.of("Clear Filters"), Text.of("Clear Filters"), button -> {
+        filterButtons.add(new RegularButtonWidget(startX + overlayWidth / 4, y, overlayWidth / 2, 20, Text.of("Clear Filters"), Text.of("Clear Filters"), button -> {
             itemFilterGuiScreen.clearFilters();
             hasChanged = true;
         }));
-        filterButtons.add(new ElevatedButtonWidget(scaledWidth - overlayWidth / 4, y, overlayWidth / 4, 20, Text.of("Filters"), Text.of("Open Filter Menu"), button -> {
+        filterButtons.add(new RegularButtonWidget(scaledWidth - overlayWidth / 4, y, overlayWidth / 4, 20, Text.of("Filters"), Text.of("Open Filter Menu"), button -> {
             itemFilterGuiScreen.open(screen);
         }));
         return filterButtons;
@@ -347,13 +347,13 @@ public class InventoryOverlay {
             hasChanged = true;
             onSearchFieldChange.accept(s);
         });
-        ScreenKeyboardEvents.beforeKeyPress(screen).register((screen1, key, scancode, modifiers) -> {
-            if (searchTextFieldWidget.isActive() && MinecraftClient.getInstance().options.inventoryKey.matchesKey(key, scancode)) {
+        ScreenKeyboardEvents.beforeKeyPress(screen).register((screen1, keyInput) -> {
+            if (searchTextFieldWidget.isActive() && MinecraftClient.getInstance().options.inventoryKey.matchesKey(keyInput)) {
                 AvoMod2Client.cancelContainerClose = true;
             }
         });
-        ScreenMouseEvents.beforeMouseClick(screen).register((screen1, mouseX, mouseY, button) -> {
-            if (searchTextFieldWidget.isActive() && !searchTextFieldWidget.isMouseOver(mouseX, mouseY)) {
+        ScreenMouseEvents.beforeMouseClick(screen).register((screen1, click) -> {
+            if (searchTextFieldWidget.isActive() && !searchTextFieldWidget.isMouseOver(click.x(), click.y())) {
                 searchTextFieldWidget.setFocused(false);
             }
         });

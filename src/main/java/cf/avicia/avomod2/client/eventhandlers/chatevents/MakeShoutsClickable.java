@@ -33,7 +33,7 @@ public class MakeShoutsClickable {
                     }
                 }
                 String command = "/msg " + username + " ";
-                message.fillStyle(message.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
+                message.fillStyle(message.getStyle().withClickEvent(new ClickEvent.SuggestCommand(command)));
             } catch (Exception e) {
                 e.printStackTrace();
             }

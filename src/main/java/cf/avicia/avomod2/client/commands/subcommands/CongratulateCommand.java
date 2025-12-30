@@ -28,7 +28,7 @@ public class CongratulateCommand {
                             if (congratulateWorthyPlayers.contains(username)) {
                                 String congratulateMessage = ConfigsHandler.getConfig("congratsMessage");
                                 if (MinecraftClient.getInstance().getNetworkHandler() != null && congratulateMessage != null) {
-                                    MinecraftClient.getInstance().getNetworkHandler().sendCommand(String.format("msg %s %s", username, congratulateMessage));
+                                    MinecraftClient.getInstance().getNetworkHandler().sendChatCommand(String.format("msg %s %s", username, congratulateMessage));
                                     congratulateWorthyPlayers.remove(username);
                                 }
                             } else {
@@ -49,8 +49,8 @@ public class CongratulateCommand {
                 String congratsCommand = String.format("/avomod congratulate %s", username);
                 MutableText congratulateMessage = Text.literal(" §b§nClick to say Congratulations!");
                 congratulateMessage.fillStyle(congratulateMessage.getStyle()
-                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, congratsCommand))
-                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of(congratsCommand)))
+                        .withClickEvent(new ClickEvent.RunCommand(congratsCommand))
+                        .withHoverEvent(new HoverEvent.ShowText(Text.of(congratsCommand)))
                 );
                 MutableText messageCopy = message.copy();
                 messageCopy.getSiblings().add(congratulateMessage);

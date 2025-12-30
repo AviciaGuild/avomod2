@@ -5,40 +5,44 @@ import cf.avicia.avomod2.client.eventhandlers.hudevents.ReadableMobHealth;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.SeasonRatingLeaderboardHelper;
 import cf.avicia.avomod2.utils.Utils;
 import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.text.StringVisitable;
+import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.regex.Pattern;
 
 
 @Mixin(EntityRenderer.class)
 public class EntityLabelRenderMixin {
-    @ModifyArg(method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)I"),
-            index = 0)
-    private Text renderText(Text label) {
+    @Inject(
+            method = "getDisplayName",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private void modifyDisplayName(Entity entity, CallbackInfoReturnable<Text> cir) {
         try {
-            return getNewLabel(label);
+            cir.setReturnValue(getNewLabel(entity.getDisplayName()));
         } catch (Exception e) {
             e.printStackTrace();
+            cir.setReturnValue(entity.getDisplayName());
         }
-        return label;
     }
 
-    @ModifyArg(method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;getWidth(Lnet/minecraft/text/StringVisitable;)I"),
-            index = 0)
-    private StringVisitable getWidth(StringVisitable label) {
-        try {
-            return getNewLabel((Text) label);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return label;
-    }
+
+//    @ModifyArg(method = "renderLabelIfPresent(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V",
+//            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;getWidth(Lnet/minecraft/text/StringVisitable;)I"),
+//            index = 0)
+//    private StringVisitable getWidth(StringVisitable label) {
+//        try {
+//            return getNewLabel((Text) label);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return label;
+//    }
 
     private Text getNewLabel(Text label) {
         if (!ConfigsHandler.getConfigBoolean("disableAll")) {

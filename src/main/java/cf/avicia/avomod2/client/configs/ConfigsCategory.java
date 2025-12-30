@@ -3,7 +3,9 @@ package cf.avicia.avomod2.client.configs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.input.AbstractInput;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 
 import java.awt.*;
 
@@ -16,7 +18,7 @@ public class ConfigsCategory extends ButtonWidget {
     private final ConfigsGui configsGui;
 
     public ConfigsCategory(int x, int y, String title, ConfigsGui configsGui) {
-        super(x, y, 100, 20, Text.of(title), ButtonWidget::onPress, DEFAULT_NARRATION_SUPPLIER);
+        super(x, y, 100, 20, net.minecraft.text.Text.of(title), (widget) -> {}, DEFAULT_NARRATION_SUPPLIER);
         this.title = title;
         this.x = x;
         this.y = y;
@@ -26,12 +28,13 @@ public class ConfigsCategory extends ButtonWidget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onPress(AbstractInput input) {
         configsGui.setCategory(title);
     }
 
+
     @Override
-    public void renderWidget(DrawContext drawContext, int mouseX, int mouseY, float delta) {
+    protected void drawIcon(DrawContext drawContext, int mouseX, int mouseY, float delta) {
         int color = 0xBBBBBB;
 
         if (hasSearchItem) {
@@ -50,6 +53,8 @@ public class ConfigsCategory extends ButtonWidget {
             color = 0xFFFFFF;
         }
 
-        drawContext.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, title, x + 50, y + 6, color);
+        MutableText text = net.minecraft.text.Text.literal(title);
+        text.setStyle(Style.EMPTY.withColor(color));
+        this.drawTextWithMargin(drawContext.getTextConsumer(), text, 0);
     }
 }

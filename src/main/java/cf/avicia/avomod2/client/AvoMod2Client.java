@@ -28,7 +28,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -62,6 +62,9 @@ public class AvoMod2Client implements ClientModInitializer {
         InventoryMouseClickedCallback.EVENT.register(TriggerInventoryMouseClickedEvents::mouseClicked);
         OnMouseScrollCallback.EVENT.register(InventoryRenderer::onMouseScroll);
         RenderItemCallback.EVENT.register(CustomItemTextures::applyCustomTexture);
+
+
+
 
 
         WorldRenderEvents.AFTER_ENTITIES.register(context -> {

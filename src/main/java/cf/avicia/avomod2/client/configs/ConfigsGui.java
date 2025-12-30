@@ -1,12 +1,11 @@
 package cf.avicia.avomod2.client.configs;
 
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -41,12 +40,12 @@ public class ConfigsGui extends Screen {
     @Override
     public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
         this.drawContext = drawContext;
-        // Makes blur
-        this.renderBackground(drawContext, mouseX, mouseY, delta);
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().scale(2.0F, 2.0F, 2.0F);
+//        // Makes blur
+//        this.renderBackground(drawContext, mouseX, mouseY, delta);
+        drawContext.getMatrices().pushMatrix();
+        drawContext.getMatrices().scale(2.0F, 2.0F, drawContext.getMatrices());
         drawContext.drawCenteredTextWithShadow(textRenderer, "AvoMod Configs", this.width / 4, 10, 0x1B33CF);
-        drawContext.getMatrices().pop();
+        drawContext.getMatrices().popMatrix();
 
         Screens.getButtons(this).clear();
 
@@ -141,14 +140,14 @@ public class ConfigsGui extends Screen {
     }
 
     @Override
-    public void resize(MinecraftClient client, int width, int height) {
+    public void resize(int width, int height) {
         String oldCategory = selectedCategory;
 
         if (oldCategory.equals("All")) {
             oldCategory = savedCategory;
         }
 
-        super.resize(client, width, height);
+        super.resize(width, height);
         this.init();
         setCategory(oldCategory);
     }
@@ -189,22 +188,22 @@ public class ConfigsGui extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyInput keyInput) {
 
         if (searchTextField.isFocused()) {
             scrollSections = 0;
         }
-        searchTextField.keyPressed(keyCode, scanCode, modifiers);
+        searchTextField.keyPressed(keyInput);
 
 
-        if (keyCode == 15) {
-            if (hasShiftDown()) {
+        if (keyInput.getKeycode() == 15) {
+            if (keyInput.hasShift()) {
                 previousCategory();
             } else {
                 nextCategory();
             }
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(keyInput);
     }
 
     public void addButton(ConfigsButton button) {

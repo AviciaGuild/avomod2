@@ -3,8 +3,13 @@ package cf.avicia.avomod2.inventoryoverlay.gui;
 import cf.avicia.avomod2.inventoryoverlay.util.InventoryOverlayUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 import java.awt.*;
@@ -113,7 +118,9 @@ public class DropdownWidget extends TextFieldWidget {
 
     // must be called manually
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
         if (isFocused()) {
             for (int i = 0; i < Math.min(validChoices.size(), maxShown); i++) {
                 if (mouseX >= this.getX() && mouseX <= this.getX() + this.width && mouseY >= this.getY() + this.height + ((this.height + 1) * i) && mouseY < this.getY() + this.height + ((this.height + 1) * (i + 1))) {
@@ -145,9 +152,9 @@ public class DropdownWidget extends TextFieldWidget {
 
     // must be called manually
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        super.keyPressed(keyCode, scanCode, modifiers);
-        if (isFocused() && !validChoices.isEmpty() && (keyCode == 257 || keyCode == 335)) { // Enter key
+    public boolean keyPressed(KeyInput input) {
+        super.keyPressed(input);
+        if (isFocused() && !validChoices.isEmpty() && (input.getKeycode() == 257 || input.getKeycode() == 335)) { // Enter key
             lastChoice = validChoices.getFirst();
             visualLastChoice = visualValidChoices.getFirst();
             onUpdate.accept(lastChoice);
@@ -160,8 +167,8 @@ public class DropdownWidget extends TextFieldWidget {
 
     // must be called manually
     @Override
-    public boolean charTyped(char chr, int modifiers) {
-        super.charTyped(chr, modifiers);
+    public boolean charTyped(CharInput input) {
+        super.charTyped(input);
         if (updateOnType) {
             visualLastChoice = getText();
             lastChoice = getText();
@@ -197,14 +204,21 @@ public class DropdownWidget extends TextFieldWidget {
         context.fill(getX(), getY() - 2, getX() + getWidth(), getY() + getHeight() + 2, Color.BLACK.getRGB());
 
         if (lastChoice.isEmpty() && !isFocused() && !(updateOnType && !getText().isEmpty()))
-            context.drawTextWithShadow(textRenderer, InventoryOverlayUtils.toUpperCamelCaseWithSpaces(defaultText), this.getX() + 3, this.getY() + 3, 0x666666);
+        {
+//            context.drawTextWithShadow(textRenderer, InventoryOverlayUtils.toUpperCamelCaseWithSpaces(defaultText), this.getX() + 3, this.getY() + 3, 0x666666);
+            MutableText text = Text.literal(InventoryOverlayUtils.toUpperCamelCaseWithSpaces(defaultText));
+            text.setStyle(Style.EMPTY.withColor(0x666666));
+            context.getTextConsumer().text(this.getX() + 3, this.getY() + 3, text);
+        } else {
+            context.getTextConsumer().text(this.getX() + 3, this.getY() + 3, Text.of(this.getText()));
+        }
     }
 
     // must be called manually
     // called after other render calls
     public void renderDropdown(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.getMatrices().push();
-        context.getMatrices().translate(0, 0, 200);
+        context.getMatrices().pushMatrix();
+//        context.getMatrices().translate(0, 0, 200);
         if (this.isFocused() && !validChoices.isEmpty()) {
             context.fill(this.getX() - 1, this.getY() + this.height, this.getX() + this.width + 1, this.getY() + this.height + ((this.height + 1) * Math.min(validChoices.size(), maxShown)) + 1, 0xFFA0A0A0);
             context.fill(this.getX(), this.getY() + this.height + 1, this.getX() + this.width, this.getY() + this.height + ((this.height + 1) * Math.min(validChoices.size(), maxShown)), 0xFF000000);
@@ -230,7 +244,9 @@ public class DropdownWidget extends TextFieldWidget {
                     finalText = visualValidChoices.get(i + scrollAmount);
                 }
                 //String finalText = textRenderer.trimToWidth(validChoices.get(i), this.width - 8);
-                context.drawTextWithShadow(textRenderer, updateOnType ? finalText : InventoryOverlayUtils.toUpperCamelCaseWithSpaces(finalText), this.getX() + 4, this.getY() + this.height + ((this.height + 1) * i) + 4, 0xFFFFFFFF);
+//                context.drawTextWithShadow(textRenderer, updateOnType ? finalText : InventoryOverlayUtils.toUpperCamelCaseWithSpaces(finalText), this.getX() + 4, this.getY() + this.height + ((this.height + 1) * i) + 4, 0xFFFFFFFF);
+                context.getTextConsumer().text(this.getX() + 4, this.getY() + this.height + ((this.height + 1) * i) + 4, Text.of(InventoryOverlayUtils.toUpperCamelCaseWithSpaces(finalText)));
+
             }
 
             // draw scroll bar if needed
@@ -240,6 +256,6 @@ public class DropdownWidget extends TextFieldWidget {
                 context.drawVerticalLine(this.getX() + this.width - 1, this.getY() + this.height + (int) (scrollBarPixels * ((double) scrollAmount / validChoices.size())), this.getY() + this.height + (int) (scrollBarPixels * ((double) (scrollAmount + maxShown) / validChoices.size())), 0xFFFFFFFF);
             }
         }
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
     }
 }

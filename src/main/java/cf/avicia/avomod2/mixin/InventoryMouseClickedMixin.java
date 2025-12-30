@@ -1,6 +1,7 @@
 package cf.avicia.avomod2.mixin;
 
 import cf.avicia.avomod2.client.customevents.InventoryMouseClickedCallback;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
@@ -25,11 +26,11 @@ public abstract class InventoryMouseClickedMixin<T extends ScreenHandler> extend
         super(title);
     }
 
-    @Inject(method = "mouseClicked(DDI)Z",
+    @Inject(method = "mouseClicked(Lnet/minecraft/client/gui/Click;Z)Z",
             at = @At("HEAD"), cancellable = true)
-    private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    private void mouseClicked(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
         try {
-            ActionResult result = InventoryMouseClickedCallback.EVENT.invoker().mouseClicked(mouseX, mouseY, button, this.getSlotAt(mouseX, mouseY), this.getScreenHandler());
+            ActionResult result = InventoryMouseClickedCallback.EVENT.invoker().mouseClicked(click.x(), click.y(), click.button(), this.getSlotAt(click.x(), click.y()), this.getScreenHandler());
             if (result == ActionResult.FAIL) {
                 cir.cancel();
             }

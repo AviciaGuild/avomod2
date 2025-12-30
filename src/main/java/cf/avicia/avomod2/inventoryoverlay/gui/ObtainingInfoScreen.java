@@ -47,7 +47,7 @@ public class ObtainingInfoScreen extends Screen {
         this.topLeftX = this.width / 2 - windowWidth / 2;
         this.topLeftY = this.height / 2 - windowHeight / 2;
         Screens.getButtons(this).add(new ItemButtonWidget(topLeftX, topLeftY, frameSize, itemStack, wynnItem));
-        Screens.getButtons(this).add(new ElevatedButtonWidget(topLeftX + windowWidth - frameSize, topLeftY, frameSize, frameSize, Text.of("§cX"), Text.of("Close"), button -> {
+        Screens.getButtons(this).add(new RegularButtonWidget(topLeftX + windowWidth - frameSize, topLeftY, frameSize, frameSize, Text.of("§cX"), Text.of("Close"), button -> {
             this.close();
         }));
     }
@@ -56,18 +56,19 @@ public class ObtainingInfoScreen extends Screen {
     public void render(DrawContext drawContext, int mouseX, int mouseY, float delta) {
         super.render(drawContext, mouseX, mouseY, delta);
         // Draw background
-        drawContext.getMatrices().push();
-        drawContext.getMatrices().translate(0f, 0f, 111f);
-        drawContext.fill(topLeftX - 1, topLeftY - 1, topLeftX + windowWidth + 1, topLeftY + frameSize, new Color(100, 100,100).getRGB());
-        drawContext.fill(topLeftX, topLeftY, topLeftX + windowWidth, topLeftY + frameSize, new Color(30, 15, 30).getRGB());
-        drawContext.fill(topLeftX - 1, topLeftY  + windowHeight - frameSize, topLeftX + windowWidth + 1, topLeftY + windowHeight, new Color(100, 100,100).getRGB());
-        drawContext.fill(topLeftX, topLeftY + windowHeight - frameSize, topLeftX + windowWidth, topLeftY + windowHeight, new Color(30, 15, 30).getRGB());
-        drawContext.drawTextWithShadow(textRenderer, this.title, topLeftX + frameSize + 5, this.height / 2 - windowHeight / 2 + 6, 0);
-        drawContext.getMatrices().pop();
-        drawContext.fill(topLeftX - 1, topLeftY, topLeftX, topLeftY + windowHeight, new Color(100, 100,100).getRGB());
-        drawContext.fill(topLeftX, topLeftY, topLeftX + frameSize, topLeftY + windowHeight, new Color(30, 15, 30).getRGB());
-        drawContext.fill(topLeftX + windowWidth, topLeftY, topLeftX + windowWidth + 1, topLeftY + windowHeight, new Color(100, 100,100).getRGB());
-        drawContext.fill(topLeftX + windowWidth - frameSize, topLeftY, topLeftX + windowWidth, topLeftY + windowHeight, new Color(30, 15, 30).getRGB());
+//        drawContext.getMatrices().pushMatrix();
+//        drawContext.getMatrices().translate(0f, 0f, 111f);
+//        drawContext.fill(topLeftX - 1, topLeftY - 1, topLeftX + windowWidth + 1, topLeftY + frameSize, new Color(100, 100,100).getRGB());
+//        drawContext.fill(topLeftX, topLeftY, topLeftX + windowWidth, topLeftY + frameSize, new Color(30, 15, 30).getRGB());
+//        drawContext.fill(topLeftX - 1, topLeftY  + windowHeight - frameSize, topLeftX + windowWidth + 1, topLeftY + windowHeight, new Color(100, 100,100).getRGB());
+//        drawContext.fill(topLeftX, topLeftY + windowHeight - frameSize, topLeftX + windowWidth, topLeftY + windowHeight, new Color(30, 15, 30).getRGB());
+//        drawContext.drawTextWithShadow(textRenderer, this.title, topLeftX + frameSize + 5, this.height / 2 - windowHeight / 2 + 6, 0);
+        drawContext.getTextConsumer().text(topLeftX + frameSize + 5, this.height / 2 - windowHeight / 2 + 6, this.title);
+//        drawContext.getMatrices().popMatrix();
+//        drawContext.fill(topLeftX - 1, topLeftY, topLeftX, topLeftY + windowHeight, new Color(100, 100,100).getRGB());
+//        drawContext.fill(topLeftX, topLeftY, topLeftX + frameSize, topLeftY + windowHeight, new Color(30, 15, 30).getRGB());
+//        drawContext.fill(topLeftX + windowWidth, topLeftY, topLeftX + windowWidth + 1, topLeftY + windowHeight, new Color(100, 100,100).getRGB());
+//        drawContext.fill(topLeftX + windowWidth - frameSize, topLeftY, topLeftX + windowWidth, topLeftY + windowHeight, new Color(30, 15, 30).getRGB());
         drawContext.fill(topLeftX + frameSize, topLeftY + frameSize, topLeftX + windowWidth - frameSize, topLeftY + windowHeight - frameSize, new Color(129, 100, 75).getRGB());
         // Draw all buttons
         // Draw all infoPair
@@ -94,7 +95,7 @@ public class ObtainingInfoScreen extends Screen {
                                 .collect(Collectors.joining(", ")))
                         .collect(Collectors.joining("\n")
                         );
-                ElevatedButtonWidget infoButton = new ElevatedButtonWidget(topLeftX, 0, frameSize, frameSize, Text.of("§b!"), Text.of("Coordinates of " + droppedBy.name + ": \n" + readableCoordinates), button -> {
+                RegularButtonWidget infoButton = new RegularButtonWidget(topLeftX, 0, frameSize, frameSize, Text.of("§b!"), Text.of("Coordinates of " + droppedBy.name + ": \n" + readableCoordinates), button -> {
                     this.haveRenderedButtonsBeenAdded = false;
                     try {
                         String joinedCoordinates = droppedBy.coords.stream()
@@ -124,7 +125,8 @@ public class ObtainingInfoScreen extends Screen {
             if (y < topLeftY || y > topLeftY + windowHeight - frameSize) {
                 continue;
             }
-            drawContext.drawTextWithShadow(textRenderer, infoPair.getA(), topLeftX + frameSize + 5, y + 6, 0xffffff);
+//            drawContext.drawTextWithShadow(textRenderer, infoPair.getA(), topLeftX + frameSize + 5, y + 6, 0xffffff);
+            drawContext.getTextConsumer().text(topLeftX + frameSize + 5, y + 6, infoPair.getA());
             if (!haveRenderedButtonsBeenAdded) {
                 if (infoPair.getB() != null) {
                     Screens.getButtons(this).add(infoPair.getB());

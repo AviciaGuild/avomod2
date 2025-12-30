@@ -8,6 +8,7 @@ accessible field net/minecraft/client/gui/screen/ingame/HandledScreen x I
 accessible field net/minecraft/client/gui/screen/ingame/HandledScreen y I
 accessible field net/minecraft/client/gui/widget/ButtonWidget DEFAULT_NARRATION_SUPPLIER Lnet/minecraft/client/gui/widget/ButtonWidget$NarrationSupplier;
 accessible field net/minecraft/client/gui/widget/TextFieldWidget textRenderer Lnet/minecraft/client/font/TextRenderer;
-accessible method net/minecraft/client/gui/hud/ChatHud getMessageLineIndex (DD)I
-accessible method net/minecraft/client/gui/hud/ChatHud toChatLineX (D)D
-accessible method net/minecraft/client/gui/hud/ChatHud toChatLineY (D)D
+accessible field net/minecraft/client/gui/hud/ChatHud scrolledLines I
+accessible method net/minecraft/client/gui/hud/ChatHud getLineHeight ()I
+accessible method net/minecraft/client/gui/hud/ChatHud getChatScale ()D
+accessible method net/minecraft/client/gui/hud/ChatHud getHeight ()I

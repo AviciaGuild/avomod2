@@ -90,7 +90,7 @@ public class ConfigsHandler {
 
         if (configsKey.equals("autoStream") && newValue.equals("Disabled")) {
             if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-                MinecraftClient.getInstance().getNetworkHandler().sendCommand("stream");
+                MinecraftClient.getInstance().getNetworkHandler().sendChatCommand("stream");
             }
         }
 

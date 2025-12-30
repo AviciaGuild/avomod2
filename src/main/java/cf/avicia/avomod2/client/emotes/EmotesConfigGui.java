@@ -7,8 +7,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.CharInput;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
@@ -73,10 +76,10 @@ public class EmotesConfigGui extends Screen {
         initialize();
         final int middleX = width / 2;
         final int middleY = height / 2;
-        context.getMatrices().push();
-        context.getMatrices().scale(2f, 2f, 1f);
+        context.getMatrices().pushMatrix();
+        context.getMatrices().scale(2f, 2f, context.getMatrices());
         context.drawCenteredTextWithShadow(textRenderer, Text.of("Configure emotes"), middleX / 2, (middleY - radius - squareSize) / 2, Color.BLUE.getRGB());
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
 
         final List<Pair<Integer, Integer>> squarePositions = new ArrayList<>();
         for (int i = 0; i < squareCount; i++) {
@@ -111,31 +114,31 @@ public class EmotesConfigGui extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(Click click, boolean doubled) {
+        super.mouseClicked(click, doubled);
 
         for (DropdownWidget dropdownWidget : dropdownWidgetList) {
-            if (dropdownWidget.willClick(mouseX, mouseY)) {
-                dropdownWidget.mouseClicked(mouseX, mouseY, button);
+            if (dropdownWidget.willClick(click.x(), click.y())) {
+                dropdownWidget.mouseClicked(click, doubled);
                 return false;
             }
-            dropdownWidget.mouseClicked(mouseX, mouseY, button);
+            dropdownWidget.mouseClicked(click, doubled);
         }
 
         return true;
     }
 
     @Override
-    public boolean charTyped(char chr, int modifiers) {
-        super.charTyped(chr, modifiers);
-        dropdownWidgetList.forEach(dropdownWidget -> dropdownWidget.charTyped(chr, modifiers));
+    public boolean charTyped(CharInput input) {
+        super.charTyped(input);
+        dropdownWidgetList.forEach(dropdownWidget -> dropdownWidget.charTyped(input));
         return true;
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        super.keyPressed(keyCode, scanCode, modifiers);
-        dropdownWidgetList.forEach(dropdownWidget -> dropdownWidget.keyPressed(keyCode, scanCode, modifiers));
+    public boolean keyPressed(KeyInput input) {
+        super.keyPressed(input);
+        dropdownWidgetList.forEach(dropdownWidget -> dropdownWidget.keyPressed(input));
         return true;
     }
 

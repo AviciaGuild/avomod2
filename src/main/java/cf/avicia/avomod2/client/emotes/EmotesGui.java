@@ -2,14 +2,17 @@ package cf.avicia.avomod2.client.emotes;
 
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.core.CustomFile;
+import cf.avicia.avomod2.inventoryoverlay.gui.RegularButtonWidget;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
@@ -35,9 +38,9 @@ public class EmotesGui extends Screen {
     protected EmotesGui(KeyBinding keyBinding) {
         super(Text.of("Emotes"));
         this.keyBinding = keyBinding;
-        configButton = new ButtonWidget(0, 0, 100, 30, Text.of("Configure"), button -> {
+        configButton =  new RegularButtonWidget(0, 0, 100, 20, Text.of("Configure"), button -> {
             MinecraftClient.getInstance().setScreen(new EmotesConfigGui(this.keyBinding));
-        }, ButtonWidget.DEFAULT_NARRATION_SUPPLIER);
+        });
         Screens.getButtons(this).add(configButton);
     }
 
@@ -103,28 +106,28 @@ public class EmotesGui extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!configButton.isMouseOver(mouseX, mouseY)) {
-            int clickedEmoji = getActiveEmoji((int) mouseX, (int) mouseY, width / 2, height / 2);
+    public boolean mouseClicked(Click click, boolean doubled) {
+        if (!configButton.isMouseOver(click.x(), click.y())) {
+            int clickedEmoji = getActiveEmoji((int) click.x(), (int) click.y(), width / 2, height / 2);
             executeEmote(clickedEmoji);
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode >= GLFW.GLFW_KEY_1 && keyCode <= GLFW.GLFW_KEY_8) {
-            executeEmote(keyCode - GLFW.GLFW_KEY_1);
+    public boolean keyPressed(KeyInput input) {
+        if (input.getKeycode() >= GLFW.GLFW_KEY_1 && input.getKeycode() <= GLFW.GLFW_KEY_8) {
+            executeEmote(input.getKeycode() - GLFW.GLFW_KEY_1);
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(input);
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        if (keyBinding.matchesKey(keyCode, scanCode)) {
+    public boolean keyReleased(KeyInput input) {
+        if (keyBinding.matchesKey(input)) {
             this.close();
         }
-        return super.keyReleased(keyCode, scanCode, modifiers);
+        return super.keyReleased(input);
     }
 
     private static int getActiveEmoji(int mouseX, int mouseY, int centerX, int centerY) {
@@ -144,7 +147,7 @@ public class EmotesGui extends Screen {
     private void executeEmote(int quadrant) {
         if (MinecraftClient.getInstance().getNetworkHandler() != null && emotes.size() > quadrant && !emotes.get(quadrant).isEmpty()) {
             this.close();
-            MinecraftClient.getInstance().getNetworkHandler().sendCommand("emote " + emotes.get(quadrant));
+            MinecraftClient.getInstance().getNetworkHandler().sendChatCommand("emote " + emotes.get(quadrant));
         }
     }
 

@@ -30,8 +30,8 @@ public class TradeMarketMiddleClickSearch {
         new Thread(() -> {
             Utils.sendClickPacket(
                     screenHandler,
-                    47,
-                    0,
+                    (short) 47,
+                    (byte) 0,
                     SlotActionType.PICKUP,
                     searchItem
             );

@@ -100,7 +100,7 @@ public class BombBellTracker {
         for (Map.Entry<String, ScreenCoordinates> bombBellCoordinate : bombBellCoordinates.entrySet()) {
             if (bombBellCoordinate.getValue().mouseIn((int) mouseX, (int) mouseY)) {
                 if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-                    MinecraftClient.getInstance().getNetworkHandler().sendCommand("switch " + bombBellCoordinate.getKey());
+                    MinecraftClient.getInstance().getNetworkHandler().sendChatCommand("switch " + bombBellCoordinate.getKey());
                 }
             }
         }

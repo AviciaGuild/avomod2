@@ -10,7 +10,7 @@ import cf.avicia.avomod2.utils.BeaconManager;
 import cf.avicia.avomod2.utils.TerritoryData;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.client.MinecraftClient;
@@ -19,15 +19,20 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.debug.gizmo.GizmoDrawing;
 import oshi.util.tuples.Pair;
 
 import java.awt.*;
@@ -39,7 +44,7 @@ public class TerritoryOutlineRenderer {
     private static boolean showOutline = false;
 
     public static void initKeybind() {
-        keyBinding = new KeyBinding("Toggle territory highlights", InputUtil.GLFW_KEY_COMMA, "Avomod");
+        keyBinding = new KeyBinding("Toggle territory highlights", InputUtil.GLFW_KEY_COMMA, new KeyBinding.Category(Identifier.of("avomod")));
         KeyBindingRegistryImpl.registerKeyBinding(keyBinding);
     }
 
@@ -56,9 +61,9 @@ public class TerritoryOutlineRenderer {
         if (!showOutline && BeaconManager.soonestTerritory == null) {
             return;
         }
-        if (MinecraftClient.getInstance().player != null && context.matrixStack() != null && TerritoryData.territoryData != null) {
-            Camera camera = context.camera();
-            Vec3d playerPos = MinecraftClient.getInstance().player.getPos();
+        if (MinecraftClient.getInstance().player != null && TerritoryData.territoryData != null) {
+            Camera camera = context.gameRenderer().getCamera();
+            Vec3d playerPos = MinecraftClient.getInstance().player.getEntityPos();
             int xPos = MinecraftClient.getInstance().player.getBlockPos().getX();
             int yPos = MinecraftClient.getInstance().player.getBlockPos().getY();
             int zPos = MinecraftClient.getInstance().player.getBlockPos().getZ();
@@ -68,8 +73,7 @@ public class TerritoryOutlineRenderer {
                 entriesToLoop = TerritoryData.territoryData.entrySet();
             } else if (ConfigsHandler.getConfigBoolean("outlineSoonestWarTerr") && BeaconManager.soonestTerritory != null && TerritoryData.territoryData.has(BeaconManager.soonestTerritory)) {
                 JsonElement territoryElement = TerritoryData.territoryData.get(BeaconManager.soonestTerritory);
-                Map.Entry<String, JsonElement> singleEntry =
-                        new AbstractMap.SimpleEntry<>(BeaconManager.soonestTerritory, territoryElement);
+                Map.Entry<String, JsonElement> singleEntry = new AbstractMap.SimpleEntry<>(BeaconManager.soonestTerritory, territoryElement);
                 entriesToLoop = Collections.singletonList(singleEntry);
             } else {
                 return;
@@ -94,131 +98,161 @@ public class TerritoryOutlineRenderer {
                 }
 
                 for (int level = yPos / 4 - 20; level < yPos / 4 + 20; level++) {
-                    VertexRendering.drawBox(
-                        context.matrixStack(),
-                        context.consumers().getBuffer(RenderLayer.LINES),
-                        startX - camera.getPos().x,
-                        4 * level - camera.getPos().y,
-                        startZ - camera.getPos().z,
-                        endX - camera.getPos().x,
-                        4 * level - camera.getPos().y,
-                        endZ - camera.getPos().z,
-                        inTerr ? 0 : 1,
-                        inTerr ? 1 : 0,
-                        0,
-                        .5f
-                    );
+                    GizmoDrawing.box(new Box(startX, 4 * level, startZ, endX, 4 * level, endZ), DrawStyle.stroked(new Color(inTerr ? 0 : 255, inTerr ? 255 : 0, 0).getRGB(), 2));
                 }
 
                 if (!ConfigsHandler.getConfigBoolean("highlightFloor")) {
                     continue;
                 }
-                // Render "Carpet" or "Floor" at block surface, in patches at a time
-                MatrixStack matrixStack = context.matrixStack();
-                World world = context.world();
-                MinecraftClient client = MinecraftClient.getInstance();
-                double camX = client.gameRenderer.getCamera().getPos().x;
-                double camY = client.gameRenderer.getCamera().getPos().y;
-                double camZ = client.gameRenderer.getCamera().getPos().z;
 
-                int width = endX - startX;
-                int depth = endZ - startZ;
+                ClientWorld world = MinecraftClient.getInstance().world;
+                if (world == null) return;
 
-                double[][] topY = new double[width][depth];
-                boolean[][] visited = new boolean[width][depth];
                 BlockPos.Mutable pos = new BlockPos.Mutable();
+                double topY = 0;
 
-                double maxDistanceCarpet = 64.0;
-                double maxDistSq = maxDistanceCarpet * maxDistanceCarpet;
-
-                // Step 1: Precompute surface heights only for nearby blocks
-                for (int dx = 0; dx < width; dx++) {
-                    int x = startX + dx;
-                    double dxSq = (x + 0.5 - camX) * (x + 0.5 - camX);
-
-                    for (int dz = 0; dz < depth; dz++) {
-                        int z = startZ + dz;
-                        double dzSq = (z + 0.5 - camZ) * (z + 0.5 - camZ);
-
-                        if (dxSq + dzSq > maxDistSq) {
-                            topY[dx][dz] = Integer.MIN_VALUE;
-                            visited[dx][dz] = true;
-                            continue;
-                        }
-
-                        for (int y = (int) camY - 1; y > camY - 10; y--) {
-                            pos.set(x, y + 1, z);
-                            if (world.getBlockState(pos).isOpaque() || !world.getBlockState(pos).getFluidState().isOf(Fluids.EMPTY)) {
-                                topY[dx][dz] = Integer.MIN_VALUE;
-                                break;
-                            }
-                            pos.set(x, y, z);
-                            if (world.getBlockState(pos).isOpaque() || !world.getBlockState(pos).getFluidState().isOf(Fluids.EMPTY)) {
-                                double heightModifier = 0;
-                                String itemName = world.getBlockState(pos).getBlock().getName().getString();
-                                if (itemName.contains("Slab")) {
-                                    if (world.getBlockState(pos).get(Properties.SLAB_TYPE) == SlabType.BOTTOM) {
-                                        heightModifier = 0.49;
-                                    }
-                                } else if (itemName.contains("Carpet")) {
-                                    heightModifier = 0.94;
-                                } else if (!world.getBlockState(pos).getFluidState().isOf(Fluids.EMPTY)) {
-                                    heightModifier = 0.2;
-                                }
-                                topY[dx][dz] = y - heightModifier;
-                                break;
-                            }
-                        }
+                // Find the highest solid block below yPos
+                for (int y = yPos; y >= world.getBottomY(); y--) {
+                    pos.set(xPos, y, zPos);
+                    if (world.getBlockState(pos).isOpaque() || !world.getBlockState(pos).getFluidState().isOf(Fluids.EMPTY)) {
+                        topY = y + 1.0; // top surface of the block
+                        break;
                     }
                 }
 
-                // Step 2: Greedy 2D merging
-                for (int dx = 0; dx < width; dx++) {
-                    for (int dz = 0; dz < depth; dz++) {
-                        if (visited[dx][dz]) continue;
+                // If we didn’t find any solid block, skip
+                if (topY == 0) return;
 
-                        double y = topY[dx][dz];
-                        if (y == 0) continue;
+                // Define the rectangle corners
+                Vec3d nwd = new Vec3d(startX, topY, startZ);
+                Vec3d seu = new Vec3d(endX, topY, endZ);
 
-                        int maxDx = dx;
-                        while (maxDx < width && !visited[maxDx][dz] && topY[maxDx][dz] == y) maxDx++;
+                // Draw the filled “carpet” with Gizmo
+                GizmoDrawing.face(nwd, seu, Direction.UP, DrawStyle.filled(inTerr ? 0x6000FF00  // green, semi-transparent
+                        : 0x60FF0000  // red, semi-transparent
+                ));
 
-                        int maxDz = dz;
-                        outer:
-                        while (maxDz < depth) {
-                            for (int x = dx; x < maxDx; x++) {
-                                if (visited[x][maxDz] || topY[x][maxDz] != y) break outer;
-                            }
-                            maxDz++;
-                        }
 
-                        for (int x = dx; x < maxDx; x++) {
-                            for (int z = dz; z < maxDz; z++) {
-                                visited[x][z] = true;
-                            }
-                        }
-
-                        int x1 = startX + dx;
-                        int z1 = startZ + dz;
-                        int x2 = startX + maxDx;
-                        int z2 = startZ + maxDz;
-
-                        Box box = new Box(x1, y + 1, z1, x2, y + 1.01, z2);
-
-                        if (!context.frustum().isVisible(box)) continue;
-
-                        DebugRenderer.drawBox(
-                            matrixStack,
-                            client.getBufferBuilders().getEntityVertexConsumers(),
-                            x1 - camX, y + 1 - camY, z1 - camZ,
-                            x2 - camX, y + 1.01 - camY, z2 - camZ,
-                            inTerr ? 0 : 1,
-                            inTerr ? 1 : 0,
-                            0,
-                            0.5f
-                        );
-                    }
-                }
+//                // Render "Carpet" or "Floor" at block surface, in patches at a time
+//                MatrixStack matrixStack = context.matrices();
+//                ClientWorld world = context.gameRenderer().getClient().world;
+//                if (world == null) {
+//                    return;
+//                }
+//                MinecraftClient client = MinecraftClient.getInstance();
+//                double camX = client.gameRenderer.getCamera().getCameraPos().x;
+//                double camY = client.gameRenderer.getCamera().getCameraPos().y;
+//                double camZ = client.gameRenderer.getCamera().getCameraPos().z;
+//
+//                int width = endX - startX;
+//                int depth = endZ - startZ;
+//
+//                double[][] topY = new double[width][depth];
+//                boolean[][] visited = new boolean[width][depth];
+//                BlockPos.Mutable pos = new BlockPos.Mutable();
+//
+//                double maxDistanceCarpet = 64.0;
+//                double maxDistSq = maxDistanceCarpet * maxDistanceCarpet;
+//
+//                // Step 1: Precompute surface heights only for nearby blocks
+//                for (int dx = 0; dx < width; dx++) {
+//                    int x = startX + dx;
+//                    double dxSq = (x + 0.5 - camX) * (x + 0.5 - camX);
+//
+//                    for (int dz = 0; dz < depth; dz++) {
+//                        int z = startZ + dz;
+//                        double dzSq = (z + 0.5 - camZ) * (z + 0.5 - camZ);
+//
+//                        if (dxSq + dzSq > maxDistSq) {
+//                            topY[dx][dz] = Integer.MIN_VALUE;
+//                            visited[dx][dz] = true;
+//                            continue;
+//                        }
+//
+//                        for (int y = (int) camY - 1; y > camY - 10; y--) {
+//                            pos.set(x, y + 1, z);
+//                            if (world.getBlockState(pos).isOpaque() || !world.getBlockState(pos).getFluidState().isOf(Fluids.EMPTY)) {
+//                                topY[dx][dz] = Integer.MIN_VALUE;
+//                                break;
+//                            }
+//                            pos.set(x, y, z);
+//                            if (world.getBlockState(pos).isOpaque() || !world.getBlockState(pos).getFluidState().isOf(Fluids.EMPTY)) {
+//                                double heightModifier = 0;
+//                                String itemName = world.getBlockState(pos).getBlock().getName().getString();
+//                                if (itemName.contains("Slab")) {
+//                                    if (world.getBlockState(pos).get(Properties.SLAB_TYPE) == SlabType.BOTTOM) {
+//                                        heightModifier = 0.49;
+//                                    }
+//                                } else if (itemName.contains("Carpet")) {
+//                                    heightModifier = 0.94;
+//                                } else if (!world.getBlockState(pos).getFluidState().isOf(Fluids.EMPTY)) {
+//                                    heightModifier = 0.2;
+//                                }
+//                                topY[dx][dz] = y - heightModifier;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                // Step 2: Greedy 2D merging
+//                for (int dx = 0; dx < width; dx++) {
+//                    for (int dz = 0; dz < depth; dz++) {
+//                        if (visited[dx][dz]) continue;
+//
+//                        double y = topY[dx][dz];
+//                        if (y == 0) continue;
+//
+//                        int maxDx = dx;
+//                        while (maxDx < width && !visited[maxDx][dz] && topY[maxDx][dz] == y) maxDx++;
+//
+//                        int maxDz = dz;
+//                        outer:
+//                        while (maxDz < depth) {
+//                            for (int x = dx; x < maxDx; x++) {
+//                                if (visited[x][maxDz] || topY[x][maxDz] != y) break outer;
+//                            }
+//                            maxDz++;
+//                        }
+//
+//                        for (int x = dx; x < maxDx; x++) {
+//                            for (int z = dz; z < maxDz; z++) {
+//                                visited[x][z] = true;
+//                            }
+//                        }
+//
+//                        int x1 = startX + dx;
+//                        int z1 = startZ + dz;
+//                        int x2 = startX + maxDx;
+//                        int z2 = startZ + maxDz;
+//
+//                        Box carpetBox = new Box(x1, y + 1, z1, x2, y + 1.01, z2);
+//                        try {
+//
+////                        Frustum frustum = context.
+////                        if (!context..isVisible(carpetBox)) continue;
+//
+//                        // small offset to avoid z-fighting
+//                        double yFace = y + 1.001;
+//
+//                        Vec3d nwd = new Vec3d(x1, yFace, z1);
+//                        Vec3d seu = new Vec3d(x2, yFace, z2);
+//
+//                        GizmoDrawing.face(
+//                            nwd,
+//                            seu,
+//                            Direction.UP,
+//                            DrawStyle.filled(
+//                                inTerr
+//                                    ? 0x6000FF00  // green, semi-transparent
+//                                    : 0x60FF0000  // red, semi-transparent
+//                            )
+//                        );
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
 
             }
         }
