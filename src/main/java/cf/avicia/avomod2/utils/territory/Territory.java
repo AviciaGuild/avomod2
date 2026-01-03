@@ -5,13 +5,15 @@ import java.util.regex.Pattern;
 
 public class Territory {
     private String defense;
+    private Guild guild;
     private Resources productions;
     private Resources storages;
     private Resources maxStorages;
     private boolean headquarters;
 
-    public Territory(String defense, Resources productions, Resources storages, Resources maxStorages, boolean headquarters) {
+    public Territory(String defense, Guild guild, Resources productions, Resources storages, Resources maxStorages, boolean headquarters) {
         this.defense = defense;
+        this.guild = guild;
         this.productions = productions;
         this.storages = storages;
         this.maxStorages = maxStorages;
@@ -20,6 +22,9 @@ public class Territory {
 
     public String getDefense() { return defense; }
     public void setDefense(String defense) { this.defense = defense; }
+
+    public Guild getGuild() { return guild; }
+    public void setGuild(Guild guild) { this.guild = guild; }
 
     public Resources getProductions() { return productions; }
     public void setProductions(Resources productions) { this.productions = productions; }
@@ -36,6 +41,7 @@ public class Territory {
         String productionPattern = "\\+(\\d+)\\s(Emeralds|Ore|Crops|Wood|Fish)\\sper\\sHour";
         String storagePattern = "(\\d+)/(\\d+)\\sstored\\s([ⒷⒸⓀⒿ✦])";
         String defensePattern = "Territory\\sDefences:\\s(.+)\\sTrading";
+        String guildPattern = "(.+)\\s\\[(.+)]";
 
         Resources productions = new Resources(0, 0, 0, 0, 0);
         Resources storages = new Resources(0, 0, 0, 0, 0);
@@ -99,7 +105,12 @@ public class Territory {
         Matcher defenseMatcher = defenseRegex.matcher(data);
         String defense = defenseMatcher.find() ? defenseMatcher.group(1) : "Unknown Defense";
 
-        return new Territory(defense, productions, storages, maxStorages, headquarters);
+        Pattern guildRegex = Pattern.compile(guildPattern);
+        Matcher guildMatcher = guildRegex.matcher(data);
+        boolean wasGuildFound = guildMatcher.find();
+        Guild guild = new Guild(wasGuildFound ? guildMatcher.group(1) : "None", wasGuildFound ? guildMatcher.group(2) : "None");
+
+        return new Territory(defense, guild, productions, storages, maxStorages, headquarters);
     }
 
 }
