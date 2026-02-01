@@ -1,5 +1,6 @@
 package cf.avicia.avomod2.client.eventhandlers.screenevents;
 
+import cf.avicia.avomod2.client.AvoMod2Client;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.utils.Utils;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
@@ -11,7 +12,6 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.util.Identifier;
 
 public class GuildBankKeybind {
     private static boolean openingBank;
@@ -20,7 +20,7 @@ public class GuildBankKeybind {
     private static long lastKeybindPress = System.currentTimeMillis();
 
     public static void init() {
-        keyBinding = new KeyBinding("Keybind to open guild bank", InputUtil.GLFW_KEY_Y, new KeyBinding.Category(Identifier.of("avomod")));
+        keyBinding = new KeyBinding("Keybind to open guild bank", InputUtil.GLFW_KEY_Y, AvoMod2Client.avomodCategory);
         KeyBindingRegistryImpl.registerKeyBinding(keyBinding);
     }
 

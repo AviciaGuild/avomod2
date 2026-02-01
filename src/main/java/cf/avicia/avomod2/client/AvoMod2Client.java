@@ -32,6 +32,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.util.Identifier;
 
 
 @Environment(EnvType.CLIENT)
@@ -39,6 +41,7 @@ public class AvoMod2Client implements ClientModInitializer {
 
     public static Screen screenToRender = null;
     public static boolean cancelContainerClose = false;
+    public static KeyBinding.Category avomodCategory = KeyBinding.Category.create(Identifier.of("avomod"));
 
     @Override
     public void onInitializeClient() {
@@ -62,10 +65,6 @@ public class AvoMod2Client implements ClientModInitializer {
         InventoryMouseClickedCallback.EVENT.register(TriggerInventoryMouseClickedEvents::mouseClicked);
         OnMouseScrollCallback.EVENT.register(InventoryRenderer::onMouseScroll);
         RenderItemCallback.EVENT.register(CustomItemTextures::applyCustomTexture);
-
-
-
-
 
         WorldRenderEvents.AFTER_ENTITIES.register(context -> {
             BeaconManager.onWorldRender(context);

@@ -1,5 +1,6 @@
 package cf.avicia.avomod2.client.renderer;
 
+import cf.avicia.avomod2.client.AvoMod2Client;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
 import cf.avicia.avomod2.client.configs.locations.LocationsHandler;
 import cf.avicia.avomod2.client.locationselements.Element;
@@ -26,7 +27,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -44,7 +44,7 @@ public class TerritoryOutlineRenderer {
     private static boolean showOutline = false;
 
     public static void initKeybind() {
-        keyBinding = new KeyBinding("Toggle territory highlights", InputUtil.GLFW_KEY_COMMA, new KeyBinding.Category(Identifier.of("avomod")));
+        keyBinding = new KeyBinding("Toggle territory highlights", InputUtil.GLFW_KEY_COMMA, AvoMod2Client.avomodCategory);
         KeyBindingRegistryImpl.registerKeyBinding(keyBinding);
     }
 

@@ -5,13 +5,12 @@ import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Identifier;
 
 public class EmotesKeybind {
     private static boolean isHeld = false;
     public static KeyBinding keyBinding;
     public static void init() {
-        keyBinding = new KeyBinding("Open emotes menu", InputUtil.GLFW_KEY_V, new KeyBinding.Category(Identifier.of("avomod")));
+        keyBinding = new KeyBinding("Open emotes menu", InputUtil.GLFW_KEY_V, AvoMod2Client.avomodCategory);
         KeyBindingRegistryImpl.registerKeyBinding(keyBinding);
     }
 
