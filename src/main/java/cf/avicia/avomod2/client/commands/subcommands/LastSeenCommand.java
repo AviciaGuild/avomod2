@@ -18,9 +18,10 @@ public class LastSeenCommand {
                             Thread thread = new Thread(() -> {
                                 PlayerStats playerStats = new PlayerStats(username);
                                 String formattedUsername = playerStats.getUsername();
+                                boolean isOnline = playerStats.isOnline();
                                 String world = playerStats.getServer();
                                 String timeSinceLastJoin = playerStats.getTimeSinceLastJoin();
-                                if (formattedUsername != null && world != null) {
+                                if (formattedUsername != null && world != null && isOnline) {
                                     context.getSource().sendFeedback(Text.literal("§b" + formattedUsername + "§7 is online on §b" + world));
                                 } else if(timeSinceLastJoin != null) {
                                     context.getSource().sendFeedback(Text.literal("§b" + formattedUsername + "§7 was last seen §b" + timeSinceLastJoin + "§7 ago."));
