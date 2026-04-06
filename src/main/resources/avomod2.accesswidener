@@ -12,3 +12,4 @@ accessible field net/minecraft/client/gui/hud/ChatHud scrolledLines I
 accessible method net/minecraft/client/gui/hud/ChatHud getLineHeight ()I
 accessible method net/minecraft/client/gui/hud/ChatHud getChatScale ()D
 accessible method net/minecraft/client/gui/hud/ChatHud getHeight ()I
+accessible field net/minecraft/client/gui/hud/InGameHud overlayMessage Lnet/minecraft/text/Text;

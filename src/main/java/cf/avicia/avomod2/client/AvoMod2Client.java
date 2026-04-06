@@ -8,6 +8,7 @@ import cf.avicia.avomod2.client.emotes.EmotesGui;
 import cf.avicia.avomod2.client.emotes.EmotesKeybind;
 import cf.avicia.avomod2.client.eventhandlers.chatclickedevents.CopyClickedMessage;
 import cf.avicia.avomod2.client.eventhandlers.chatclickedevents.TriggerChatMouseClickedEvents;
+import cf.avicia.avomod2.client.eventhandlers.chatevents.AutoSkipDialogue;
 import cf.avicia.avomod2.client.eventhandlers.chatevents.TriggerChatEvents;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.TriggerHudEvents;
 import cf.avicia.avomod2.client.eventhandlers.hudevents.WarTracker;
@@ -80,6 +81,7 @@ public class AvoMod2Client implements ClientModInitializer {
             EmotesKeybind.onTick();
             TerritoryOutlineRenderer.onTick();
             WarTracker.onTick();
+            AutoSkipDialogue.onTick();
 
             if (MinecraftClient.getInstance().currentScreen == null && InventoryOverlay.isInteractedWith) {
                 // Hide the overlay if inventories are exited
