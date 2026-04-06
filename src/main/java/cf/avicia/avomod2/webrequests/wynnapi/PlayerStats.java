@@ -40,6 +40,17 @@ public class PlayerStats {
         }
     }
 
+    public boolean isOnline() {
+        try {
+            return Objects.requireNonNull(getPlayerData())
+                    .get("online")
+                    .getAsBoolean();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public String getServer() {
         try {
             return Objects.requireNonNull(getPlayerData())
