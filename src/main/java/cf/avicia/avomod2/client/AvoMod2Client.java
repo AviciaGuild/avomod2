@@ -55,6 +55,7 @@ public class AvoMod2Client implements ClientModInitializer {
         EmotesKeybind.init();
         EmotesGui.updateFromConfig();
         TerritoryOutlineRenderer.initKeybind();
+        AutoSkipDialogue.initKeybind();
         ItemsDataHandler.updateItemsFromAPI();
 
         ChatMessageCallback.EVENT.register(TriggerChatEvents::onMessage);

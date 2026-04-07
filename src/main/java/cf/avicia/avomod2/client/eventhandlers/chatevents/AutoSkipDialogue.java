@@ -1,8 +1,11 @@
 package cf.avicia.avomod2.client.eventhandlers.chatevents;
 
+import cf.avicia.avomod2.client.AvoMod2Client;
 import cf.avicia.avomod2.client.configs.ConfigsHandler;
+import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.text.StyleSpriteSource;
 import net.minecraft.text.Text;
@@ -14,6 +17,13 @@ import java.util.regex.Pattern;
 
 public class AutoSkipDialogue {
     private static long lastRun = 0;
+
+    private static KeyBinding keyBinding;
+
+    public static void initKeybind() {
+        keyBinding = new KeyBinding("Toggle auto skip dialogue", InputUtil.GLFW_KEY_PERIOD, AvoMod2Client.avomodCategory);
+        KeyBindingRegistryImpl.registerKeyBinding(keyBinding);
+    }
 
     private record DialogueOption(String message, boolean isRequiredChoice, int index) {}
 
@@ -36,6 +46,11 @@ public class AutoSkipDialogue {
     }
 
     public static void onTick() {
+        if (keyBinding.wasPressed()) {
+            boolean autoSkipDialogues = ConfigsHandler.getConfigBoolean("skipDialogue");
+            ConfigsHandler.updateConfigs("skipDialogue", (!autoSkipDialogues) ? "Enabled" : "Disabled");
+            MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(Text.of(autoSkipDialogues ? "§7Auto dialogue skip §cDisabled" : "§7Auto dialogue skip §aEnabled"));
+        }
         if (!ConfigsHandler.getConfigBoolean("skipDialogue")) return;
         final long MIN_DIFF_MS = 200;
         if (System.currentTimeMillis() - lastRun < MIN_DIFF_MS) return;
