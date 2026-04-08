@@ -1,5 +1,7 @@
 package cf.avicia.avomod2.utils.territory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,14 +11,16 @@ public class Territory {
     private Resources productions;
     private Resources storages;
     private Resources maxStorages;
+    private List<String> connections;
     private boolean headquarters;
 
-    public Territory(String defense, Guild guild, Resources productions, Resources storages, Resources maxStorages, boolean headquarters) {
+    public Territory(String defense, Guild guild, Resources productions, Resources storages, Resources maxStorages, List<String> connections, boolean headquarters) {
         this.defense = defense;
         this.guild = guild;
         this.productions = productions;
         this.storages = storages;
         this.maxStorages = maxStorages;
+        this.connections = connections;
         this.headquarters = headquarters;
     }
 
@@ -110,7 +114,31 @@ public class Territory {
         boolean wasGuildFound = guildMatcher.find();
         Guild guild = new Guild(wasGuildFound ? guildMatcher.group(1) : "None", wasGuildFound ? guildMatcher.group(2) : "None");
 
-        return new Territory(defense, guild, productions, storages, maxStorages, headquarters);
+        List<String> connections = new ArrayList<>();
+
+        int index = data.indexOf("Trading Routes:");
+        if (index != -1) {
+            String after = data.substring(index + "Trading Routes:".length()).trim();
+
+            String[] parts = after.split("\\s*-\\s*");
+
+            for (String part : parts) {
+                String cleaned = part.trim();
+
+                if (!cleaned.isEmpty()) {
+                    connections.add(cleaned);
+                }
+            }
+        }
+
+        return new Territory(defense, guild, productions, storages, maxStorages, connections, headquarters);
     }
 
+    public List<String> getConnections() {
+        return connections;
+    }
+
+    public void setConnections(List<String> connections) {
+        this.connections = connections;
+    }
 }
