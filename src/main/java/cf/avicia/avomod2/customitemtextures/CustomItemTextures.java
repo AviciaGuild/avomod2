@@ -17,25 +17,18 @@ import java.util.regex.Pattern;
 
 
 public class CustomItemTextures {
-    final static int foodScrollLimit = 55; // Food is around 70 and scrolls are around 40 (this is very unscientific)
-
-    private static boolean isCrafted(List<Text> loreLines) {
-        return loreLines.stream().anyMatch(lineText -> lineText.getString().contains("Crafted"));
-    }
-
-    private static boolean isConsumable(List<Text> loreLines) {
-        return loreLines.stream().anyMatch(lineText -> lineText.getString().contains("Effect:"));
-    }
-
     private static boolean isFood(ItemStack itemStack, List<Text> loreLines) {
-        return isCrafted(loreLines) && isConsumable(loreLines) && itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:diamond_axe"))) && itemStack.getDamage() > foodScrollLimit;
+        String foodString = "\uE035\uDAFF\uDFFF\uE03E\uDAFF\uDFFF\uE03E\uDAFF\uDFFF\uE033\uDAFF\uDFFF\uE062\uDAFF\uDFE6\uE005\uE00E\uE00E\uE003\uDB00\uDC02";
+        return loreLines.stream().anyMatch(lineText -> lineText.getString().contains(foodString));
     }
 
     private static boolean isScroll(ItemStack itemStack, List<Text> loreLines) {
-        return isCrafted(loreLines) && isConsumable(loreLines) && itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:diamond_axe"))) && itemStack.getDamage() <= foodScrollLimit;
+        String scrollString = "\uE042\uDAFF\uDFFF\uE032\uDAFF\uDFFF\uE041\uDAFF\uDFFF\uE03E\uDAFF\uDFFF\uE03B\uDAFF\uDFFF\uE03B\uDAFF\uDFFF\uE062\uDAFF\uDFDA\uE012\uE002\uE011\uE00E\uE00B\uE00B\uDB00\uDC02";
+        return loreLines.stream().anyMatch(lineText -> lineText.getString().contains(scrollString));
     }
     private static boolean isPotion(ItemStack itemStack, List<Text> loreLines) {
-        return isConsumable(loreLines) && (itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:potion"))) || itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:splash_potion"))));
+        String potionString = "\uE03F\uDAFF\uDFFF\uE03E\uDAFF\uDFFF\uE043\uDAFF\uDFFF\uE038\uDAFF\uDFFF\uE03E\uDAFF\uDFFF\uE03D\uDAFF\uDFFF\uE062\uDAFF\uDFDC\uE00F\uE00E\uE013\uE008\uE00E\uE00D\uDB00\uDC02";
+        return loreLines.stream().anyMatch(lineText -> lineText.getString().contains(potionString)) || (itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:potion"))) && loreLines.stream().anyMatch(lineText -> lineText.getString().contains("Effect:")));
     }
 
     private static boolean isOfType(ItemStack itemStack, List<Text> loreLines, String type) {
