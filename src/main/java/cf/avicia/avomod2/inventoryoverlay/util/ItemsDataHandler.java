@@ -81,7 +81,7 @@ public class ItemsDataHandler {
 
                             itemFetchProgress = "Loading from API... " + percent + "% (" +
                                     currentPage + "/" + totalPages +
-                                    ", total items: " + allItemsMap.size() + ")";
+                                    ", items: " + allItemsMap.size() + ")";
 
                             success = true;
 

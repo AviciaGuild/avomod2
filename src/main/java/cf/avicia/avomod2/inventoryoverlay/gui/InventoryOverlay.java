@@ -89,13 +89,12 @@ public class InventoryOverlay {
         Screens.getButtons(screen).add(searchTextFieldWidget);
         Screens.getButtons(screen).add(searchLoreCheckbox);
         if (shouldRenderItems()) {
-            if (items == null) {
-                if (ItemsDataHandler.isCurrentlyFetchingItemData) {
-                    RegularButtonWidget progressBarButton = new RegularButtonWidget(startX, 0, overlayWidth, 20, Text.of(ItemsDataHandler.itemFetchProgress), Text.of("The first load takes a while due to API limitations."), button -> {});
-                    Screens.getButtons(screen).add(progressBarButton);
-                    hasChanged = true;
-                }
-                else
+            if (ItemsDataHandler.isCurrentlyFetchingItemData) {
+                RegularButtonWidget progressBarButton = new RegularButtonWidget(scaledWidth / 2 - overlayWidth / 2, 0, overlayWidth, 20, Text.of(ItemsDataHandler.itemFetchProgress), Text.of("The first load takes a while due to API limitations."), button -> {});
+                Screens.getButtons(screen).add(progressBarButton);
+                hasChanged = true;
+            }
+            if (items == null && !ItemsDataHandler.isCurrentlyFetchingItemData) {
                 {
                     Screens.getButtons(screen).add(new RegularButtonWidget(startX, 0, overlayWidth, 20, Text.of("Error fetching items"), Text.of("Click here to retry"), button -> {
                         button.setMessage(Text.of("Retrying..."));
