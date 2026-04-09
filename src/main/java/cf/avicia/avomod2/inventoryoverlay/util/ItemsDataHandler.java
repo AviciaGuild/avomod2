@@ -114,7 +114,7 @@ public class ItemsDataHandler {
 
                 items = parseAPIStringToItems(allItemDataString);
                 callback.accept(items);
-
+                ItemStackBuilder.shouldReloadItems = true;
                 ConfigFileUtil.writeFile("all-wynncraft-items-backup.json", allItemDataString);
             } catch (Exception e) {
                 e.printStackTrace();

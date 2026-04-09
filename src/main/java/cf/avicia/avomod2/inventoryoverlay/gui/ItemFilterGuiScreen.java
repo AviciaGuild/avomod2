@@ -37,7 +37,7 @@ public class ItemFilterGuiScreen extends Screen {
 
     private final ArrayList<Filter> itemFilters = new ArrayList<>();
     public int levelMin = 0;
-    public int levelMax = 110;
+    public int levelMax = 130;
 
     private int removeIndex = -1;
 
@@ -127,7 +127,7 @@ public class ItemFilterGuiScreen extends Screen {
         filterListDelete.clear();
         itemFilters.clear();
         levelMin = 0;
-        levelMax = 110;
+        levelMax = 130;
 
         updateFilterListPositions();
     }

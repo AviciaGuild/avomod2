@@ -21,12 +21,13 @@ import java.util.Map;
 public class ItemStackBuilder {
 
     private static List<Pair<ItemStack, WynnItem>> cachedItems = null;
+    public static boolean shouldReloadItems = false;
 
     public static List<Pair<ItemStack, WynnItem>> getAllItems(Map<String, WynnItem> items) {
         if (items == null) {
             return null;
         }
-        if (cachedItems != null) {
+        if (cachedItems != null && !shouldReloadItems) {
             return cachedItems;
         }
         List<Pair<ItemStack, WynnItem>> itemStacks = new ArrayList<>();
