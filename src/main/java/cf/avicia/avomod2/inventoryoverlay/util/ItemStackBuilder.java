@@ -75,11 +75,25 @@ public class ItemStackBuilder {
                     SkinUtils.setPlayerHeadFromUUID(result, wynnItem.icon.getString());
                 }
             }
-        } else if (wynnItem.type.equals("armor")) {
-            String itemId = (wynnItem.armourMaterial.equals("chain") ? "chainmail" : wynnItem.armourMaterial) + "_" + wynnItem.subType;
-            result = new ItemStack(Registries.ITEM.get(Identifier.of("minecraft:" + itemId)));
-            if (wynnItem.armourColor != null) {
-                result.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(InventoryOverlayUtils.parseRGB(wynnItem.armourColor).getRGB()));
+        } else if (wynnItem.type != null && wynnItem.type.equals("armour")) {
+            try {
+                String itemId;
+                if (wynnItem.armourMaterial != null && wynnItem.subType != null) {
+                    String material = wynnItem.armourMaterial.equals("chain") ? "chainmail" : wynnItem.armourMaterial;
+                    itemId = material + "_" + wynnItem.subType;
+                } else {
+                    itemId = "diamond_chestplate"; // Safe fallback
+                }
+                result = new ItemStack(Registries.ITEM.get(Identifier.of("minecraft:" + itemId)));
+                if (wynnItem.armourColor != null) {
+                    try {
+                        result.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(InventoryOverlayUtils.parseRGB(wynnItem.armourColor).getRGB()));
+                    } catch (Exception e) {
+                        // Skip dye if parsing fails
+                    }
+                }
+            } catch (Exception e) {
+                result = new ItemStack(Registries.ITEM.get(Identifier.of("minecraft:diamond_chestplate")));
             }
         }
         if (result.toString().contains("minecraft:air")) {

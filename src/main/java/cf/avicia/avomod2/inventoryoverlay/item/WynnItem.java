@@ -55,32 +55,34 @@ public class WynnItem {
                 "mythic", Formatting.DARK_PURPLE,
                 "crafted", Formatting.DARK_AQUA
         );
-        if (this.type.equals("ingredient")) {
+        if (this.type != null && this.type.equals("ingredient")) {
             return Formatting.GRAY;
         }
         return this.tier != null ? gearTierMap.getOrDefault(this.tier, Formatting.WHITE) : Formatting.WHITE;
     }
 
     public int getRarityValue() {
-        if (tier == null) {
-            if (tier != null) {
-                switch (tier) {
-                    case "TIER_3" -> {
-                        return 8;
-                    }
-                    case "TIER_2" -> {
-                        return 9;
-                    }
-                    case "TIER_1" -> {
-                        return 10;
-                    }
-                    case "TIER_0" -> {
-                        return 11;
-                    }
-                }
-            }
+        if (tier == null || tier.isEmpty()) {
             return 100;
         }
+        // Handle tier-based (ingredient/material) rarities
+        if (tier.startsWith("TIER_")) {
+            switch (tier) {
+                case "TIER_3" -> {
+                    return 8;
+                }
+                case "TIER_2" -> {
+                    return 9;
+                }
+                case "TIER_1" -> {
+                    return 10;
+                }
+                case "TIER_0" -> {
+                    return 11;
+                }
+            }
+        }
+        // Handle item rarities
         switch (tier) {
             case "mythic" -> {
                 return 0;
@@ -110,29 +112,34 @@ public class WynnItem {
     }
 
     public int getItemTypeValue() {
-        Map<String, Integer> itemValue = new HashMap<>();
-        int counter = 0;
-        itemValue.put("helmet", counter++);
-        itemValue.put("chestplate", counter++);
-        itemValue.put("leggings", counter++);
-        itemValue.put("boots", counter++);
-        itemValue.put("bow", counter++);
-        itemValue.put("dagger", counter++);
-        itemValue.put("relik", counter++);
-        itemValue.put("spear", counter++);
-        itemValue.put("wand", counter++);
-        itemValue.put("ring", counter++);
-        itemValue.put("bracelet", counter++);
-        itemValue.put("necklace", counter++);
-        itemValue.put("tome", counter++);
-        itemValue.put("charm", counter++);
-        itemValue.put("material", counter++);
-        itemValue.put("ingredient", counter++);
-        return  itemValue.getOrDefault(subType != null ? subType : type, 100);
+        try {
+            Map<String, Integer> itemValue = new HashMap<>();
+            int counter = 0;
+            itemValue.put("helmet", counter++);
+            itemValue.put("chestplate", counter++);
+            itemValue.put("leggings", counter++);
+            itemValue.put("boots", counter++);
+            itemValue.put("bow", counter++);
+            itemValue.put("dagger", counter++);
+            itemValue.put("relik", counter++);
+            itemValue.put("spear", counter++);
+            itemValue.put("wand", counter++);
+            itemValue.put("ring", counter++);
+            itemValue.put("bracelet", counter++);
+            itemValue.put("necklace", counter++);
+            itemValue.put("tome", counter++);
+            itemValue.put("charm", counter++);
+            itemValue.put("material", counter++);
+            itemValue.put("ingredient", counter++);
+            String typeStr = subType != null ? subType : type;
+            return itemValue.getOrDefault(typeStr, 100);
+        } catch (Exception e) {
+            return 100;
+        }
     }
 
     public int getBackgroundColor() {
-        if (!this.type.equals("ingredient") && !this.type.equals("material")) {
+        if (this.type != null && !this.type.equals("ingredient") && !this.type.equals("material")) {
             return getNameFormatting().getColorValue();
         }
         if (tier == null) {
@@ -155,6 +162,9 @@ public class WynnItem {
     }
 
     private Text getTierText() {
+        if (tier == null) {
+            return Text.of("");
+        }
         final Map<String, String> ingredientTierMap = Map.of(
                 "TIER_0", " §7[§8✫✫✫§7]",
                 "TIER_1", " §6[§e✫§8✫✫§6]",
@@ -166,12 +176,20 @@ public class WynnItem {
                 "TIER_2", " §6[§e✫✫§8✫§6]",
                 "TIER_3", " §6[§e✫✫✫§6]"
         );
-        return Text.of(tier != null ? type.equals("material") ? materialTierMap.get(tier) : ingredientTierMap.get(tier) : "");
+        Map<String, String> tierMap = (this.type != null && this.type.equals("material")) ? materialTierMap : ingredientTierMap;
+        return Text.of(tierMap.getOrDefault(tier, ""));
     }
 
     public Text getFormattedDisplayName(String name) {
+        if (name == null) {
+            name = "";
+        }
         if (this.tier != null) {
-            name = name.replace(tier, "").trim();
+            try {
+                name = name.replace(tier, "").trim();
+            } catch (Exception e) {
+                // If replace fails for any reason, just use the original name
+            }
         }
         MutableText nameText = Text.literal(name);
         nameText.setStyle(nameText.getStyle().withColor(this.getNameFormatting()).withItalic(false));
@@ -182,86 +200,140 @@ public class WynnItem {
 
     public List<String> getProfessions() {
         List<String> res = new ArrayList<>();
-        if (requirements != null && requirements.skills != null && !requirements.skills.isEmpty()) {
-            return requirements.skills;
-        }
-        if (type.equals("material")) {
-            if (internalName.contains("Wood") || internalName.contains("Paper")) {
-                res.add("woodcutting");
+        try {
+            if (requirements != null && requirements.skills != null && !requirements.skills.isEmpty()) {
+                return new ArrayList<>(requirements.skills);
             }
-            if (internalName.contains("Grain") || internalName.contains("String")) {
-                res.add("farming");
+            if (type != null && type.equals("material")) {
+                if (internalName != null) {
+                    if (internalName.contains("Wood") || internalName.contains("Paper")) {
+                        res.add("woodcutting");
+                    }
+                    if (internalName.contains("Grain") || internalName.contains("String")) {
+                        res.add("farming");
+                    }
+                    if (internalName.contains("Oil") || internalName.contains("Meat")) {
+                        res.add("fishing");
+                    }
+                    if (internalName.contains("Gem") || internalName.contains("Ingot")) {
+                        res.add("mining");
+                    }
+                }
             }
-            if (internalName.contains("Oil") || internalName.contains("Meat")) {
-                res.add("fishing");
+            if (type != null && type.equals("tool")) {
+                String profession = switch (subType) {
+                    case "axe" -> "woodcutting";
+                    case "scythe" -> "farming";
+                    case "rod" -> "fishing";
+                    case "pickaxe" -> "mining";
+                    default -> null;
+                };
+                if (profession != null && !profession.isEmpty()) {
+                    res.add(profession);
+                }
             }
-            if (internalName.contains("Gem") || internalName.contains("Ingot")) {
-                res.add("mining");
-            }
-        }
-        if (type.equals("tool")) {
-            res.add(switch (subType) {
-                case "axe" -> "woodcutting";
-                case "scythe" -> "farming";
-                case "rod" -> "fishing";
-                case "pickaxe" -> "mining";
-                default -> "";
-            });
+        } catch (Exception e) {
+            // If profession detection fails for any reason, just return an empty list
         }
         return res;
     }
 
     public String getProfessionLabel() {
-        List<String> professions = getProfessions();
-        if (professions.isEmpty()) {
+        try {
+            List<String> professions = getProfessions();
+            if (professions == null || professions.isEmpty()) {
+                return "";
+            }
+            String profession = professions.getFirst();
+            if (profession == null || profession.isEmpty()) {
+                return "";
+            }
+            return "§f" + InventoryOverlayUtils.getProfessionIcon(profession) + "§7 " + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(profession);
+        } catch (Exception e) {
             return "";
         }
-        String profession = professions.getFirst();
-        return "§f" + InventoryOverlayUtils.getProfessionIcon(profession) + "§7 " + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(profession);
     }
 
     private boolean isEffectivenessIngredient() {
-        if (!type.equals("ingredient")) {
+        if (type == null || !type.equals("ingredient")) {
             return false;
         }
-        return getTotalIngredientEffectiveness() != 0;
+        try {
+            return getTotalIngredientEffectiveness() != 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private int getTotalIngredientEffectiveness() {
-        return ingredientPositionModifiers.above + ingredientPositionModifiers.left + ingredientPositionModifiers.notTouching + ingredientPositionModifiers.touching + ingredientPositionModifiers.right + ingredientPositionModifiers.under;
+        if (ingredientPositionModifiers == null) {
+            return 0;
+        }
+        try {
+            int total = 0;
+            if (ingredientPositionModifiers.above != null) total += ingredientPositionModifiers.above;
+            if (ingredientPositionModifiers.left != null) total += ingredientPositionModifiers.left;
+            if (ingredientPositionModifiers.notTouching != null) total += ingredientPositionModifiers.notTouching;
+            if (ingredientPositionModifiers.touching != null) total += ingredientPositionModifiers.touching;
+            if (ingredientPositionModifiers.right != null) total += ingredientPositionModifiers.right;
+            if (ingredientPositionModifiers.under != null) total += ingredientPositionModifiers.under;
+            return total;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     private String getItemTypeString() {
-        return subType != null ? subType : type;
+        if (subType != null && !subType.isEmpty()) {
+            return subType;
+        }
+        if (type != null && !type.isEmpty()) {
+            return type;
+        }
+        return "unknown";
     }
 
     public boolean isOfType(String typeString) {
-        return getItemTypeString().equals(typeString) || type.equals(typeString);
+        if (typeString == null) {
+            return false;
+        }
+        try {
+            return getItemTypeString().equals(typeString) || (type != null && type.equals(typeString));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public int getMaxIdentificationValue(String identification) {
+        if (identification == null) {
+            return 0;
+        }
         int res = 0;
-        if (identifications != null) {
-            if (identifications.containsKey(identification)) {
-                res = identifications.get(identification).max;
+        try {
+            if (identifications != null && identifications.containsKey(identification)) {
+                Identification ident = identifications.get(identification);
+                if (ident != null) {
+                    res = ident.max;
+                }
             }
-        }
-        if (base != null) {
-            if (base.containsKey(identification)) {
-                res = base.get(identification).max;
+            if (base != null && base.containsKey(identification)) {
+                Identification ident = base.get(identification);
+                if (ident != null) {
+                    res = ident.max;
+                }
             }
-        }
-        switch (identification) {
-            case "durabilityModifier" -> res = (itemOnlyIDs != null && itemOnlyIDs.durabilityModifier != null && itemOnlyIDs.durabilityModifier != 0) ? itemOnlyIDs.durabilityModifier : res;
-            case "strengthRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.strengthRequirement != null && itemOnlyIDs.strengthRequirement != 0) ? itemOnlyIDs.strengthRequirement : res;
-            case "dexterityRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.dexterityRequirement != null && itemOnlyIDs.dexterityRequirement != 0) ? itemOnlyIDs.dexterityRequirement: res;
-            case "intelligenceRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.intelligenceRequirement != null && itemOnlyIDs.intelligenceRequirement != 0) ? itemOnlyIDs.intelligenceRequirement: res;
-            case "defenceRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.defenceRequirement != null && itemOnlyIDs.defenceRequirement != 0) ? itemOnlyIDs.defenceRequirement: res;
-            case "agilityRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.agilityRequirement != null && itemOnlyIDs.agilityRequirement != 0) ? itemOnlyIDs.agilityRequirement: res;
-            case "duration" -> res = (consumableOnlyIDs != null && consumableOnlyIDs.duration != null && consumableOnlyIDs.duration != 0) ? consumableOnlyIDs.duration: res;
-            case "charges" -> res = (consumableOnlyIDs != null && consumableOnlyIDs.charges != null && consumableOnlyIDs.charges != 0) ? consumableOnlyIDs.charges: res;
-            case "ingredientEffectiveness" -> res = isEffectivenessIngredient() ? getTotalIngredientEffectiveness() : res;
-        }
+            switch (identification) {
+                case "durabilityModifier" -> res = (itemOnlyIDs != null && itemOnlyIDs.durabilityModifier != null && itemOnlyIDs.durabilityModifier != 0) ? itemOnlyIDs.durabilityModifier : res;
+                case "strengthRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.strengthRequirement != null && itemOnlyIDs.strengthRequirement != 0) ? itemOnlyIDs.strengthRequirement : res;
+                case "dexterityRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.dexterityRequirement != null && itemOnlyIDs.dexterityRequirement != 0) ? itemOnlyIDs.dexterityRequirement: res;
+                case "intelligenceRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.intelligenceRequirement != null && itemOnlyIDs.intelligenceRequirement != 0) ? itemOnlyIDs.intelligenceRequirement: res;
+                case "defenceRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.defenceRequirement != null && itemOnlyIDs.defenceRequirement != 0) ? itemOnlyIDs.defenceRequirement: res;
+                case "agilityRequirement" -> res = (itemOnlyIDs != null && itemOnlyIDs.agilityRequirement != null && itemOnlyIDs.agilityRequirement != 0) ? itemOnlyIDs.agilityRequirement: res;
+                case "duration" -> res = (consumableOnlyIDs != null && consumableOnlyIDs.duration != null && consumableOnlyIDs.duration != 0) ? consumableOnlyIDs.duration: res;
+                case "charges" -> res = (consumableOnlyIDs != null && consumableOnlyIDs.charges != null && consumableOnlyIDs.charges != 0) ? consumableOnlyIDs.charges: res;
+                case "ingredientEffectiveness" -> res = isEffectivenessIngredient() ? getTotalIngredientEffectiveness() : res;
+            }
+        } catch (Exception e) { }
         return res;
     }
 
@@ -270,25 +342,40 @@ public class WynnItem {
     }
 
     public boolean hasMajorId(String majorId) {
-        if (majorIds != null) {
-            if (majorId.equals("any")) {
-                return true;
-            }
-            return majorIds.containsKey(majorId);
+        if (majorId == null) {
+            return false;
         }
+        try {
+            if (majorIds != null) {
+                if (majorId.equals("any")) {
+                    return true;
+                }
+                return majorIds.containsKey(majorId);
+            }
+        } catch (Exception e) { }
         return false;
     }
 
+    private void addRequirementLine(List<Text> result, Integer requirement, String label) {
+        if (requirement != null && requirement != 0) {
+            String prefix = requirement < 0 ? "§a" : "§c+";
+            result.add(Text.of(prefix + requirement + " " + label));
+        }
+    }
+
+
     public List<Text> getLore() {
         List<Text> result = new ArrayList<>();
-        if (this.type.equals("ingredient")) {
-            result.add(Text.of("§8Crafting Ingredient"));
-        }
-        if (this.type.equals("material")) {
-            result.add(Text.of("§7Crafting Material"));
-        }
-        if (this.type.equals("charm")) {
-            result.add(Text.of("§8Active while on inventory"));
+        if (this.type != null) {
+            if (this.type.equals("ingredient")) {
+                result.add(Text.of("§8Crafting Ingredient"));
+            }
+            if (this.type.equals("material")) {
+                result.add(Text.of("§7Crafting Material"));
+            }
+            if (this.type.equals("charm")) {
+                result.add(Text.of("§8Active while on inventory"));
+            }
         }
         if (this.attackSpeed != null) {
             result.add(Text.of("§7" + InventoryOverlayUtils.snakeToUpperCamelCaseWithSpaces(this.attackSpeed) + " Attack Speed"));
@@ -300,39 +387,45 @@ public class WynnItem {
                 if (!base.containsKey(baseStatName)) {
                     continue;
                 }
-                Identification value = base.get(baseStatName);
-                String statName = baseStatName.replace("base", "");
-                String statSuffix = "";
-                String statPrefix = "";
-                if (statName.equals("Health")) {
-                    statPrefix = "§4❤ ";
+                try {
+                    Identification value = base.get(baseStatName);
+                    if (value == null) continue;
+                    
+                    String statName = baseStatName.replace("base", "");
+                    String statSuffix = "";
+                    String statPrefix = "";
+                    if (statName.equals("Health")) {
+                        statPrefix = "§4❤ ";
+                    }
+                    if (statName.equals("Damage")) {
+                        statPrefix = "§6✣ ";
+                        statName = "Neutral" + statName;
+                    }
+                    if (statName.startsWith("Earth")) {
+                        statPrefix = "§2✤ ";
+                        statName = statName.replace("Earth", "Earth§7");
+                    }
+                    if (statName.startsWith("Thunder")) {
+                        statPrefix = "§e✦ ";
+                        statName = statName.replace("Thunder", "Thunder§7");
+                    }
+                    if (statName.startsWith("Water")) {
+                        statPrefix = "§b❉ ";
+                        statName = statName.replace("Water", "Water§7");
+                    }
+                    if (statName.startsWith("Fire")) {
+                        statPrefix = "§c✹ ";
+                        statName = statName.replace("Fire", "Fire§7");
+                    }
+                    if (statName.startsWith("Air")) {
+                        statPrefix = "§f❋ ";
+                        statName = statName.replace("Air", "Air§7");
+                    }
+                    String statValue = value.isRaw() ? String.valueOf(value.raw) : value.min + "-" + value.max;
+                    result.add(Text.of(statPrefix + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(statName) + ": " + statValue + statSuffix));
+                } catch (Exception e) {
+                    // Skip this stat if there's an error
                 }
-                if (statName.equals("Damage")) {
-                    statPrefix = "§6✣ ";
-                    statName = "Neutral" + statName;
-                }
-                if (statName.startsWith("Earth")) {
-                    statPrefix = "§2✤ ";
-                    statName = statName.replace("Earth", "Earth§7");
-                }
-                if (statName.startsWith("Thunder")) {
-                    statPrefix = "§e✦ ";
-                    statName = statName.replace("Thunder", "Thunder§7");
-                }
-                if (statName.startsWith("Water")) {
-                    statPrefix = "§b❉ ";
-                    statName = statName.replace("Water", "Water§7");
-                }
-                if (statName.startsWith("Fire")) {
-                    statPrefix = "§c✹ ";
-                    statName = statName.replace("Fire", "Fire§7");
-                }
-                if (statName.startsWith("Air")) {
-                    statPrefix = "§f❋ ";
-                    statName = statName.replace("Air", "Air§7");
-                }
-                String statValue = value.isRaw() ? String.valueOf(value.raw) : value.min + "-" + value.max;
-                result.add(Text.of(statPrefix + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(statName) + ": " + statValue + statSuffix));
             }
         }
         if (averageDps != null) {
@@ -340,26 +433,28 @@ public class WynnItem {
         }
         if (!type.equals("material") && !type.equals("ingredient") && !type.equals("tool")) {
             result.add(Text.empty());
-            if (requirements.classRequirement != null) {
-                result.add(Text.of("§c✖ §7Class Req: " + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(requirements.classRequirement)));
-            }
-            if (requirements.level > 0) {
-                result.add(Text.of("§c✖ §7Combat Lv. Min: " + requirements.level));
-            }
-            if (requirements.strength > 0) {
-                result.add(Text.of("§c✖ §7Strength Min: " + requirements.strength));
-            }
-            if (requirements.dexterity > 0) {
-                result.add(Text.of("§c✖ §7Dexterity Min: " + requirements.dexterity));
-            }
-            if (requirements.intelligence > 0) {
-                result.add(Text.of("§c✖ §7Intelligence Min: " + requirements.intelligence));
-            }
-            if (requirements.defence > 0) {
-                result.add(Text.of("§c✖ §7Defence Min: " + requirements.defence));
-            }
-            if (requirements.agility > 0) {
-                result.add(Text.of("§c✖ §7Agility Min: " + requirements.agility));
+            if (requirements != null) {
+                if (requirements.classRequirement != null) {
+                    result.add(Text.of("§c✖ §7Class Req: " + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(requirements.classRequirement)));
+                }
+                if (requirements.level > 0) {
+                    result.add(Text.of("§c✖ §7Combat Lv. Min: " + requirements.level));
+                }
+                if (requirements.strength > 0) {
+                    result.add(Text.of("§c✖ §7Strength Min: " + requirements.strength));
+                }
+                if (requirements.dexterity > 0) {
+                    result.add(Text.of("§c✖ §7Dexterity Min: " + requirements.dexterity));
+                }
+                if (requirements.intelligence > 0) {
+                    result.add(Text.of("§c✖ §7Intelligence Min: " + requirements.intelligence));
+                }
+                if (requirements.defence > 0) {
+                    result.add(Text.of("§c✖ §7Defence Min: " + requirements.defence));
+                }
+                if (requirements.agility > 0) {
+                    result.add(Text.of("§c✖ §7Agility Min: " + requirements.agility));
+                }
             }
         }
 
@@ -420,42 +515,51 @@ public class WynnItem {
         if (type.equals("ingredient")) {
             if (isEffectivenessIngredient()) {
                 result.add(Text.empty());
-                if (ingredientPositionModifiers.left != 0) {
-                    result.add(Text.of((ingredientPositionModifiers.left < 0 ? "§c" : "§a+") + ingredientPositionModifiers.left + "% §7Ingredient Effectiveness"));
-                    result.add(Text.of("§7(To ingredients to the left of this one)"));
+                if (ingredientPositionModifiers != null) {
+                    if ((ingredientPositionModifiers.left != null ? ingredientPositionModifiers.left : 0) != 0) {
+                        int val = ingredientPositionModifiers.left;
+                        result.add(Text.of((val < 0 ? "§c" : "§a+") + val + "% §7Ingredient Effectiveness"));
+                        result.add(Text.of("§7(To ingredients to the left of this one)"));
+                    }
+                    if ((ingredientPositionModifiers.right != null ? ingredientPositionModifiers.right : 0) != 0) {
+                        int val = ingredientPositionModifiers.right;
+                        result.add(Text.of((val < 0 ? "§c" : "§a+") + val + "% §7Ingredient Effectiveness"));
+                        result.add(Text.of("§7(To ingredients to the right of this one)"));
+                    }
+                    if ((ingredientPositionModifiers.above != null ? ingredientPositionModifiers.above : 0) != 0) {
+                        int val = ingredientPositionModifiers.above;
+                        result.add(Text.of((val < 0 ? "§c" : "§a+") + val + "% §7Ingredient Effectiveness"));
+                        result.add(Text.of("§7(To ingredients above this one)"));
+                    }
+                    if ((ingredientPositionModifiers.under != null ? ingredientPositionModifiers.under : 0) != 0) {
+                        int val = ingredientPositionModifiers.under;
+                        result.add(Text.of((val < 0 ? "§c" : "§a+") + val + "% §7Ingredient Effectiveness"));
+                        result.add(Text.of("§7(To ingredients below this one)"));
+                    }
+                    if ((ingredientPositionModifiers.touching != null ? ingredientPositionModifiers.touching : 0) != 0) {
+                        int val = ingredientPositionModifiers.touching;
+                        result.add(Text.of((val < 0 ? "§c" : "§a+") + val + "% §7Ingredient Effectiveness"));
+                        result.add(Text.of("§7(To ingredients touching this one)"));
+                    }
+                    if ((ingredientPositionModifiers.notTouching != null ? ingredientPositionModifiers.notTouching : 0) != 0) {
+                        int val = ingredientPositionModifiers.notTouching;
+                        result.add(Text.of((val < 0 ? "§c" : "§a+") + val + "% §7Ingredient Effectiveness"));
+                        result.add(Text.of("§7(To ingredients not touching this one)"));
+                    }
                 }
-                if (ingredientPositionModifiers.right != 0) {
-                    result.add(Text.of((ingredientPositionModifiers.right < 0 ? "§c" : "§a+") + ingredientPositionModifiers.right + "% §7Ingredient Effectiveness"));
-                    result.add(Text.of("§7(To ingredients to the right of this one)"));
-                }
-                if (ingredientPositionModifiers.above != 0) {
-                    result.add(Text.of((ingredientPositionModifiers.above < 0 ? "§c" : "§a+") + ingredientPositionModifiers.above + "% §7Ingredient Effectiveness"));
-                    result.add(Text.of("§7(To ingredients above this one)"));
-                }
-                if (ingredientPositionModifiers.under != 0) {
-                    result.add(Text.of((ingredientPositionModifiers.under < 0 ? "§c" : "§a+") + ingredientPositionModifiers.under + "% §7Ingredient Effectiveness"));
-                    result.add(Text.of("§7(To ingredients below this one)"));
-                }
-                if (ingredientPositionModifiers.touching != 0) {
-                    result.add(Text.of((ingredientPositionModifiers.touching < 0 ? "§c" : "§a+") + ingredientPositionModifiers.touching + "% §7Ingredient Effectiveness"));
-                    result.add(Text.of("§7(To ingredients touching this one)"));
-                }
-                if (ingredientPositionModifiers.notTouching != 0) {
-                    result.add(Text.of((ingredientPositionModifiers.notTouching < 0 ? "§c" : "§a+") + ingredientPositionModifiers.notTouching + "% §7Ingredient Effectiveness"));
-                    result.add(Text.of("§7(To ingredients not touching this one)"));
-                }
-
             }
             result.add(Text.empty());
             if (consumableOnlyIDs != null && itemOnlyIDs != null) {
-                if (consumableOnlyIDs.duration != null && consumableOnlyIDs.duration != 0 && itemOnlyIDs.durabilityModifier != null && itemOnlyIDs.durabilityModifier != 0) {
+                boolean hasDuration = consumableOnlyIDs.duration != null && consumableOnlyIDs.duration != 0;
+                boolean hasDurability = itemOnlyIDs.durabilityModifier != null && itemOnlyIDs.durabilityModifier != 0;
+                if (hasDuration && hasDurability) {
                     String durationPrefix = consumableOnlyIDs.duration < 0 ? "§c" : "§a+";
                     String durabilityPrefix = itemOnlyIDs.durabilityModifier < 0 ? "§c" : "§a+";
                     result.add(Text.of(durabilityPrefix + (itemOnlyIDs.durabilityModifier / 1000) + " Durability §7or " + durationPrefix + consumableOnlyIDs.duration + "s Duration"));
-                } else if (consumableOnlyIDs.duration != null && consumableOnlyIDs.duration != 0) {
+                } else if (hasDuration) {
                     String durationPrefix = consumableOnlyIDs.duration < 0 ? "§c" : "§a+";
                     result.add(Text.of(durationPrefix + consumableOnlyIDs.duration + "s Duration"));
-                } else if (itemOnlyIDs.durabilityModifier != null && itemOnlyIDs.durabilityModifier != 0) {
+                } else if (hasDurability) {
                     String durabilityPrefix = itemOnlyIDs.durabilityModifier < 0 ? "§c" : "§a+";
                     result.add(Text.of(durabilityPrefix + (itemOnlyIDs.durabilityModifier / 1000) + " Durability"));
                 }
@@ -463,48 +567,33 @@ public class WynnItem {
                     String chargesPrefix = consumableOnlyIDs.charges < 0 ? "§c" : "§a+";
                     result.add(Text.of(chargesPrefix + consumableOnlyIDs.charges + " Charge" + (consumableOnlyIDs.charges > 1 ? "s" : "")));
                 }
-                if (itemOnlyIDs.strengthRequirement != null && itemOnlyIDs.strengthRequirement != 0) {
-                    String prefix = itemOnlyIDs.strengthRequirement < 0 ? "§a" : "§c+";
-                    result.add(Text.of(prefix + itemOnlyIDs.strengthRequirement + " Strength Min."));
-                }
-                if (itemOnlyIDs.dexterityRequirement != null && itemOnlyIDs.dexterityRequirement != 0) {
-                    String prefix = itemOnlyIDs.dexterityRequirement < 0 ? "§a" : "§c+";
-                    result.add(Text.of(prefix + itemOnlyIDs.dexterityRequirement + " Dexterity Min."));
-                }
-                if (itemOnlyIDs.intelligenceRequirement != null && itemOnlyIDs.intelligenceRequirement != 0) {
-                    String prefix = itemOnlyIDs.intelligenceRequirement < 0 ? "§a" : "§c+";
-                    result.add(Text.of(prefix + itemOnlyIDs.intelligenceRequirement + " Intelligence Min."));
-                }
-                if (itemOnlyIDs.defenceRequirement != null && itemOnlyIDs.defenceRequirement != 0) {
-                    String prefix = itemOnlyIDs.defenceRequirement < 0 ? "§a" : "§c+";
-                    result.add(Text.of(prefix + itemOnlyIDs.defenceRequirement + " Defence Min."));
-                }
-                if (itemOnlyIDs.agilityRequirement != null && itemOnlyIDs.agilityRequirement != 0) {
-                    String prefix = itemOnlyIDs.agilityRequirement < 0 ? "§a" : "§c+";
-                    result.add(Text.of(prefix + itemOnlyIDs.agilityRequirement + " Agility Min."));
-                }
+                addRequirementLine(result, itemOnlyIDs.strengthRequirement, "Strength Min.");
+                addRequirementLine(result, itemOnlyIDs.dexterityRequirement, "Dexterity Min.");
+                addRequirementLine(result, itemOnlyIDs.intelligenceRequirement, "Intelligence Min.");
+                addRequirementLine(result, itemOnlyIDs.defenceRequirement, "Defence Min.");
+                addRequirementLine(result, itemOnlyIDs.agilityRequirement, "Agility Min.");
             }
-            if (requirements.level > 0) {
+            if (requirements != null && requirements.level > 0) {
                 result.add(Text.empty());
                 result.add(Text.of("§c✖ §7Crafting Lv. Min: " + requirements.level));
             }
-            if (!requirements.skills.isEmpty()) {
+            if (requirements != null && requirements.skills != null && !requirements.skills.isEmpty()) {
                 for (String skill : requirements.skills) {
                     result.add(Text.of("   §8✖ §f" + InventoryOverlayUtils.getProfessionIcon(skill) + " §7" + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(skill)));
                 }
             }
         }
         if (type.equals("material")) {
-            if (requirements.level > 0) {
+            if (requirements != null && requirements.level > 0) {
                 result.add(Text.empty());
                 result.add(Text.of("§c✖ §7" + getProfessionLabel() + " Lv. Min: " + requirements.level));
             }
         }
         if (type.equals("tool")) {
             result.add(Text.empty());
-            result.add(Text.of("§6Gathering Speed: " + gatheringSpeed));
+            result.add(Text.of("§6Gathering Speed: " + (gatheringSpeed != null ? gatheringSpeed : "?")));
             result.add(Text.empty());
-            result.add(Text.of("§c✖ §7" + getProfessionLabel() + " Lv. Min: " + requirements.level));
+            result.add(Text.of("§c✖ §7" + getProfessionLabel() + " Lv. Min: " + (requirements != null ? requirements.level : "?")));
         }
         if (restrictions != null) {
             result.add(Text.of("§c" + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(restrictions.replace(" item", "Item"))));

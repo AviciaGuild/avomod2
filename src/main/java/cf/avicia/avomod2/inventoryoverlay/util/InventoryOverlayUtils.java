@@ -138,7 +138,7 @@ public class InventoryOverlayUtils {
         professionIcons.put("fishing", "Ⓚ");
         professionIcons.put("farming", "Ⓙ");
         professionIcons.put("alchemism", "Ⓛ");
-        professionIcons.put("armoring", "Ⓗ");
+        professionIcons.put("armouring", "Ⓗ");
         professionIcons.put("cooking", "Ⓐ");
         professionIcons.put("jeweling", "Ⓓ");
         professionIcons.put("scribing", "Ⓔ");
