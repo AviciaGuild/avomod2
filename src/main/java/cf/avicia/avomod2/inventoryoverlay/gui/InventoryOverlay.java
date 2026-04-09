@@ -90,13 +90,21 @@ public class InventoryOverlay {
         Screens.getButtons(screen).add(searchLoreCheckbox);
         if (shouldRenderItems()) {
             if (items == null) {
-                Screens.getButtons(screen).add(new RegularButtonWidget(startX, 0, overlayWidth, 20, Text.of("Error fetching items"), Text.of("Click here to retry"), button -> {
-                    button.setMessage(Text.of("Retrying..."));
-                    ItemsDataHandler.updateItemsFromAPI(stringWynnItemMap -> {
-                        this.items = ItemStackBuilder.getAllItems(stringWynnItemMap);
-                        hasChanged = true;
-                    });
-                }));
+                if (ItemsDataHandler.isCurrentlyFetchingItemData) {
+                    RegularButtonWidget progressBarButton = new RegularButtonWidget(startX, 0, overlayWidth, 20, Text.of(ItemsDataHandler.itemFetchProgress), Text.of("The first load takes a while due to API limitations."), button -> {});
+                    Screens.getButtons(screen).add(progressBarButton);
+                    hasChanged = true;
+                }
+                else
+                {
+                    Screens.getButtons(screen).add(new RegularButtonWidget(startX, 0, overlayWidth, 20, Text.of("Error fetching items"), Text.of("Click here to retry"), button -> {
+                        button.setMessage(Text.of("Retrying..."));
+                        ItemsDataHandler.updateItemsFromAPI(stringWynnItemMap -> {
+                            this.items = ItemStackBuilder.getAllItems(stringWynnItemMap);
+                            hasChanged = true;
+                        });
+                    }));
+                }
                 return;
             }
             final int itemsPerRow = overlayWidth / slotSize;
@@ -179,14 +187,6 @@ public class InventoryOverlay {
                                 filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().isOfType(filter.value)).toList();
                         case NOT_EXISTS ->
                                 filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> !itemStackWynnItemPair.getB().isOfType(filter.value)).toList();
-                    }
-                }
-                case "rarity" -> {
-                    switch (filter.comparator) {
-                        case EXISTS ->
-                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().rarity != null && itemStackWynnItemPair.getB().rarity.equals(filter.value)).toList();
-                        case NOT_EXISTS ->
-                                filteredItems = filteredItems.stream().filter(itemStackWynnItemPair -> itemStackWynnItemPair.getB().rarity != null && !itemStackWynnItemPair.getB().rarity.equals(filter.value)).toList();
                     }
                 }
                 case "tier" -> {

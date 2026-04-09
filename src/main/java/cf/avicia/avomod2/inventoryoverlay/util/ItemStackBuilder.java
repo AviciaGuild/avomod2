@@ -75,8 +75,8 @@ public class ItemStackBuilder {
                     SkinUtils.setPlayerHeadFromUUID(result, wynnItem.icon.getString());
                 }
             }
-        } else if (wynnItem.type.equals("armour")) {
-            String itemId = (wynnItem.armourMaterial.equals("chain") ? "chainmail" : wynnItem.armourMaterial) + "_" + wynnItem.armourType;
+        } else if (wynnItem.type.equals("armor")) {
+            String itemId = (wynnItem.armourMaterial.equals("chain") ? "chainmail" : wynnItem.armourMaterial) + "_" + wynnItem.subType;
             result = new ItemStack(Registries.ITEM.get(Identifier.of("minecraft:" + itemId)));
             if (wynnItem.armourColor != null) {
                 result.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(InventoryOverlayUtils.parseRGB(wynnItem.armourColor).getRGB()));

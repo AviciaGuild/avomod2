@@ -21,6 +21,7 @@ public class SearchTextFieldWidget extends TextFieldWidget {
     @Override
     public void onClick(Click click, boolean doubled) {
         super.onClick(click, doubled);
+        this.setFocused(true);
         InventoryOverlay.isInteractedWith = true;
         if (System.currentTimeMillis() - lastClick < 200) {
             InventoryOverlay.highlightSearchedString = !InventoryOverlay.highlightSearchedString;

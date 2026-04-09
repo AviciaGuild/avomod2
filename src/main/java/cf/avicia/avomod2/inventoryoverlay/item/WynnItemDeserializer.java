@@ -51,20 +51,14 @@ public class WynnItemDeserializer implements JsonDeserializer<Map<String, WynnIt
             if (wynnItem.tier != null) {
                 ItemsDataHandler.possibleFilters.get("tier").add(wynnItem.tier);
             }
-            if (wynnItem.rarity != null) {
-                ItemsDataHandler.possibleFilters.get("rarity").add(wynnItem.rarity);
+            if (wynnItem.tier != null) {
+                ItemsDataHandler.possibleFilters.get("rarity").add(wynnItem.tier);
             }
             if (wynnItem.type != null) {
                 ItemsDataHandler.possibleFilters.get("type").add(wynnItem.type);
             }
-            if (wynnItem.armourType != null) {
-                ItemsDataHandler.possibleFilters.get("type").add(wynnItem.armourType);
-            }
-            if (wynnItem.weaponType != null) {
-                ItemsDataHandler.possibleFilters.get("type").add(wynnItem.weaponType);
-            }
-            if (wynnItem.accessoryType != null) {
-                ItemsDataHandler.possibleFilters.get("type").add(wynnItem.accessoryType);
+            if (wynnItem.subType != null) {
+                ItemsDataHandler.possibleFilters.get("type").add(wynnItem.subType);
             }
             if (wynnItem.restrictions != null) {
                 ItemsDataHandler.possibleFilters.get("restriction").add(wynnItem.restrictions);

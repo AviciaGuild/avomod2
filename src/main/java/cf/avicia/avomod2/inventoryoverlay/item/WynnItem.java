@@ -15,36 +15,31 @@ public class WynnItem {
     public boolean allowCraftsman;
 
     // Type-dependent attributes
+    public String subType;
     public String armourMaterial;
-    public String armourType;
     public String armourColor;
     public String attackSpeed;
     public Integer averageDps;
-    public String weaponType;
-    public String accessoryType;
-    public String toolType;
     public Integer gatheringSpeed;
     public String tier;
-    public String rarity;
 
     public ConsumableOnlyIDs consumableOnlyIDs;
     public ItemOnlyIDs itemOnlyIDs;
     public IngredientPositionModifiers ingredientPositionModifiers;
-    public List<String> craftable;
+    public Map<String, Integer> chances; // For materials
 
     public Map<String, Identification> base;
     public Map<String, Identification> identifications;
     public Requirements requirements;
     public Map<String, String> majorIds;
 
+    public String emblem;
+    public List<String> elements;
 
     public Integer powderSlots;
     public String lore;
 
     public String restrictions;
-    public Boolean raidReward;
-
-
     public DropMeta dropMeta;
     public List<DroppedBy> droppedBy;
     public String dropRestriction;
@@ -63,30 +58,30 @@ public class WynnItem {
         if (this.type.equals("ingredient")) {
             return Formatting.GRAY;
         }
-        return this.rarity != null ? gearTierMap.getOrDefault(this.rarity, Formatting.WHITE) : Formatting.WHITE;
+        return this.tier != null ? gearTierMap.getOrDefault(this.tier, Formatting.WHITE) : Formatting.WHITE;
     }
 
     public int getRarityValue() {
-        if (rarity == null) {
+        if (tier == null) {
             if (tier != null) {
                 switch (tier) {
-                    case "3" -> {
+                    case "TIER_3" -> {
                         return 8;
                     }
-                    case "2" -> {
+                    case "TIER_2" -> {
                         return 9;
                     }
-                    case "1" -> {
+                    case "TIER_1" -> {
                         return 10;
                     }
-                    case "0" -> {
+                    case "TIER_0" -> {
                         return 11;
                     }
                 }
             }
             return 100;
         }
-        switch (rarity) {
+        switch (tier) {
             case "mythic" -> {
                 return 0;
             }
@@ -133,21 +128,24 @@ public class WynnItem {
         itemValue.put("charm", counter++);
         itemValue.put("material", counter++);
         itemValue.put("ingredient", counter++);
-        return  itemValue.getOrDefault(getItemTypeString(), 100);
+        return  itemValue.getOrDefault(subType != null ? subType : type, 100);
     }
 
     public int getBackgroundColor() {
         if (!this.type.equals("ingredient") && !this.type.equals("material")) {
             return getNameFormatting().getColorValue();
         }
+        if (tier == null) {
+            return Formatting.GRAY.getColorValue();
+        }
         switch (tier) {
-            case "1" -> {
+            case "TIER_1" -> {
                 return Formatting.WHITE.getColorValue();
             }
-            case "2" -> {
+            case "TIER_2" -> {
                 return Formatting.YELLOW.getColorValue();
             }
-            case "3" -> {
+            case "TIER_3" -> {
                 return Formatting.GOLD.getColorValue();
             }
             default -> {
@@ -158,15 +156,15 @@ public class WynnItem {
 
     private Text getTierText() {
         final Map<String, String> ingredientTierMap = Map.of(
-                "0", " §7[§8✫✫✫§7]",
-                "1", " §6[§e✫§8✫✫§6]",
-                "2", " §5[§d✫✫§8✫§5]",
-                "3", " §3[§b✫✫✫§3]"
+                "TIER_0", " §7[§8✫✫✫§7]",
+                "TIER_1", " §6[§e✫§8✫✫§6]",
+                "TIER_2", " §5[§d✫✫§8✫§5]",
+                "TIER_3", " §3[§b✫✫✫§3]"
         );
         final Map<String, String> materialTierMap = Map.of(
-                "1", " §6[§e✫§8✫✫§6]",
-                "2", " §6[§e✫✫§8✫§6]",
-                "3", " §6[§e✫✫✫§6]"
+                "TIER_1", " §6[§e✫§8✫✫§6]",
+                "TIER_2", " §6[§e✫✫§8✫§6]",
+                "TIER_3", " §6[§e✫✫✫§6]"
         );
         return Text.of(tier != null ? type.equals("material") ? materialTierMap.get(tier) : ingredientTierMap.get(tier) : "");
     }
@@ -184,6 +182,9 @@ public class WynnItem {
 
     public List<String> getProfessions() {
         List<String> res = new ArrayList<>();
+        if (requirements != null && requirements.skills != null && !requirements.skills.isEmpty()) {
+            return requirements.skills;
+        }
         if (type.equals("material")) {
             if (internalName.contains("Wood") || internalName.contains("Paper")) {
                 res.add("woodcutting");
@@ -197,24 +198,9 @@ public class WynnItem {
             if (internalName.contains("Gem") || internalName.contains("Ingot")) {
                 res.add("mining");
             }
-            for (String crafted : craftable) {
-                switch (crafted) {
-                    case "scrolls" -> res.add("scribing");
-                    case "rings" -> res.add("jeweling");
-                    case "potions" -> res.add("alchemism");
-                    case "spears" -> res.add("weaponsmithing");
-                    case "bows" -> res.add("woodworking");
-                    case "food" -> res.add("cooking");
-                    case "helmets" -> res.add("armouring");
-                    case "leggings" -> res.add("tailoring");
-                }
-            }
-        }
-        if (type.equals("ingredient")) {
-            return requirements.skills;
         }
         if (type.equals("tool")) {
-            res.add(switch (toolType) {
+            res.add(switch (subType) {
                 case "axe" -> "woodcutting";
                 case "scythe" -> "farming";
                 case "rod" -> "fishing";
@@ -242,16 +228,11 @@ public class WynnItem {
     }
 
     private int getTotalIngredientEffectiveness() {
-        return ingredientPositionModifiers.above + ingredientPositionModifiers.left + ingredientPositionModifiers.not_touching + ingredientPositionModifiers.touching + ingredientPositionModifiers.right + ingredientPositionModifiers.under;
+        return ingredientPositionModifiers.above + ingredientPositionModifiers.left + ingredientPositionModifiers.notTouching + ingredientPositionModifiers.touching + ingredientPositionModifiers.right + ingredientPositionModifiers.under;
     }
 
     private String getItemTypeString() {
-        return switch (type) {
-            case "armour" -> armourType;
-            case "weapon" -> weaponType;
-            case "accessory" -> accessoryType;
-            default -> type;
-        };
+        return subType != null ? subType : type;
     }
 
     public boolean isOfType(String typeString) {
@@ -414,13 +395,14 @@ public class WynnItem {
 
         if (type.equals("charm") && base != null) {
             result.add(Text.empty());
+
             if (base.containsKey("leveledLootBonus")) {
                 Identification stat = base.get("leveledLootBonus");
-                result.add(Text.of("§a+" + stat.min + " §2to §a" + stat.max + "% §7Loot from Lv. " + requirements.levelRange.min + "-" + requirements.levelRange.max + " content"));
+                result.add(Text.of("§a+" + stat.min + " §2to §a" + stat.max + "% §7Loot from Lv. ? - ? content"));
             }
             if (base.containsKey("leveledXpBonus")) {
                 Identification stat = base.get("leveledXpBonus");
-                result.add(Text.of("§a+" + stat.min + " §2to §a" + stat.max + "% §7XP from Lv. " + requirements.levelRange.min + "-" + requirements.levelRange.max + " content"));
+                result.add(Text.of("§a+" + stat.min + " §2to §a" + stat.max + "% §7XP from Lv. ? - ? content"));
             }
             if (base.containsKey("damageFromMobs")) {
                 Identification stat = base.get("damageFromMobs");
@@ -428,12 +410,12 @@ public class WynnItem {
             }
         }
 
-        if (rarity != null) {
+        if (tier != null && !type.equals("ingredient")) {
             result.add(Text.empty());
             if (powderSlots != null) {
                 result.add(Text.of("§7[0/" + powderSlots + "] Powder Slots"));
             }
-            result.add(Text.of(getNameFormatting() + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(rarity) + " " + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(getItemTypeString())));
+            result.add(Text.of(getNameFormatting() + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(tier) + " " + InventoryOverlayUtils.toUpperCamelCaseWithSpaces(getItemTypeString())));
         }
         if (type.equals("ingredient")) {
             if (isEffectivenessIngredient()) {
@@ -458,8 +440,8 @@ public class WynnItem {
                     result.add(Text.of((ingredientPositionModifiers.touching < 0 ? "§c" : "§a+") + ingredientPositionModifiers.touching + "% §7Ingredient Effectiveness"));
                     result.add(Text.of("§7(To ingredients touching this one)"));
                 }
-                if (ingredientPositionModifiers.not_touching != 0) {
-                    result.add(Text.of((ingredientPositionModifiers.not_touching < 0 ? "§c" : "§a+") + ingredientPositionModifiers.not_touching + "% §7Ingredient Effectiveness"));
+                if (ingredientPositionModifiers.notTouching != 0) {
+                    result.add(Text.of((ingredientPositionModifiers.notTouching < 0 ? "§c" : "§a+") + ingredientPositionModifiers.notTouching + "% §7Ingredient Effectiveness"));
                     result.add(Text.of("§7(To ingredients not touching this one)"));
                 }
 

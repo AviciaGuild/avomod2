@@ -47,29 +47,34 @@ public class ItemButtonWidget extends ButtonWidget {
 
     @Override
     protected void drawIcon(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        int minX = getX();
-        int minY = getY();
-        int maxX = minX + width;
-        int maxY = minY + height;
+        try {
+            int minX = getX();
+            int minY = getY();
+            int maxX = minX + width;
+            int maxY = minY + height;
 
-        boolean hovered = (mouseX >= minX) && (mouseX <= maxX) && (mouseY >= minY) && (mouseY <= maxY);
+            boolean hovered = (mouseX >= minX) && (mouseX <= maxX) && (mouseY >= minY) && (mouseY <= maxY);
 
-        int outlineColor = hovered ? 0xFFC6C6C6 : 0xFFFFFFFF;
-        int fillOpacity = hovered ? 0x6B000000 : 0x88000000;
-        context.getMatrices().pushMatrix();
-//        context.getMatrices().translate(0.0, 0.0, 160F);
-        context.fill(minX, minY, maxX, maxY, fillOpacity | wynnItem.getBackgroundColor());
-        context.drawHorizontalLine(minX, maxX, minY, outlineColor);
-        context.drawHorizontalLine(minX, maxX, maxY, outlineColor);
-        context.drawVerticalLine(minX, minY, maxY, outlineColor);
-        context.drawVerticalLine(maxX, minY, maxY, outlineColor);
+            int outlineColor = hovered ? 0xFFC6C6C6 : 0xFFFFFFFF;
+            int fillOpacity = hovered ? 0x6B000000 : 0x88000000;
+            context.getMatrices().pushMatrix();
+    //        context.getMatrices().translate(0.0, 0.0, 160F);
+            context.fill(minX, minY, maxX, maxY, fillOpacity | wynnItem.getBackgroundColor());
+            context.drawHorizontalLine(minX, maxX, minY, outlineColor);
+            context.drawHorizontalLine(minX, maxX, maxY, outlineColor);
+            context.drawVerticalLine(minX, minY, maxY, outlineColor);
+            context.drawVerticalLine(maxX, minY, maxY, outlineColor);
 
-        context.drawItem(item, minX + 2, minY + 2);
-        context.getMatrices().popMatrix();
-        if (isHovered() && MinecraftClient.getInstance().currentScreen != null) {
-            Stream<net.minecraft.text.Text> infoTooltip = Utils.isShiftDown() ? Stream.of(net.minecraft.text.Text.empty(), net.minecraft.text.Text.of("§7Left-click for Drop Info"), net.minecraft.text.Text.of("§7Right-click to Open Wiki")) : Stream.of(net.minecraft.text.Text.empty(), net.minecraft.text.Text.of("§7Hold SHIFT for Hints"));
-            List<net.minecraft.text.Text> tooltip = Stream.concat(Stream.concat(Stream.of(net.minecraft.text.Text.of(item.getName())), wynnItem.getLore().stream()), infoTooltip).toList();
-            context.drawTooltip(MinecraftClient.getInstance().textRenderer, tooltip, mouseX, mouseY);
+            context.drawItem(item, minX + 2, minY + 2);
+            context.getMatrices().popMatrix();
+            if (isHovered() && MinecraftClient.getInstance().currentScreen != null) {
+                Stream<net.minecraft.text.Text> infoTooltip = Utils.isShiftDown() ? Stream.of(net.minecraft.text.Text.empty(), net.minecraft.text.Text.of("§7Left-click for Drop Info"), net.minecraft.text.Text.of("§7Right-click to Open Wiki")) : Stream.of(net.minecraft.text.Text.empty(), net.minecraft.text.Text.of("§7Hold SHIFT for Hints"));
+                List<net.minecraft.text.Text> tooltip = Stream.concat(Stream.concat(Stream.of(net.minecraft.text.Text.of(item.getName())), wynnItem.getLore().stream()), infoTooltip).toList();
+                context.drawTooltip(MinecraftClient.getInstance().textRenderer, tooltip, mouseX, mouseY);
+            }
+        } catch (Exception e) {
+            // If they decide to change something unexpectedly...
+            e.printStackTrace();
         }
     }
 

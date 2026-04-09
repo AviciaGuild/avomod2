@@ -18,7 +18,7 @@ public class DroppedByDeserializer implements JsonDeserializer<DroppedBy> {
 
         List<List<Integer>> coords = new ArrayList<>();
         List<Integer> singleCoord = new ArrayList<>();
-        if (coordsElement.isJsonArray()) {
+        if (coordsElement != null && coordsElement.isJsonArray()) {
             JsonArray coordsArray = coordsElement.getAsJsonArray();
             for (JsonElement element : coordsArray) {
                 if (element.isJsonArray()) {
