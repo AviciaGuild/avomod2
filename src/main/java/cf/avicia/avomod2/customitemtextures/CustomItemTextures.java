@@ -28,7 +28,10 @@ public class CustomItemTextures {
     }
     private static boolean isPotion(ItemStack itemStack, List<Text> loreLines) {
         String potionString = "\uE03F\uDAFF\uDFFF\uE03E\uDAFF\uDFFF\uE043\uDAFF\uDFFF\uE038\uDAFF\uDFFF\uE03E\uDAFF\uDFFF\uE03D\uDAFF\uDFFF\uE062\uDAFF\uDFDC\uE00F\uE00E\uE013\uE008\uE00E\uE00D\uDB00\uDC02";
-        return loreLines.stream().anyMatch(lineText -> lineText.getString().contains(potionString)) || (itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:potion"))) && loreLines.stream().anyMatch(lineText -> lineText.getString().contains("Effect:")));
+        return loreLines.stream().anyMatch(lineText -> lineText.getString().contains(potionString)) ||
+                // "Lutho" potions
+                (itemStack.isOf(Registries.ITEM.get(Identifier.of("minecraft:potion"))) && loreLines.stream()
+                .filter(lineText -> lineText.getString().contains("Effect:")).limit(3).count() == 3);
     }
 
     private static boolean isOfType(ItemStack itemStack, List<Text> loreLines, String type) {
