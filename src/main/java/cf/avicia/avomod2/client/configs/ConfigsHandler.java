@@ -38,6 +38,7 @@ public class ConfigsHandler {
             new ConfigToggle("Inventory", "Add item overlay and search bar to inventories", "Enabled", "itemOverlay"),
             new ConfigToggle("Inventory", "Hide item overlay and show only search bar", "Disabled", "onlySearchBar"),
             new ConfigToggle("Inventory", "Add custom textures to crafted consumables", "Enabled", "customTexturesCraftedConsumables"),
+            new ConfigToggle("Inventory", "Middle click to search in trade market", "Enabled", "tradeMarketMiddleClickSearch"),
             new ConfigToggle("Misc", "Add profession highlighter to containers", "Enabled", "profHighlighter"),
             new ConfigToggle("Misc", "Copy chat messages by ctrl clicking them", "Enabled", "copyChatMessages"),
             new ConfigToggle("Misc", "Make Mob Health Bars More Readable", "Enabled", "readableHealth"),
